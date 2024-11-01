@@ -5,51 +5,40 @@ import {
   CardTitle,
   CardText,
   CardLink,
+  Row,
+  Col,
 } from "reactstrap";
-
+import { Eye, ShoppingBag, User } from "react-feather";
+import CardCongratulations from "../@core/components/Home/Dashboard/CardCongratulations";
+import StatsVertical from "../@core/components/widgets/stats/StatsVertical";
+import SubscribersGained from "../@core/components/Home/Dashboard/SubscribersGained";
 const Home = () => {
   return (
     <div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Kick start your project 🚀</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardText>All the best for your new project.</CardText>
-          <CardText>
-            Please make sure to read our{" "}
-            <CardLink
-              href="https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/"
-              target="_blank"
-            >
-              Template Documentation
-            </CardLink>{" "}
-            to understand where to go from here and how to use our template.
-          </CardText>
-        </CardBody>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Want to integrate JWT? 🔒</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <CardText>
-            We carefully crafted JWT flow so you can implement JWT with ease and
-            with minimum efforts.
-          </CardText>
-          <CardText>
-            Please read our{" "}
-            <CardLink
-              href="https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/docs/development/auth"
-              target="_blank"
-            >
-              JWT Documentation
-            </CardLink>{" "}
-            to get more out of JWT authentication.
-          </CardText>
-        </CardBody>
-      </Card>
+      <Row className="match-height">
+        <Col lg="12" sm="12">
+          <CardCongratulations />
+        </Col>
+      </Row>
+      <Row className="match-height">
+        {" "}
+        <Col lg="3" sm="6">
+          <StatsVertical
+            icon={<User size={24} />}
+            color="info"
+            stats="97.8k"
+            statTitle="دوره های رزرو شده"
+          />
+        </Col>
+        <Col lg="3" sm="6">
+          <StatsVertical
+            icon={<Eye size={21} />}
+            color="info"
+            stats="36.9k"
+            statTitle="تعداد تمام کاربر ها"
+          />
+        </Col>
+      </Row>
     </div>
   );
 };

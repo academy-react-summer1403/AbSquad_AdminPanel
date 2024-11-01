@@ -26,7 +26,7 @@ const TemplateTitle = "%s - Vuexy React Admin Template";
 const DefaultRoute = "/home";
 
 const Home = lazy(() => import("../../pages/Home"));
-const SecondPage = lazy(() => import("../../pages/SecondPage"));
+const Users = lazy(() => import("../../pages/Users"));
 const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
@@ -49,8 +49,8 @@ const Routes = [
     element: <Sample />,
   },
   {
-    path: "/second-page",
-    element: <SecondPage />,
+    path: "/Users",
+    element: <Users />,
   },
   {
     path: "/login",

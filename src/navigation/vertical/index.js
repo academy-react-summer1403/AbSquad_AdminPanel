@@ -1,17 +1,17 @@
-import { Mail, Home, Airplay, Circle } from "react-feather";
+import { User, Home, Airplay, Circle } from "react-feather";
 
 export default [
   {
     id: "home",
-    title: "Home",
+    title: "داشبورد",
     icon: <Home size={20} />,
     navLink: "/home",
   },
   {
-    id: "secondPage",
-    title: "Second Page",
-    icon: <Mail size={20} />,
-    navLink: "/second-page",
+    id: "Users",
+    title: "کاربران",
+    icon: <User size={20} />,
+    navLink: "/Users",
   },
   {
     id: "smaplePage",
