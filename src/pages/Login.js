@@ -1,9 +1,10 @@
 // ** React Imports
 import { useSkin } from "@hooks/useSkin";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Icons Imports
 import { Facebook, Twitter, Mail, GitHub } from "react-feather";
+import http from "../@core/services/Interceptor";
 
 // ** Custom Components
 import InputPasswordToggle from "@components/input-password-toggle";
@@ -28,6 +29,32 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import "@styles/react/pages/page-authentication.scss";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const PostLoginAPI = async (user = "") => {
+    try {
+      const res = await http.post("/Sign/Login", user);
+      return res;
+    } catch (error) {}
+  };
+  const onSubmitLogin = async (event) => {
+    event.preventDefault();
+    console.log(event.target["PhoneOrGmail"].value);
+    const user = {
+      phoneOrGmail: event.target["PhoneOrGmail"].value,
+      password: event.target["Password"].value,
+      rememberMe: true,
+    };
+    const res = await PostLoginAPI(user);
+    const token = res.token;
+    localStorage.setItem("token", token);
+    console.log(res);
+    // dispatch(handleToken(token));
+    // console.log(res);
+    if (res.success == true) {
+      navigate("/home");
+    }
+    // // FetchProfile();
+  };
   const { skin } = useSkin();
 
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
@@ -123,13 +150,14 @@ const Login = () => {
             </CardText>
             <Form
               className="auth-login-form mt-2"
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={(e) => onSubmitLogin(e)}
             >
               <div className="mb-1">
                 <Label className="form-label" for="login-email">
                   Email
                 </Label>
                 <Input
+                  name="PhoneOrGmail"
                   type="email"
                   id="login-email"
                   placeholder="john@example.com"
@@ -146,6 +174,7 @@ const Login = () => {
                   </Link>
                 </div>
                 <InputPasswordToggle
+                  name="Password"
                   className="input-group-merge"
                   id="login-password"
                 />
@@ -156,8 +185,8 @@ const Login = () => {
                   Remember Me
                 </Label>
               </div>
-              <Button tag={Link} to="/" color="primary" block>
-                Sign in
+              <Button type={"submit"} color="primary" block>
+                ورود
               </Button>
             </Form>
             <p className="text-center mt-2">
