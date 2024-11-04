@@ -33,8 +33,11 @@ const Login = () => {
   const PostLoginAPI = async (user = "") => {
     try {
       const res = await http.post("/Sign/Login", user);
+      console.log(res);
       return res;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
   const onSubmitLogin = async (event) => {
     event.preventDefault();
@@ -44,10 +47,11 @@ const Login = () => {
       password: event.target["Password"].value,
       rememberMe: true,
     };
+    console.log(user);
     const res = await PostLoginAPI(user);
     const token = res.token;
     localStorage.setItem("token", token);
-    console.log(res);
+    // console.log(res);
     // dispatch(handleToken(token));
     // console.log(res);
     if (res.success == true) {

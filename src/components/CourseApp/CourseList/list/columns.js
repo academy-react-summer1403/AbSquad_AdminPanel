@@ -30,14 +30,21 @@ import {
 
 // ** Renders Client Columns
 const renderClient = (row) => {
-  if (row.avatar.length) {
-    return <Avatar className="me-1" img={row.avatar} width="32" height="32" />;
+  if (row) {
+    return (
+      <Avatar
+        className="me-1"
+        img={row.tumbImageAddress ? row.tumbImageAddress : "/ErrImg.jpg"}
+        width="32"
+        height="32"
+      />
+    );
   } else {
     return (
       <Avatar
         initials
         className="me-1"
-        color={row.avatarColor || "light-primary"}
+        color={"light-primary"}
         content={row.fullName || "John Doe"}
       />
     );
@@ -51,7 +58,7 @@ const renderRole = (row) => {
       class: "text-primary",
       icon: User,
     },
-    maintainer: {
+    "شروع ثبت نام": {
       class: "text-success",
       icon: Database,
     },
@@ -63,87 +70,109 @@ const renderRole = (row) => {
       class: "text-warning",
       icon: Settings,
     },
-    admin: {
+    "منقضی شده": {
       class: "text-danger",
       icon: Slack,
     },
   };
 
-  const Icon = roleObj[row.role] ? roleObj[row.role].icon : Edit2;
+  const Icon = roleObj[row.statusName] ? roleObj[row.statusName].icon : Edit2;
 
   return (
     <span className="text-truncate text-capitalize align-middle">
       <Icon
         size={18}
-        className={`${roleObj[row.role] ? roleObj[row.role].class : ""} me-50`}
+        className={`${
+          roleObj[row.statusName] ? roleObj[row.statusName].class : ""
+        } me-50`}
       />
-      {row.role}
+      {row.statusName}
     </span>
   );
 };
 
 const statusObj = {
-  pending: "light-warning",
-  active: "light-success",
-  inactive: "light-secondary",
+  false: "light-danger",
+  true: "light-success",
+  pending: "light-secondary",
 };
 
 export const columns = [
   {
-    name: "User",
+    name: "نام دوره",
     sortable: true,
     minWidth: "300px",
     sortField: "fullName",
-    selector: (row) => row.fullName,
+    selector: (row) => row.title,
     cell: (row) => (
       <div className="d-flex justify-content-left align-items-center">
         {renderClient(row)}
         <div className="d-flex flex-column">
           <Link
-            to={`/apps/user/view/${row.id}`}
+            to={`/apps/user/view/${row.courseId}`}
             className="user_name text-truncate text-body"
-            onClick={() => store.dispatch(getUser(row.id))}
+            onClick={() => store.dispatch(getUser(row.courseId))}
           >
-            <span className="fw-bolder">{row.fullName}</span>
+            <span className="fw-bolder">{row.title}</span>
           </Link>
-          <small className="text-truncate text-muted mb-0">{row.email}</small>
+          <small className="text-truncate text-muted mb-0">
+            {row.typeName}
+          </small>
         </div>
       </div>
     ),
   },
   {
-    name: "Role",
+    name: "مدرس",
     sortable: true,
     minWidth: "172px",
     sortField: "role",
-    selector: (row) => row.role,
+    selector: (row) => row.fullName,
+    cell: (row) => (
+      <span className="fw-bolder text-capitalize">{row.fullName}</span>
+    ),
+  },
+  {
+    name: "وضعیت برگذاری",
+    sortable: true,
+    minWidth: "172px",
+    sortField: "role",
+    selector: (row) => row.statusName,
     cell: (row) => renderRole(row),
   },
   {
-    name: "Plan",
+    name: "قیمت",
     minWidth: "138px",
     sortable: true,
     sortField: "currentPlan",
-    selector: (row) => row.currentPlan,
-    cell: (row) => <span className="text-capitalize">{row.currentPlan}</span>,
+    selector: (row) => row.cost,
+    cell: (row) => (
+      <span className="text-capitalize">
+        {parseInt(row.cost).toLocaleString()} تومان
+      </span>
+    ),
   },
   {
-    name: "Billing",
+    name: "وضعیت",
     minWidth: "230px",
     sortable: true,
     sortField: "billing",
-    selector: (row) => row.billing,
-    cell: (row) => <span className="text-capitalize">{row.billing}</span>,
+    selector: (row) => row.isActive,
+    cell: (row) => (
+      <Badge className="text-capitalize" color={statusObj[row.isActive]} pill>
+        {row.isActive ? "فعال" : "غیر فعال"}
+      </Badge>
+    ),
   },
   {
-    name: "Status",
+    name: "وضعیت حذف",
     minWidth: "138px",
     sortable: true,
     sortField: "status",
-    selector: (row) => row.status,
+    selector: (row) => row.isdelete,
     cell: (row) => (
-      <Badge className="text-capitalize" color={statusObj[row.status]} pill>
-        {row.status}
+      <Badge className="text-capitalize" color={statusObj[row.isdelete]} pill>
+        {row.isdelete ? "حذف شده" : "حذف نشده"}
       </Badge>
     ),
   },

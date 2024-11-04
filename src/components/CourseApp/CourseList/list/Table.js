@@ -48,16 +48,20 @@ import {
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { AllCourseAdmin } from "../../../../@core/services/API/AllCoursesAdmin/allCourse.api";
+import { useLocation, useSearchParams } from "react-router-dom";
+// ** Get Courses Api *************************************************************************************
 
 // ** Table Header
 const CustomHeader = ({
   store,
   toggleSidebar,
   handlePerPage,
-  rowsPerPage,
   handleFilter,
   searchTerm,
+  setSearchParams,
 }) => {
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   // ** Converts table to CSV
   function convertArrayOfObjectsToCSV(array) {
     let result;
@@ -101,24 +105,35 @@ const CustomHeader = ({
     link.setAttribute("download", filename);
     link.click();
   }
+  // Search
+  const handleSearch = (val) => {
+    setSearchParams((op) => {
+      op.set("Query", val);
+      return op;
+    });
+  };
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
         <Col xl="6" className="d-flex align-items-center p-0">
           <div className="d-flex align-items-center w-100">
-            <label htmlFor="rows-per-page">Show</label>
+            <label htmlFor="rows-per-page">تعداد:</label>
             <Input
               className="mx-50"
+              onChange={(e) => {
+                setSearchParams((op) => {
+                  op.set("RowsOfPage", e.target.value);
+                  return op;
+                });
+              }}
               type="select"
               id="rows-per-page"
-              value={rowsPerPage}
               style={{ width: "5rem" }}
             >
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
             </Input>
-            <label htmlFor="rows-per-page">Entries</label>
           </div>
         </Col>
         <Col
@@ -127,18 +142,22 @@ const CustomHeader = ({
         >
           <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
             <label className="mb-0" htmlFor="search-invoice">
-              Search:
+              جستجو:
             </label>
             <Input
               id="search-invoice"
               className="ms-50 w-100"
               type="text"
               value={searchTerm}
+              onChange={(e) => {
+                handleSearch(e.target.value);
+              }}
             />
           </div>
 
           <div className="d-flex align-items-center table-header-actions">
-            <UncontrolledDropdown className="me-1">
+            {" "}
+            {/* <UncontrolledDropdown className="me-1">
               <DropdownToggle color="secondary" caret outline>
                 <Share className="font-small-4 me-50" />
                 <span className="align-middle">Export</span>
@@ -168,14 +187,13 @@ const CustomHeader = ({
                   <span className="align-middle">Copy</span>
                 </DropdownItem>
               </DropdownMenu>
-            </UncontrolledDropdown>
-
+            </UncontrolledDropdown> */}
             <Button
               className="add-new-user"
               color="primary"
               onClick={toggleSidebar}
             >
-              Add New User
+              ساخت دوره
             </Button>
           </div>
         </Col>
@@ -237,7 +255,13 @@ const UsersList = () => {
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(store.total / rowsPerPage));
+    const count = Number(Math.ceil(allCourses.totalCount / rowsPerPage));
+    const handlePagination = async (pageNum) => {
+      setSearchParams((op) => {
+        op.set("PageNumber", pageNum + 1);
+        return op;
+      });
+    };
 
     return (
       <ReactPaginate
@@ -246,7 +270,7 @@ const UsersList = () => {
         pageCount={count || 1}
         activeClassName="active"
         forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => handlePagination(page)}
+        onPageChange={(page) => handlePagination(page.selected)}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}
         nextClassName={"page-item next"}
@@ -281,10 +305,21 @@ const UsersList = () => {
       return store.allData.slice(0, rowsPerPage);
     }
   };
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [allCourses, setAllCourses] = useState([]);
+  const handleGetAllCourse = async (loc) => {
+    const res = await AllCourseAdmin(loc);
+    setAllCourses(res);
+  };
+
+  useEffect(() => {
+    if (location) handleGetAllCourse(location.search);
+  }, [searchParams]);
 
   return (
     <Fragment>
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle tag="h4">Filters</CardTitle>
         </CardHeader>
@@ -321,7 +356,7 @@ const UsersList = () => {
             </Col>
           </Row>
         </CardBody>
-      </Card>
+      </Card> */}
 
       <Card className="overflow-hidden">
         <div className="react-dataTable">
@@ -331,20 +366,21 @@ const UsersList = () => {
             sortServer
             pagination
             responsive
+            selectableRows
             paginationServer
             columns={columns}
             onSort={() => {}}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
             paginationComponent={CustomPagination}
-            data={[]}
+            data={allCourses.courseDtos}
             subHeaderComponent={
               <CustomHeader
-                store={store}
+                // store={store}
                 searchTerm={searchTerm}
-                rowsPerPage={rowsPerPage}
+                setSearchParams={setSearchParams}
                 handleFilter={() => {}}
-                handlePerPage={() => {}}
+                handlePerRow={() => {}}
               />
             }
           />
