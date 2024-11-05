@@ -4,8 +4,16 @@ import { Link } from "react-router-dom";
 // ** Custom Components
 import Avatar from "@components/avatar";
 
-// ** Store & Actions
-
+// ** Modals
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Label,
+  Input,
+} from "reactstrap";
 // ** Icons Imports
 import {
   Slack,
@@ -27,6 +35,8 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import { useState } from "react";
+// Scroll Modal
 
 // ** Renders Client Columns
 const renderClient = (row) => {
@@ -101,7 +111,7 @@ export const columns = [
   {
     name: "نام دوره",
     sortable: true,
-    minWidth: "300px",
+    minWidth: "178px",
     sortField: "fullName",
     selector: (row) => row.title,
     cell: (row) => (
@@ -154,7 +164,7 @@ export const columns = [
   },
   {
     name: "وضعیت",
-    minWidth: "230px",
+    minWidth: "178px",
     sortable: true,
     sortField: "billing",
     selector: (row) => row.isActive,
@@ -193,7 +203,7 @@ export const columns = [
               onClick={() => store.dispatch(getUser(row.id))}
             >
               <FileText size={14} className="me-50" />
-              <span className="align-middle">Details</span>
+              <span className="align-middle">جزئیات</span>
             </DropdownItem>
             <DropdownItem
               tag="a"
@@ -202,7 +212,7 @@ export const columns = [
               onClick={(e) => e.preventDefault()}
             >
               <Archive size={14} className="me-50" />
-              <span className="align-middle">Edit</span>
+              <span className="align-middle">ویرایش</span>
             </DropdownItem>
             <DropdownItem
               tag="a"
@@ -214,10 +224,111 @@ export const columns = [
               }}
             >
               <Trash2 size={14} className="me-50" />
-              <span className="align-middle">Delete</span>
+              <span className="align-middle">پاک کردن دوره</span>
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
+        <Modal
+          isOpen={scrollModal}
+          toggle={() => setScrollModal(!scrollModal)}
+          className="modal-dialog-centered"
+        >
+          <ModalHeader toggle={() => setScrollModal(!scrollModal)}>
+            Modal Title
+          </ModalHeader>
+          <ModalBody>
+            <p>
+              Biscuit powder jelly beans. Lollipop candy canes croissant icing
+              chocolate cake. Cake fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels
+              halvah chocolate bar. Cotton candy gummi bears pudding pie apple
+              pie cookie. Cheesecake jujubes lemon drops danish dessert I love
+              caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll
+              cake. Cupcake dessert icing dragée dessert. Liquorice jujubes cake
+              tart pie donut. Cotton candy candy canes lollipop liquorice
+              chocolate marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love
+              powder sugar plum tiramisu. Liquorice pudding chocolate cake
+              cupcake topping biscuit. Lemon drops apple pie sesame snaps
+              tootsie roll carrot cake soufflé halvah. Biscuit powder jelly
+              beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels
+              halvah chocolate bar. Cotton candy gummi bears pudding pie apple
+              pie cookie. Cheesecake jujubes lemon drops danish dessert I love
+              caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll
+              cake. Cupcake dessert icing dragée dessert. Liquorice jujubes cake
+              tart pie donut. Cotton candy candy canes lollipop liquorice
+              chocolate marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love
+              powder sugar plum tiramisu. Liquorice pudding chocolate cake
+              cupcake topping biscuit. Lemon drops apple pie sesame snaps
+              tootsie roll carrot cake soufflé halvah. Biscuit powder jelly
+              beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels
+              halvah chocolate bar. Cotton candy gummi bears pudding pie apple
+              pie cookie. Cheesecake jujubes lemon drops danish dessert I love
+              caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll
+              cake. Cupcake dessert icing dragée dessert. Liquorice jujubes cake
+              tart pie donut. Cotton candy candy canes lollipop liquorice
+              chocolate marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love
+              powder sugar plum tiramisu. Liquorice pudding chocolate cake
+              cupcake topping biscuit. Lemon drops apple pie sesame snaps
+              tootsie roll carrot cake soufflé halvah. Biscuit powder jelly
+              beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels
+              halvah chocolate bar. Cotton candy gummi bears pudding pie apple
+              pie cookie. Cheesecake jujubes lemon drops danish dessert I love
+              caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll
+              cake. Cupcake dessert icing dragée dessert. Liquorice jujubes cake
+              tart pie donut. Cotton candy candy canes lollipop liquorice
+              chocolate marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love
+              powder sugar plum tiramisu. Liquorice pudding chocolate cake
+              cupcake topping biscuit. Lemon drops apple pie sesame snaps
+              tootsie roll carrot cake soufflé halvah.
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="primary"
+              onClick={() => setScrollModal(!scrollModal)}
+            >
+              Accept
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     ),
   },
