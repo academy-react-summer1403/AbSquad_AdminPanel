@@ -49,7 +49,7 @@ import {
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { AllCourseAdmin } from "../../../../@core/services/API/AllCoursesAdmin/allCourse.api";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 // ** Get Courses Api *************************************************************************************
 
 // ** Table Header
@@ -112,6 +112,8 @@ const CustomHeader = ({
       return op;
     });
   };
+  // Use Navigate
+  const navigate = useNavigate();
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
@@ -156,7 +158,6 @@ const CustomHeader = ({
           </div>
 
           <div className="d-flex align-items-center table-header-actions">
-            {" "}
             {/* <UncontrolledDropdown className="me-1">
               <DropdownToggle color="secondary" caret outline>
                 <Share className="font-small-4 me-50" />
@@ -191,7 +192,9 @@ const CustomHeader = ({
             <Button
               className="add-new-user"
               color="primary"
-              onClick={toggleSidebar}
+              onClick={() => {
+                navigate("/Course/AddNewCourse");
+              }}
             >
               ساخت دوره
             </Button>

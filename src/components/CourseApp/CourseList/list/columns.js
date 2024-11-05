@@ -63,6 +63,7 @@ const renderClient = (row) => {
 
 // ** Renders Role Columns
 const renderRole = (row) => {
+  const [scrollModal, setScrollModal] = useState(false);
   const roleObj = {
     subscriber: {
       class: "text-primary",
@@ -228,7 +229,7 @@ export const columns = [
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
-        <Modal
+        {/* <Modal
           isOpen={scrollModal}
           toggle={() => setScrollModal(!scrollModal)}
           className="modal-dialog-centered"
@@ -328,7 +329,7 @@ export const columns = [
               Accept
             </Button>
           </ModalFooter>
-        </Modal>
+        </Modal> */}
       </div>
     ),
   },
