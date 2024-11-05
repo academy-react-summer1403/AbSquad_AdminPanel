@@ -1,4 +1,4 @@
-import { Mail, Home, Archive, List, Circle } from "react-feather";
+import { Mail, Home, Archive, List, Circle, User } from "react-feather";
 
 export default [
   {
@@ -8,15 +8,16 @@ export default [
     navLink: "/home",
   },
   {
-    id: "secondPage",
-    title: "Second Page",
-    icon: <Mail size={20} />,
-    navLink: "/second-page",
+    id: "UserList",
+    title: "کاربران",
+    icon: <User size={20} />,
+
+    navLink: "/UserList",
   },
   {
     id: "CourseList",
     title: "دوره",
-    icon: <Archive size={20} />,
+    icon: <List size={20} />,
     // navLink: "/sample",
     children: [
       {
@@ -28,16 +29,27 @@ export default [
     ],
   },
   {
-    id: "smaplePage",
-    title: "Sample Page",
-    icon: <Archive size={20} />,
-    // navLink: "/sample",
+    id: "Articles",
+    title: "اخبار",
+    icon: <List size={20} />,
     children: [
       {
-        id: "invoiceList",
-        title: "List",
-        icon: <List size={24} />,
-        navLink: "/apps/invoice/list",
+        id: "ََArticleList",
+        title: "لیست اخبار",
+        icon: <List size={20} />,
+        navLink: "/Artcle/articleList",
+      },
+      {
+        id: "NewArticle",
+        title: "ایجاد لیست جدید",
+        icon: <List size={20} />,
+        navLink: "/Artcle/AddNewArticle",
+      },
+      {
+        id: "CategoriesArticle",
+        title: "لیست دیسته بندی",
+        icon: <List size={20} />,
+        navLink: "/Artcle/categoriesList",
       },
     ],
   },
