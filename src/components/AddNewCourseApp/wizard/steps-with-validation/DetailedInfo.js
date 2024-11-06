@@ -159,13 +159,26 @@ const DetailedInfo = ({ stepper }) => {
           <Col className="mb-1" md="4" sm="12">
             <Label className="form-label">تکنولوژی دوره</Label>
             <Select
+              isClearable={false}
+              theme={selectThemeColors}
+              // defaultValue={[colorOptions[2], colorOptions[3]]}
+              isMulti
+              name="courseTech"
+              className="react-select"
+              classNamePrefix="select"
+              options={courseTech}
+            />
+          </Col>
+          {/* <Col className="mb-1" md="4" sm="12">
+            <Label className="form-label">تکنولوژی دوره</Label>
+            <Select
               theme={selectThemeColors}
               className="react-select"
               classNamePrefix="select"
               options={courseTech}
               isClearable={false}
             />
-          </Col>
+          </Col> */}
         </Row>
         <div className="d-flex justify-content-between">
           <Button
