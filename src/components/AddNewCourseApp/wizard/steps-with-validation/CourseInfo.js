@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
 // ** Third Party Components
 import Select from "react-select";
@@ -29,19 +29,8 @@ const CourseInfo = ({ stepper }) => {
     formState: { errors },
   } = useForm({ defaultValues });
 
-  const onSubmit = (data) => {
-    if (Object.values(data).every((field) => field.length > 0)) {
-      stepper.next();
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: "manual",
-            message: `Please enter a valid ${key}`,
-          });
-        }
-      }
-    }
+  const onSubmit = () => {
+    stepper.next();
   };
 
   const countryOptions = [
@@ -61,82 +50,135 @@ const CourseInfo = ({ stepper }) => {
     { value: "Japanese", label: "Japanese" },
   ];
 
+  // Price Convert
+  const [shownPrice, setShownPrice] = useState();
+  const handlePriceConvert = (price) => {
+    const convertedPrice = parseInt(price).toLocaleString();
+    setShownPrice(convertedPrice);
+  };
   return (
     <Fragment>
       <div className="content-header">
-        <h5 className="mb-0">Personal Info</h5>
-        <small>Enter Your Personal Info.</small>
+        <h5 className="mb-0">اطلاعات دوره</h5>
+        <small>اطلاعات دوره را اضافه کنید.</small>
       </div>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for="firstName">
-              First Name
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="courseName">
+              نام دوره
             </Label>
             <Controller
-              id="firstName"
-              name="firstName"
+              id="courseName"
+              name="courseName"
               control={control}
-              render={({ field }) => (
-                <Input
-                  placeholder="John"
-                  invalid={errors.firstName && true}
-                  {...field}
-                />
-              )}
+              render={({ field }) => <Input placeholder="دوره 1" />}
             />
-            {errors.firstName && (
-              <FormFeedback>{errors.firstName.message}</FormFeedback>
-            )}
+            `
           </Col>
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for="lastName">
-              Last Name
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="miniDescribe">
+              توضیح کوتاه درباره دوره
             </Label>
             <Controller
-              id="lastName"
-              name="lastName"
+              id="miniDescribe"
+              name="miniDescribe"
+              control={control}
+              render={({ field }) => <Input placeholder="توضیح کوتاه" />}
+            />
+          </Col>
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="capacity">
+              ظرفیت دوره
+            </Label>
+            <Controller
+              id="capacity"
+              name="capacity"
+              control={control}
+              render={({ field }) => (
+                <Input placeholder="ظرفیت دوره" type="number" />
+              )}
+            />
+          </Col>
+          <Col md="3" className="mb-1">
+            <Label
+              className="form-label d-flex justify-content-between"
+              for="coursePrice"
+            >
+              قیمت دوره
+              <span>
+                {shownPrice != "NaN" && shownPrice != undefined
+                  ? shownPrice + " تومان "
+                  : ""}
+              </span>
+            </Label>
+            <Controller
+              id="coursePrice"
+              name="coursePrice"
               control={control}
               render={({ field }) => (
                 <Input
-                  placeholder="Doe"
-                  invalid={errors.lastName && true}
-                  {...field}
+                  placeholder="5000000"
+                  onChange={(e) => handlePriceConvert(e.target.value)}
                 />
               )}
             />
-            {errors.lastName && (
-              <FormFeedback>{errors.lastName.message}</FormFeedback>
-            )}
           </Col>
         </Row>
         <Row>
           <Col md="6" className="mb-1">
-            <Label className="form-label" for="country">
-              Country
+            <Label className="form-label" for="courseDate">
+              تاریخ برگذاری
             </Label>
-            <Select
-              theme={selectThemeColors}
-              isClearable={false}
-              id={`country`}
-              className="react-select"
-              classNamePrefix="select"
-              options={countryOptions}
-              defaultValue={countryOptions[0]}
+            <Controller
+              id="courseDate"
+              name="courseDate"
+              control={control}
+              render={({ field }) => <Input placeholder="تاریخ برگذاری" />}
             />
           </Col>
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for="language">
-              Language
+          {/* <Col md="6" className="mb-1">
+            <Label className="form-label" for="miniLink">
+              لینک کوتاه برای دوره
             </Label>
             <Select
               isMulti
               isClearable={false}
               theme={selectThemeColors}
-              id={`language`}
+              id={`miniLink`}
               options={languageOptions}
               className="react-select"
               classNamePrefix="select"
+            />
+          </Col> */}
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="miniLink">
+              لینک کوتاه دوره
+            </Label>
+            <Controller
+              id="miniLink"
+              name="miniLink"
+              control={control}
+              render={({ field }) => <Input placeholder="لینک دوره" />}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col md="12" className="mb-1">
+            <Label className="form-label" for="description">
+              توضیحات کامل دوره
+            </Label>
+            <Controller
+              id="description"
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  style={{ resize: "none", height: "200px" }}
+                  placeholder="توضیحات کامل دوره"
+                  type="textarea"
+                />
+              )}
             />
           </Col>
         </Row>
@@ -151,12 +193,10 @@ const CourseInfo = ({ stepper }) => {
               size={14}
               className="align-middle me-sm-25 me-0"
             ></ArrowLeft>
-            <span className="align-middle d-sm-inline-block d-none">
-              Previous
-            </span>
+            <span className="align-middle d-sm-inline-block d-none">قبلی</span>
           </Button>
           <Button type="submit" color="primary" className="btn-next">
-            <span className="align-middle d-sm-inline-block d-none">Next</span>
+            <span className="align-middle d-sm-inline-block d-none">بعدی</span>
             <ArrowRight
               size={14}
               className="align-middle ms-sm-25 ms-0"
