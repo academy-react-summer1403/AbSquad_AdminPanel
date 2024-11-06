@@ -14,16 +14,22 @@ export default [
     navLink: "/second-page",
   },
   {
-    id: "CourseList",
+    id: "Course",
     title: "دوره",
     icon: <Archive size={20} />,
     // navLink: "/sample",
     children: [
       {
-        id: "invoiceList",
-        title: "List",
+        id: "CourseList",
+        title: "لیست دوره ها",
         icon: <List size={20} />,
         navLink: "/Course/CourseList",
+      },
+      {
+        id: "AddNewCourse",
+        title: "لیست دوره ها",
+        icon: <List size={20} />,
+        navLink: "/Course/AddNewCourse",
       },
     ],
   },

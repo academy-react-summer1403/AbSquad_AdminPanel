@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import Wizard from "@components/wizard";
 
 // ** Steps
-import Address from "./steps-with-validation/Address";
+import DetailedInfo from "./steps-with-validation/DetailedInfo";
 import SocialLinks from "./steps-with-validation/SocialLinks";
 import CourseInfo from "./steps-with-validation/CourseInfo";
 import ImageUpload from "./steps-with-validation/ImageUpload";
@@ -31,22 +31,10 @@ const WizardHorizontal = () => {
       content: <CourseInfo stepper={stepper} />,
     },
     {
-      id: "Attributes",
+      id: "DetailedInfo",
       title: "اطلاعات تکمیلی دوره",
       subtitle: "اطلاعات تکمیلی دوره را وارد کنید.",
-      content: <Address stepper={stepper} />,
-    },
-    {
-      id: "Description",
-      title: "توضیحات دوره",
-      subtitle: "توضیحات دوره را وارد کنید.",
-      content: <SocialLinks stepper={stepper} />,
-    },
-    {
-      id: "Technologies",
-      title: "تکنولوژی های دوره",
-      subtitle: "تکنولوژی های دوره را وارد کنید.",
-      content: <SocialLinks stepper={stepper} />,
+      content: <DetailedInfo stepper={stepper} />,
     },
   ];
 

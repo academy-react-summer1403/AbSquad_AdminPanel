@@ -2,7 +2,6 @@
 import { Fragment, useState } from "react";
 
 // ** Third Party Components
-import Select from "react-select";
 import { useForm, Controller } from "react-hook-form";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
@@ -137,20 +136,6 @@ const CourseInfo = ({ stepper }) => {
               render={({ field }) => <Input placeholder="تاریخ برگذاری" />}
             />
           </Col>
-          {/* <Col md="6" className="mb-1">
-            <Label className="form-label" for="miniLink">
-              لینک کوتاه برای دوره
-            </Label>
-            <Select
-              isMulti
-              isClearable={false}
-              theme={selectThemeColors}
-              id={`miniLink`}
-              options={languageOptions}
-              className="react-select"
-              classNamePrefix="select"
-            />
-          </Col> */}
           <Col md="6" className="mb-1">
             <Label className="form-label" for="miniLink">
               لینک کوتاه دوره
