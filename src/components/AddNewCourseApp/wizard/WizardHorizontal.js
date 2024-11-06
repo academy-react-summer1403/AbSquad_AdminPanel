@@ -7,8 +7,8 @@ import Wizard from "@components/wizard";
 // ** Steps
 import Address from "./steps-with-validation/Address";
 import SocialLinks from "./steps-with-validation/SocialLinks";
-import PersonalInfo from "./steps-with-validation/PersonalInfo";
-import AccountDetails from "./steps-with-validation/AccountDetails";
+import CourseInfo from "./steps-with-validation/CourseInfo";
+import ImageUpload from "./steps-with-validation/ImageUpload";
 
 const WizardHorizontal = () => {
   // ** Ref
@@ -22,13 +22,13 @@ const WizardHorizontal = () => {
       id: "Image",
       title: "اضافه کردن عکس دوره",
       subtitle: "عکس دوره وارد شود.",
-      content: <AccountDetails stepper={stepper} />,
+      content: <ImageUpload stepper={stepper} />,
     },
     {
       id: "Info",
       title: "اطلاعات دوره",
       subtitle: "اطلاعات دوره را اضافه کنید.",
-      content: <PersonalInfo stepper={stepper} />,
+      content: <CourseInfo stepper={stepper} />,
     },
     {
       id: "Attributes",

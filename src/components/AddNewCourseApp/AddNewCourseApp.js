@@ -3,8 +3,6 @@ import { Col, Row } from "reactstrap";
 import WizardHorizontal from "./wizard/WizardHorizontal";
 
 const AddNewCourseApp = () => {
-  const [step, setStep] = useState(1);
-
   return (
     <>
       <Row>

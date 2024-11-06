@@ -34,8 +34,7 @@ const Import = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [Imgopen, setImgOpen] = useState("close");
-  const [uploadedImg, setUploadedImg] = useState("");
-
+  const [fileUrl, setFileUrl] = useState("");
   const getTableData = (arr, name) => {
     setTableData(arr);
     setName(name);
@@ -43,38 +42,23 @@ const Import = () => {
 
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
+
     onDrop: (result) => {
-      const reader = new FileReader();
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
-      reader.onload = function () {
-        setUploadedImg();
+      const checkType =
+        result[0].name.endsWith("png") || result[0].name.endsWith("jpg");
 
-        const fileData = reader.result;
-        console.log("mamad");
-      };
-
-      if (result.length && result[0].name.endsWith("png")) {
-        setImgOpen("open");
+      if (result.length && checkType) {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(result[0]);
+        fileReader.onload = () => {
+          setFileUrl(fileReader.result);
+          setImgOpen("open");
+        };
       } else {
-        toast.error(
-          () => (
-            <p className="mb-0">
-              You can only upload <span className="fw-bolder">.xlsx</span>,{" "}
-              <span className="fw-bolder">.xls</span> &{" "}
-              <span className="fw-bolder">.csv</span> Files!.
-            </p>
-          ),
-          {
-            style: {
-              minWidth: "380px",
-            },
-          }
-        );
+        toast.error("ridi");
       }
     },
   });
-
   const handleFilter = (e) => {
     const data = tableData;
     let filteredData = [];
@@ -158,7 +142,10 @@ const Import = () => {
                     <div className="d-flex align-items-center justify-content-center flex-column">
                       {Imgopen == "close" && <DownloadCloud size={64} />}
                       {Imgopen == "open" && (
-                        <img src={"/ErrImg.jpg"} className="w-25" />
+                        <img
+                          src={fileUrl ? fileUrl : "/ErrImg.jpg"}
+                          className="w-25"
+                        />
                       )}
                       <h5 className="display-6">
                         کلیک کنید یا عکس را اینجا بکشید
