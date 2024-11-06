@@ -6,7 +6,6 @@ import Wizard from "@components/wizard";
 
 // ** Steps
 import DetailedInfo from "./steps-with-validation/DetailedInfo";
-import SocialLinks from "./steps-with-validation/SocialLinks";
 import CourseInfo from "./steps-with-validation/CourseInfo";
 import ImageUpload from "./steps-with-validation/ImageUpload";
 

@@ -1,4 +1,4 @@
-import { Mail, Home, Archive, List, Circle } from "react-feather";
+import { Mail, Home, Archive, List, UserPlus } from "react-feather";
 
 export default [
   {
@@ -27,8 +27,8 @@ export default [
       },
       {
         id: "AddNewCourse",
-        title: "لیست دوره ها",
-        icon: <List size={20} />,
+        title: "اضافه کردن دوره",
+        icon: <UserPlus size={20} />,
         navLink: "/Course/AddNewCourse",
       },
     ],
