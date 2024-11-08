@@ -37,7 +37,11 @@ const AccountDetails = ({ stepper, setFinalData }) => {
 
   const onSubmit = (data) => {
     if (isObjEmpty(errors)) {
-      setFinalData({ ...data });
+      setFinalData({
+        ...data,
+        ImageAddress: data.TumbImageAddress,
+        Image: data.TumbImageAddress,
+      });
       stepper.next();
     }
   };

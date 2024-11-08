@@ -19,7 +19,14 @@ import "@styles/react/libs/react-select/_react-select.scss";
 
 // Date Related
 import { compareAsc, format, newDate } from "date-fns-jalali";
+
+// Generating Random Things for the rest of the api
+import { v4 as uuidv4 } from "uuid";
+
 const CourseInfo = ({ stepper, finalData, setFinalData }) => {
+  // random string
+  const randomString = Math.random();
+
   // ** Hooks
   const {
     control,
@@ -29,7 +36,15 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   } = useForm();
 
   const onSubmit = (data) => {
-    setFinalData({ ...finalData, ...data });
+    setFinalData({
+      ...finalData,
+      ...data,
+      CoursePrerequisiteId: uuidv4(),
+      GoogleSchema: randomString.toString(),
+      GoogleTitle: randomString.toString(),
+      UniqeUrlString: randomString.toString(),
+      CurrentCoursePaymentNumber: parseInt(randomString),
+    });
     stepper.next();
   };
   // Price Convert
@@ -63,7 +78,6 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
       parseInt(splittedDate[2])
     );
     const splitConvDate = convertedDate.toString().split(" ");
-    console.log(splitConvDate);
     const finalDate = new Date(
       splitConvDate[1] + " " + splitConvDate[2] + ", " + splitConvDate[3]
     );
