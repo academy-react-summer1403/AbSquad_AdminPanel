@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // ** Custom Components
 import Wizard from "@components/wizard";
@@ -16,24 +16,49 @@ const WizardHorizontal = () => {
   // ** State
   const [stepper, setStepper] = useState(null);
 
+  const [finalData, setFinalData] = useState({});
+  useEffect(() => {
+    if (!!finalData) {
+      console.log(finalData);
+    }
+  }, [finalData]);
+
   const steps = [
     {
       id: "Image",
       title: "اضافه کردن عکس دوره",
       subtitle: "عکس دوره وارد شود.",
-      content: <ImageUpload stepper={stepper} />,
+      content: (
+        <ImageUpload
+          stepper={stepper}
+          finalData={finalData}
+          setFinalData={setFinalData}
+        />
+      ),
     },
     {
       id: "Info",
       title: "اطلاعات دوره",
       subtitle: "اطلاعات دوره را اضافه کنید.",
-      content: <CourseInfo stepper={stepper} />,
+      content: (
+        <CourseInfo
+          stepper={stepper}
+          finalData={finalData}
+          setFinalData={setFinalData}
+        />
+      ),
     },
     {
       id: "DetailedInfo",
       title: "اطلاعات تکمیلی دوره",
       subtitle: "اطلاعات تکمیلی دوره را وارد کنید.",
-      content: <DetailedInfo stepper={stepper} />,
+      content: (
+        <DetailedInfo
+          stepper={stepper}
+          finalData={finalData}
+          setFinalData={setFinalData}
+        />
+      ),
     },
   ];
 

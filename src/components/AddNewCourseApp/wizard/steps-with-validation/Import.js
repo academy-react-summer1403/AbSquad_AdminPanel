@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // ** Third Party Components
 import { read, utils } from "xlsx";
@@ -27,7 +27,7 @@ import {
 import "@styles/react/libs/file-uploader/file-uploader.scss";
 import { changeLanguage } from "i18next";
 
-const Import = () => {
+const Import = ({ onChange }) => {
   // ** States
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
@@ -128,6 +128,12 @@ const Import = () => {
       return null;
     }
   };
+  // For Passing The Image Url For Hook Form
+  useEffect(() => {
+    if (!!fileUrl) {
+      onChange(fileUrl);
+    }
+  }, [fileUrl]);
 
   return (
     <Fragment>
@@ -138,7 +144,12 @@ const Import = () => {
               <Row>
                 <Col sm="12">
                   <div {...getRootProps({ className: "dropzone" })}>
-                    <input {...getInputProps()} />
+                    <input
+                      onChange={() => {
+                        onChange(fileUrl);
+                      }}
+                      {...getInputProps()}
+                    />
                     <div className="d-flex align-items-center justify-content-center flex-column">
                       {Imgopen == "close" && <DownloadCloud size={64} />}
                       {Imgopen == "open" && (

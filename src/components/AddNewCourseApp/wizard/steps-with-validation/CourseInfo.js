@@ -5,6 +5,9 @@ import { Fragment, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
+// ** Third Party Components
+import Cleave from "cleave.js/react";
+
 // ** Utils
 import { selectThemeColors } from "@utils";
 
@@ -14,47 +17,29 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 
-const defaultValues = {
-  lastName: "",
-  firstName: "",
-};
-
-const CourseInfo = ({ stepper }) => {
+const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   // ** Hooks
   const {
     control,
     setError,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm();
 
-  const onSubmit = () => {
+  const onSubmit = (data) => {
+    setFinalData({ ...finalData, ...data });
     stepper.next();
   };
-
-  const countryOptions = [
-    { value: "UK", label: "UK" },
-    { value: "USA", label: "USA" },
-    { value: "Spain", label: "Spain" },
-    { value: "France", label: "France" },
-    { value: "Italy", label: "Italy" },
-    { value: "Australia", label: "Australia" },
-  ];
-
-  const languageOptions = [
-    { value: "English", label: "English" },
-    { value: "French", label: "French" },
-    { value: "Spanish", label: "Spanish" },
-    { value: "Italian", label: "Italian" },
-    { value: "Japanese", label: "Japanese" },
-  ];
-
   // Price Convert
   const [shownPrice, setShownPrice] = useState();
   const handlePriceConvert = (price) => {
     const convertedPrice = parseInt(price).toLocaleString();
     setShownPrice(convertedPrice);
   };
+
+  // Date Options
+  const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
+
   return (
     <Fragment>
       <div className="content-header">
@@ -69,9 +54,11 @@ const CourseInfo = ({ stepper }) => {
             </Label>
             <Controller
               id="courseName"
-              name="courseName"
+              name="Title"
               control={control}
-              render={({ field }) => <Input placeholder="دوره 1" />}
+              render={({ field: { onChange } }) => (
+                <Input onChange={onChange} placeholder="دوره 1" />
+              )}
             />
             `
           </Col>
@@ -81,9 +68,11 @@ const CourseInfo = ({ stepper }) => {
             </Label>
             <Controller
               id="miniDescribe"
-              name="miniDescribe"
+              name="MiniDescribe"
               control={control}
-              render={({ field }) => <Input placeholder="توضیح کوتاه" />}
+              render={({ field: { onChange } }) => (
+                <Input onChange={onChange} placeholder="توضیح کوتاه" />
+              )}
             />
           </Col>
           <Col md="3" className="mb-1">
@@ -92,10 +81,14 @@ const CourseInfo = ({ stepper }) => {
             </Label>
             <Controller
               id="capacity"
-              name="capacity"
+              name="Capacity"
               control={control}
-              render={({ field }) => (
-                <Input placeholder="ظرفیت دوره" type="number" />
+              render={({ field: { onChange } }) => (
+                <Input
+                  onChange={onChange}
+                  placeholder="ظرفیت دوره"
+                  type="number"
+                />
               )}
             />
           </Col>
@@ -113,38 +106,72 @@ const CourseInfo = ({ stepper }) => {
             </Label>
             <Controller
               id="coursePrice"
-              name="coursePrice"
+              name="Cost"
               control={control}
-              render={({ field }) => (
+              render={({ field: { onChange } }) => (
                 <Input
+                  onChange={(e) =>
+                    // handlePriceConvert(e.target.value)
+                    onChange(e.target.value)
+                  }
                   placeholder="5000000"
-                  onChange={(e) => handlePriceConvert(e.target.value)}
                 />
               )}
             />
           </Col>
         </Row>
         <Row>
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for="courseDate">
-              تاریخ برگذاری
+          <Col md="4" className="mb-1">
+            <Label className="form-label" for="StartTime">
+              تاریخ شروع برگذاری
             </Label>
+
             <Controller
-              id="courseDate"
-              name="courseDate"
+              id="StartTime"
+              name="StartTime"
               control={control}
-              render={({ field }) => <Input placeholder="تاریخ برگذاری" />}
+              render={({ field: { onChange } }) => (
+                <Cleave
+                  className="form-control"
+                  placeholder="1403-01-01"
+                  options={options}
+                  id="date"
+                  onChange={onChange}
+                />
+              )}
             />
           </Col>
-          <Col md="6" className="mb-1">
+          <Col md="4" className="mb-1">
+            <Label className="form-label" for="EndTime">
+              تاریخ اتمام برگزاری
+            </Label>
+
+            <Controller
+              id="EndTime"
+              name="EndTime"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Cleave
+                  className="form-control"
+                  placeholder="1403-02-01"
+                  options={options}
+                  id="date"
+                  onChange={onChange}
+                />
+              )}
+            />
+          </Col>
+          <Col md="4" className="mb-1">
             <Label className="form-label" for="miniLink">
               لینک کوتاه دوره
             </Label>
             <Controller
               id="miniLink"
-              name="miniLink"
+              name="ShortLink"
               control={control}
-              render={({ field }) => <Input placeholder="لینک دوره" />}
+              render={({ field: { onChange } }) => (
+                <Input onChange={onChange} placeholder="لینک دوره" />
+              )}
             />
           </Col>
         </Row>
@@ -155,10 +182,11 @@ const CourseInfo = ({ stepper }) => {
             </Label>
             <Controller
               id="description"
-              name="description"
+              name="Describe"
               control={control}
-              render={({ field }) => (
+              render={({ field: { onChange } }) => (
                 <Input
+                  onChange={onChange}
                   style={{ resize: "none", height: "200px" }}
                   placeholder="توضیحات کامل دوره"
                   type="textarea"

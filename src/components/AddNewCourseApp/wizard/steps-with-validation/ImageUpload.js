@@ -27,29 +27,17 @@ import {
 } from "reactstrap";
 import Import from "./Import";
 
-const defaultValues = {
-  email: "",
-  username: "",
-  password: "",
-  confirmPassword: "",
-};
-
-const AccountDetails = ({ stepper }) => {
-  const SignupSchema = yup.object().shape({});
-
+const AccountDetails = ({ stepper, setFinalData }) => {
   // ** Hooks
-
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues,
-    resolver: yupResolver(SignupSchema),
-  });
+  } = useForm({});
 
-  const onSubmit = () => {
+  const onSubmit = (data) => {
     if (isObjEmpty(errors)) {
+      setFinalData({ ...data });
       stepper.next();
     }
   };
@@ -61,13 +49,12 @@ const AccountDetails = ({ stepper }) => {
           <Col className="mb-1">
             <Controller
               id="username"
-              name="username"
+              name="TumbImageAddress"
               control={control}
-              render={({ field }) => <Import />}
+              render={({ field: { onChange } }) => (
+                <Import onChange={onChange} />
+              )}
             />
-            {errors.username && (
-              <FormFeedback>{errors.username.message}</FormFeedback>
-            )}
           </Col>
         </Row>
         <div className="d-flex justify-content-between">

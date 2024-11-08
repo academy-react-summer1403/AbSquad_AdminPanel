@@ -12,22 +12,19 @@ import Select from "react-select";
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 
-const defaultValues = {
-  city: "",
-  pincode: "",
-  address: "",
-  landmark: "",
-};
-
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.api";
 const StandardOptionsForm = (data, itName) => {
   const array = [];
   data.map((it) => {
-    array.push({ value: it[`${itName}`], label: it[`${itName}`] });
+    array.push({
+      id: it.id ? it.id : it.teacherId,
+      value: it[`${itName}`],
+      label: it[`${itName}`],
+    });
   });
   return array;
 };
-const DetailedInfo = ({ stepper }) => {
+const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
   // All Details UseStates
   const [courseType, setCourseType] = useState([]);
   const [courseLevel, setCourseLevel] = useState([]);
@@ -79,21 +76,10 @@ const DetailedInfo = ({ stepper }) => {
     setError,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm({});
 
   const onSubmit = (data) => {
-    if (Object.values(data).every((field) => field.length > 0)) {
-      stepper.next();
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: "manual",
-            message: `Please enter a valid ${key}`,
-          });
-        }
-      }
-    }
+    setFinalData({ ...finalData, ...data });
   };
 
   return (
@@ -106,54 +92,102 @@ const DetailedInfo = ({ stepper }) => {
         <Row>
           <Col className="mb-1" md="4" sm="12">
             <Label className="form-label">نحوه برگذاری دوره</Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              options={courseType}
-              isClearable={false}
+            <Controller
+              id="CourseTypeId"
+              name="CourseTypeId"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={courseType}
+                  isClearable={false}
+                  onChange={(e) => {
+                    onChange(e.id);
+                  }}
+                />
+              )}
             />
           </Col>
           <Col className="mb-1" md="4" sm="12">
             <Label className="form-label">سطح دوره</Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              options={courseLevel}
-              isClearable={false}
+            <Controller
+              id="CourseLvlId"
+              name="CourseLvlId"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={courseLevel}
+                  isClearable={false}
+                  onChange={(e) => {
+                    onChange(e.id);
+                  }}
+                />
+              )}
             />
           </Col>
           <Col className="mb-1" md="4" sm="12">
             <Label className="form-label">ترم دوره</Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              options={courseSemester}
-              isClearable={false}
+            <Controller
+              id="TremId"
+              name="TremId"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={courseSemester}
+                  isClearable={false}
+                  onChange={(e) => {
+                    onChange(e.id);
+                  }}
+                />
+              )}
             />
           </Col>
         </Row>
         <Row>
           <Col className="mb-1" md="4" sm="12">
             <Label className="form-label">شماره کلاس</Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              options={courseClass}
-              isClearable={false}
+            <Controller
+              id="ClassId"
+              name="ClassId"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={courseClass}
+                  isClearable={false}
+                  onChange={(e) => onChange(e.id)}
+                />
+              )}
             />
           </Col>
           <Col className="mb-1" md="4" sm="12">
             <Label className="form-label">استاد دوره</Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              options={courseTeacher}
-              isClearable={false}
+            <Controller
+              id="TeacherId"
+              name="TeacherId"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={courseTeacher}
+                  isClearable={false}
+                  onChange={(e) => {
+                    onChange(e.id);
+                  }}
+                />
+              )}
             />
           </Col>
           <Col className="mb-1" md="4" sm="12">
@@ -161,12 +195,14 @@ const DetailedInfo = ({ stepper }) => {
             <Select
               isClearable={false}
               theme={selectThemeColors}
-              // defaultValue={[colorOptions[2], colorOptions[3]]}
               isMulti
               name="courseTech"
               className="react-select"
               classNamePrefix="select"
               options={courseTech}
+              onChange={(e) => {
+                console.log(e);
+              }}
             />
           </Col>
           {/* <Col className="mb-1" md="4" sm="12">
