@@ -17,6 +17,8 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 
+// Date Related
+import { compareAsc, format, newDate } from "date-fns-jalali";
 const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   // ** Hooks
   const {
@@ -40,6 +42,34 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   // Date Options
   const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
 
+  // Date Conversion To ISO
+  const date = "1392-05-12";
+  const splittedDate = date.split("-");
+  const UTCDate = new Date();
+  const time = UTCDate.toUTCString().split(" ");
+  const convertedDate = newDate(
+    parseInt(splittedDate[0]),
+    parseInt(splittedDate[1]),
+    parseInt(splittedDate[2])
+  );
+
+  const handleDateConvert = (date) => {
+    const splittedDate = date.split("-");
+    const UTCDate = new Date();
+    const time = UTCDate.toUTCString().split(" ");
+    const convertedDate = newDate(
+      parseInt(splittedDate[0]),
+      parseInt(splittedDate[1]),
+      parseInt(splittedDate[2])
+    );
+    const splitConvDate = convertedDate.toString().split(" ");
+    console.log(splitConvDate);
+    const finalDate = new Date(
+      splitConvDate[1] + " " + splitConvDate[2] + ", " + splitConvDate[3]
+    );
+
+    return finalDate.toISOString();
+  };
   return (
     <Fragment>
       <div className="content-header">
@@ -136,7 +166,9 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
                   placeholder="1403-01-01"
                   options={options}
                   id="date"
-                  onChange={onChange}
+                  onChange={(e) => {
+                    onChange(handleDateConvert(e.target.value));
+                  }}
                 />
               )}
             />
@@ -156,7 +188,9 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
                   placeholder="1403-02-01"
                   options={options}
                   id="date"
-                  onChange={onChange}
+                  onChange={(e) => {
+                    onChange(handleDateConvert(e.target.value));
+                  }}
                 />
               )}
             />
