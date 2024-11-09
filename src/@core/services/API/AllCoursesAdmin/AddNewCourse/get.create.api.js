@@ -1,4 +1,4 @@
-﻿import http from "../../../../services/Interceptor";
+﻿import http from "../../../Interceptor";
 export const GetCreateApi = async () => {
   try {
     const res = await http.get(`/Course/GetCreate`);

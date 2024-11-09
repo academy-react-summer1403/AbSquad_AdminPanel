@@ -165,11 +165,10 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
           </Col>
         </Row>
         <Row>
-          <Col md="4" className="mb-1">
+          <Col md="3" className="mb-1">
             <Label className="form-label" for="StartTime">
-              تاریخ شروع برگذاری
+              تاریخ شروع برگزاری
             </Label>
-
             <Controller
               id="StartTime"
               name="StartTime"
@@ -187,7 +186,7 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
               )}
             />
           </Col>
-          <Col md="4" className="mb-1">
+          <Col md="3" className="mb-1">
             <Label className="form-label" for="EndTime">
               تاریخ اتمام برگزاری
             </Label>
@@ -209,7 +208,7 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
               )}
             />
           </Col>
-          <Col md="4" className="mb-1">
+          <Col md="3" className="mb-1">
             <Label className="form-label" for="miniLink">
               لینک کوتاه دوره
             </Label>
@@ -219,6 +218,25 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
               control={control}
               render={({ field: { onChange } }) => (
                 <Input onChange={onChange} placeholder="لینک دوره" />
+              )}
+            />
+          </Col>
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="SessionNumber">
+              تعداد جلسات دوره
+            </Label>
+            <Controller
+              id="SessionNumber"
+              name="SessionNumber"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Input
+                  onChange={(e) =>
+                    // handlePriceConvert(e.target.value)
+                    onChange(e.target.value)
+                  }
+                  placeholder="12"
+                />
               )}
             />
           </Col>

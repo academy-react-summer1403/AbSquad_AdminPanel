@@ -12,7 +12,9 @@ import Select from "react-select";
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 
-import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.api";
+import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
+import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
+
 const StandardOptionsForm = (data, itName) => {
   const array = [];
   data.map((it) => {
@@ -77,11 +79,23 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({});
-
-  const onSubmit = (data) => {
-    setFinalData({ ...finalData, ...data });
+  // Api For Creating The Course
+  const handleCreateCourse = async (form) => {
+    await CreateCourseApi(form);
   };
 
+  // On Submit
+  const onSubmit = (data) => {
+    setFinalData({ ...finalData, ...data });
+
+    const formData = new FormData();
+    for (const key in finalData) {
+      if (finalData.hasOwnProperty(key)) {
+        formData.append(key, finalData[key]);
+      }
+    }
+    handleCreateCourse(formData);
+  };
   return (
     <Fragment>
       <div className="content-header">
@@ -200,9 +214,7 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
               className="react-select"
               classNamePrefix="select"
               options={courseTech}
-              onChange={(e) => {
-                console.log(e);
-              }}
+              onChange={(e) => {}}
             />
           </Col>
           {/* <Col className="mb-1" md="4" sm="12">

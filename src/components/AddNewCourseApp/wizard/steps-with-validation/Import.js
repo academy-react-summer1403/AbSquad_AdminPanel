@@ -55,7 +55,7 @@ const Import = ({ onChange }) => {
           setImgOpen("open");
         };
       } else {
-        toast.error("ridi");
+        toast.error("!!!");
       }
     },
   });
