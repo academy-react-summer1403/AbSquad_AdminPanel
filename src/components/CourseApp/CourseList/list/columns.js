@@ -4,16 +4,6 @@ import { Link } from "react-router-dom";
 // ** Custom Components
 import Avatar from "@components/avatar";
 
-// ** Modals
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Label,
-  Input,
-} from "reactstrap";
 // ** Icons Imports
 import {
   Slack,
@@ -200,8 +190,8 @@ export const columns = [
             <DropdownItem
               tag={Link}
               className="w-100"
-              to={`/apps/user/view/${row.id}`}
-              onClick={() => store.dispatch(getUser(row.id))}
+              to={`/Course/CourseList/CourseDetail/${row.courseId}`}
+              onClick={() => {}}
             >
               <FileText size={14} className="me-50" />
               <span className="align-middle">جزئیات</span>
