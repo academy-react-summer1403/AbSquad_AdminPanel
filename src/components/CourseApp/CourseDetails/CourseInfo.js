@@ -32,6 +32,7 @@ import { selectThemeColors } from "@utils";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
+import { ActiveDeactiveCourse } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/active.deactive.api";
 
 const roleColors = {
   editor: "light-info",
@@ -119,7 +120,58 @@ const UserInfoCard = ({ courseDetail }) => {
       />
     );
   };
+  // Post Api
+  const postActiveDeactive = async (obj) => {
+    await ActiveDeactiveCourse(obj);
+  };
+  // Activing The Course Modal
+  const MySwal = withReactContent(Swal);
 
+  const handleActiveClick = (status) => {
+    return MySwal.fire({
+      title: "آیا اطمینان دارید؟",
+      text: `با تایید شما این دوره ${
+        status == true ? "غیرفعال" : "فعال"
+      } میشود`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: `${status == true ? "غیرفعال" : "فعال"} شود`,
+      cancelButtonText: "خیر",
+      customClass: {
+        confirmButton: `btn btn-${status == true ? "danger" : "success"}`,
+        cancelButton: "btn btn-outline-danger ms-1",
+      },
+      buttonsStyling: false,
+    }).then(function (result) {
+      if (result.value) {
+        postActiveDeactive({
+          active: courseDetail.isActive == true ? false : true,
+          id: courseDetail.courseId,
+        });
+        MySwal.fire({
+          icon: "success",
+          title: `${status == true ? "غیرفعال" : "فعال"} شد!`,
+          text: `دوره مورد نظر با موفقیت${
+            status == true ? " غیرفعال " : " فعال "
+          }شد`,
+          confirmButtonText: "حله",
+          customClass: {
+            confirmButton: "btn btn-success",
+          },
+        });
+      } else if (result.dismiss === MySwal.DismissReason.cancel) {
+        MySwal.fire({
+          title: `${status == true ? "غیرفعال" : "فعال"} نشد`,
+          text: "",
+          icon: "error",
+          confirmButtonText: "باشه",
+          customClass: {
+            confirmButton: "btn btn-success",
+          },
+        });
+      }
+    });
+  };
   return (
     <Fragment>
       <Card>
@@ -240,7 +292,9 @@ const UserInfoCard = ({ courseDetail }) => {
             <Button
               className="ms-1"
               color={courseDetail.isActive == true ? "danger" : "success"}
-              onClick={() => setShow(true)}
+              onClick={() => {
+                handleActiveClick(courseDetail.isActive);
+              }}
             >
               {courseDetail.isActive == true
                 ? "غیر فعال کردن دوره"

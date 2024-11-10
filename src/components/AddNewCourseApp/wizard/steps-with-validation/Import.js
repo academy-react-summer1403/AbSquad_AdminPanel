@@ -35,6 +35,7 @@ const Import = ({ onChange }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [Imgopen, setImgOpen] = useState("close");
   const [fileUrl, setFileUrl] = useState("");
+  const [imgObj, setImgObj] = useState({});
   const getTableData = (arr, name) => {
     setTableData(arr);
     setName(name);
@@ -50,6 +51,7 @@ const Import = ({ onChange }) => {
       if (result.length && checkType) {
         const fileReader = new FileReader();
         fileReader.readAsDataURL(result[0]);
+        setImgObj(result[0]);
         fileReader.onload = () => {
           setFileUrl(fileReader.result);
           setImgOpen("open");
@@ -130,10 +132,10 @@ const Import = ({ onChange }) => {
   };
   // For Passing The Image Url For Hook Form
   useEffect(() => {
-    if (!!fileUrl) {
-      onChange(fileUrl);
+    if (!!imgObj) {
+      onChange(imgObj);
     }
-  }, [fileUrl]);
+  }, [imgObj]);
 
   return (
     <Fragment>
@@ -146,7 +148,7 @@ const Import = ({ onChange }) => {
                   <div {...getRootProps({ className: "dropzone" })}>
                     <input
                       onChange={() => {
-                        onChange(fileUrl);
+                        onChange(imgObj);
                       }}
                       {...getInputProps()}
                     />
