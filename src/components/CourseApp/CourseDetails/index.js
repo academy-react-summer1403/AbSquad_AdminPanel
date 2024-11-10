@@ -7,7 +7,7 @@ import { Row, Col, Alert } from "reactstrap";
 
 // ** User View Components
 import UserTabs from "./Tabs";
-import UserInfoCard from "./UserInfoCard";
+import CourseInfo from "./CourseInfo";
 
 // ** Styles
 import "@styles/react/apps/app-users.scss";
@@ -43,7 +43,7 @@ const CourseDetail = () => {
     <div className="app-user-view">
       <Row>
         <Col xl="4" lg="5" xs={{ order: 1 }} md={{ order: 0, size: 5 }}>
-          <UserInfoCard courseDetail={courseDetail} />
+          <CourseInfo courseDetail={courseDetail} />
           {/* <PlanCard /> */}
         </Col>
         <Col xl="8" lg="7" xs={{ order: 0 }} md={{ order: 1, size: 7 }}>

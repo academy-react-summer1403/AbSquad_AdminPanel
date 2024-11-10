@@ -2,13 +2,24 @@
 import { Fragment } from "react";
 
 // ** Reactstrap Imports
-import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Nav,
+  NavItem,
+  NavLink,
+  TabContent,
+  TabPane,
+} from "reactstrap";
 
 // ** Icons Imports
-import { User, Lock, Bookmark, Bell, Link } from "react-feather";
+import { User, MessageSquare, Bookmark, Bell, Link } from "react-feather";
 
 // ** User Components
 import StatsCard from "./StatsCard";
+import CommentList from "./CommentList";
+import ReserveList from "./ReserveList";
 const UserTabs = ({ active, toggleTab, courseDetail }) => {
   return (
     <Fragment>
@@ -21,14 +32,14 @@ const UserTabs = ({ active, toggleTab, courseDetail }) => {
         </NavItem>
         <NavItem>
           <NavLink active={active === "2"} onClick={() => toggleTab("2")}>
-            <Lock className="font-medium-3 me-50" />
-            <span className="fw-bold">Security</span>
+            <MessageSquare className="font-medium-3 me-50" />
+            <span className="fw-bold">نظرات دوره</span>
           </NavLink>
         </NavItem>
         <NavItem>
           <NavLink active={active === "3"} onClick={() => toggleTab("3")}>
             <Bookmark className="font-medium-3 me-50" />
-            <span className="fw-bold">Billing & Plans</span>
+            <span className="fw-bold">رزرو های دوره</span>
           </NavLink>
         </NavItem>
         <NavItem>
@@ -50,9 +61,17 @@ const UserTabs = ({ active, toggleTab, courseDetail }) => {
             courseDetail={courseDetail}
             cols={{ md: "3", sm: "6", xs: "12" }}
           />
+          <Card>
+            <CardHeader>توضیحات دوره</CardHeader>
+            <CardBody>{courseDetail.describe}</CardBody>
+          </Card>
         </TabPane>
-        <TabPane tabId="2"></TabPane>
-        <TabPane tabId="3"></TabPane>
+        <TabPane tabId="2">
+          <CommentList courseDetail={courseDetail} />
+        </TabPane>
+        <TabPane tabId="3">
+          <ReserveList courseDetail={courseDetail} />
+        </TabPane>
         <TabPane tabId="4"></TabPane>
         <TabPane tabId="5"></TabPane>
       </TabContent>

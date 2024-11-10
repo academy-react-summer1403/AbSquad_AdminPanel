@@ -6,6 +6,7 @@ import {
   MessageCircle,
   DollarSign,
   Users,
+  Bookmark,
 } from "react-feather";
 
 // ** Custom Components
@@ -33,20 +34,26 @@ const StatsCard = ({ cols, courseDetail }) => {
     {
       title: courseDetail.paymentNotDoneTotal,
       subtitle: "تعداد خرید انجام نشده",
-      color: "light-success",
-      icon: <Users size={24} />,
+      color: "light-danger",
+      icon: <ShoppingBag size={24} />,
     },
     {
       title: courseDetail.courseLikeTotal,
       subtitle: "تعداد علاقمندی",
-      color: "light-info",
+      color: "success",
       icon: <ThumbsUp size={24} />,
     },
     {
       title: courseDetail.courseCommentTotal,
       subtitle: "تعداد کامنت ها",
-      color: "light-danger",
+      color: "primary",
       icon: <MessageCircle size={24} />,
+    },
+    {
+      title: courseDetail.reserveUserTotal,
+      subtitle: "تعداد رزرو ها",
+      color: "success",
+      icon: <Bookmark size={24} />,
     },
     {
       title: courseDetail.courseUserTotal,
@@ -55,7 +62,7 @@ const StatsCard = ({ cols, courseDetail }) => {
       icon: <Users size={24} />,
     },
   ];
-
+  // reserveUserTotal
   const renderData = () => {
     return data.map((item, index) => {
       const colMargin = Object.keys(cols);
