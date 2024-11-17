@@ -33,6 +33,7 @@ import { selectThemeColors } from "@utils";
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import { ActiveDeactiveCourse } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/active.deactive.api";
+import { DeleteCourse } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/delete.course.api";
 
 const roleColors = {
   editor: "light-info",
@@ -123,6 +124,12 @@ const UserInfoCard = ({ courseDetail }) => {
   // Post Api
   const postActiveDeactive = async (obj) => {
     await ActiveDeactiveCourse(obj);
+  };
+
+  // Delete
+  const handleDeleteCourse = async (obj) => {
+    console.log(obj);
+    await DeleteCourse(obj);
   };
   // Activing The Course Modal
   const MySwal = withReactContent(Swal);
@@ -276,7 +283,11 @@ const UserInfoCard = ({ courseDetail }) => {
                   {courseDetail.courseTeches &&
                     courseDetail.courseTeches.map((it, index) => {
                       return (
-                        <Badge className="text-capitalize" color={"light-info"}>
+                        <Badge
+                          key={index}
+                          className="text-capitalize"
+                          color={"light-info"}
+                        >
                           {it}
                         </Badge>
                       );
@@ -300,13 +311,22 @@ const UserInfoCard = ({ courseDetail }) => {
                 ? "غیر فعال کردن دوره"
                 : "فعال کردن دوره"}
             </Button>
-            <Button className="ms-1" color="danger" outline onClick={() => {}}>
+            <Button
+              className="ms-1"
+              color="danger"
+              outline
+              onClick={() => {
+                handleDeleteCourse({
+                  data: { active: true, id: courseDetail.courseId },
+                });
+              }}
+            >
               حذف دوره
             </Button>
           </div>
         </CardBody>
       </Card>
-      <Modal
+      {/* <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
         className="modal-dialog-centered modal-lg"
@@ -502,7 +522,7 @@ const UserInfoCard = ({ courseDetail }) => {
             </Row>
           </Form>
         </ModalBody>
-      </Modal>
+      </Modal> */}
     </Fragment>
   );
 };
