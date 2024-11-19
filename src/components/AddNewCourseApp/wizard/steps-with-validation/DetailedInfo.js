@@ -14,6 +14,7 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
 import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
+import { addCourseTechnology } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.tech.api";
 
 const StandardOptionsForm = (data, itName) => {
   const array = [];
@@ -34,6 +35,7 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
   const [courseClass, setCourseClass] = useState([]);
   const [courseTeacher, setCourseTeacher] = useState([]);
   const [courseTech, setCourseTech] = useState([]);
+  const [tech, setTech] = useState([]);
   // Get All The Detailed Info Api
   const [getCreate, setGetCreate] = useState({});
 
@@ -84,18 +86,38 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
     await CreateCourseApi(form);
   };
 
-  // On Submit
-  const onSubmit = (data) => {
-    setFinalData({ ...finalData, ...data });
+  // Handle Tech Api
+  const handleTechApi = async (courseId, tech) => {
+    const techBody = tech.map((it, index) => {
+      return {
+        techId: it.id,
+      };
+    });
+    await addCourseTechnology(courseId, techBody);
+  };
 
+  // Handling FInal Data
+  const handleFinalData = () => {
     const formData = new FormData();
     for (const key in finalData) {
       if (finalData.hasOwnProperty(key)) {
         formData.append(key, finalData[key]);
       }
     }
+    handleTechApi(finalData.CoursePrerequisiteId, tech);
     handleCreateCourse(formData);
   };
+  // On Submit
+  const onSubmit = (data) => {
+    setFinalData({ ...finalData, ...data });
+  };
+  console.log(finalData);
+  useEffect(() => {
+    if (finalData.CourseTypeId) {
+      handleFinalData();
+    }
+  }, [finalData]);
+
   return (
     <Fragment>
       <div className="content-header">
@@ -198,6 +220,7 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
                   options={courseTeacher}
                   isClearable={false}
                   onChange={(e) => {
+                    console.log(e);
                     onChange(e.id);
                   }}
                 />
@@ -214,7 +237,9 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
               className="react-select"
               classNamePrefix="select"
               options={courseTech}
-              onChange={(e) => {}}
+              onChange={(e) => {
+                setTech(e);
+              }}
             />
           </Col>
           {/* <Col className="mb-1" md="4" sm="12">
@@ -233,7 +258,9 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
             type="button"
             color="primary"
             className="btn-prev"
-            onClick={() => stepper.previous()}
+            onClick={() => {
+              stepper.previous();
+            }}
           >
             <ArrowLeft
               size={14}

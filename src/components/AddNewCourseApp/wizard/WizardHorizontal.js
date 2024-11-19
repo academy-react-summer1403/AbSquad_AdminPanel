@@ -17,11 +17,6 @@ const WizardHorizontal = () => {
   const [stepper, setStepper] = useState(null);
 
   const [finalData, setFinalData] = useState({});
-  useEffect(() => {
-    if (!!finalData) {
-      console.log(finalData);
-    }
-  }, [finalData]);
 
   const steps = [
     {
