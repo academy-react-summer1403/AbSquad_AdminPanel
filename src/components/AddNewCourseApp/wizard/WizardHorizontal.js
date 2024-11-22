@@ -8,6 +8,7 @@ import Wizard from "@components/wizard";
 import DetailedInfo from "./steps-with-validation/DetailedInfo";
 import CourseInfo from "./steps-with-validation/CourseInfo";
 import ImageUpload from "./steps-with-validation/ImageUpload";
+import AddTech from "./steps-with-validation/AddTech";
 
 const WizardHorizontal = () => {
   // ** Ref
@@ -49,6 +50,18 @@ const WizardHorizontal = () => {
       subtitle: "اطلاعات تکمیلی دوره را وارد کنید.",
       content: (
         <DetailedInfo
+          stepper={stepper}
+          finalData={finalData}
+          setFinalData={setFinalData}
+        />
+      ),
+    },
+    {
+      id: "AddTech",
+      title: "اضافه کردن تکنولوژی دوره",
+      subtitle: "تکنولوژی های مورد نظر را انتخاب کنید.",
+      content: (
+        <AddTech
           stepper={stepper}
           finalData={finalData}
           setFinalData={setFinalData}
