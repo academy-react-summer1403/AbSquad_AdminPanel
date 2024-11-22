@@ -36,14 +36,14 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
   const [courseTeacher, setCourseTeacher] = useState([]);
   const [courseTech, setCourseTech] = useState([]);
   const [tech, setTech] = useState([]);
+
   // Get All The Detailed Info Api
   const [getCreate, setGetCreate] = useState({});
-
+  // Handling Get Create Api
   const handleGetCreateApi = async () => {
     const res = await GetCreateApi();
     setGetCreate(res);
   };
-
   useEffect(() => {
     handleGetCreateApi();
   }, []);
@@ -68,9 +68,6 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
 
       // ** Course Teacher
       setCourseTeacher(StandardOptionsForm(getCreate.teachers, "fullName"));
-
-      // ** Course Technologies
-      setCourseTech(StandardOptionsForm(getCreate.technologyDtos, "techName"));
     }
   }, [getCreate]);
 
@@ -86,16 +83,6 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
     await CreateCourseApi(form);
   };
 
-  // Handle Tech Api
-  const handleTechApi = async (courseId, tech) => {
-    const techBody = tech.map((it, index) => {
-      return {
-        techId: it.id,
-      };
-    });
-    await addCourseTechnology(courseId, techBody);
-  };
-
   // Handling FInal Data
   const handleFinalData = () => {
     const formData = new FormData();
@@ -104,12 +91,12 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
         formData.append(key, finalData[key]);
       }
     }
-    handleTechApi(finalData.CoursePrerequisiteId, tech);
     handleCreateCourse(formData);
   };
   // On Submit
   const onSubmit = (data) => {
     setFinalData({ ...finalData, ...data });
+    stepper.next();
   };
   console.log(finalData);
   useEffect(() => {
@@ -220,14 +207,13 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
                   options={courseTeacher}
                   isClearable={false}
                   onChange={(e) => {
-                    console.log(e);
                     onChange(e.id);
                   }}
                 />
               )}
             />
           </Col>
-          <Col className="mb-1" md="4" sm="12">
+          {/* <Col className="mb-1" md="4" sm="12">
             <Label className="form-label">تکنولوژی دوره</Label>
             <Select
               isClearable={false}
@@ -241,7 +227,7 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
                 setTech(e);
               }}
             />
-          </Col>
+          </Col> */}
           {/* <Col className="mb-1" md="4" sm="12">
             <Label className="form-label">تکنولوژی دوره</Label>
             <Select
@@ -268,8 +254,8 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
             ></ArrowLeft>
             <span className="align-middle d-sm-inline-block d-none">قبلی</span>
           </Button>
-          <Button type="submit" color="success" className="btn-submit">
-            <span className="align-middle d-sm-inline-block d-none">ثبت</span>
+          <Button type="submit" color="primary" className="btn-submit">
+            <span className="align-middle d-sm-inline-block d-none">بعدی</span>
           </Button>
         </div>
       </Form>
