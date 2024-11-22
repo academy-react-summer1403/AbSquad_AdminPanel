@@ -207,7 +207,6 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
                   options={courseTeacher}
                   isClearable={false}
                   onChange={(e) => {
-                    console.log(e);
                     onChange(e.id);
                   }}
                 />
