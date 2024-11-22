@@ -128,7 +128,6 @@ const UserInfoCard = ({ courseDetail }) => {
 
   // Delete
   const handleDeleteCourse = async (obj) => {
-    console.log(obj);
     await DeleteCourse(obj);
   };
   // Activing The Course Modal

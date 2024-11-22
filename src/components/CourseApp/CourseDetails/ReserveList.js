@@ -1,5 +1,5 @@
 // ** Reactstrap Imports
-import { Badge, Card, CardHeader, Progress } from "reactstrap";
+import { Badge, Card, CardHeader, Progress, Button } from "reactstrap";
 
 // ** Third Party Components
 import { ChevronDown } from "react-feather";
@@ -20,8 +20,13 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 // Api
 import { GetCourseReserver } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/course.reservers.api";
+import { GetCourseDetailApi } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.course.detail.api";
+
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { getCourseGroup } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.coursegroup.api";
+import { GetCourseGroupDetail } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/courseGroup.detail.api";
+import { AcceptReserve } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/accept.reserve.api";
 
 const statusColor = {
   true: "success",
@@ -151,6 +156,7 @@ export const columns = [
   },
   {
     name: "وضعیت رزرو",
+    minWidth: "100px",
     selector: (row) => row.accept,
     cell: (row) => {
       return (
@@ -166,14 +172,26 @@ export const columns = [
   },
   {
     name: "پذیرفتن رزرو",
+    minWidth: "100px",
     selector: (row) => row.accept,
     cell: (row) => {
       return (
         <div className="d-flex justify-content-left align-items-center text-truncate">
           <div className="d-flex flex-column text-truncate">
-            <Badge className="text-capitalize" color={statusColor[row.accept]}>
-              {row.accept == true ? "تایید شده" : "تایید نشده"}
-            </Badge>
+            <Button
+              onClick={async () => {
+                // getting TeacherId
+                const res = await row.GetCourseDetailApi(row.courseId);
+                row.setTeacherId(res.teacherId);
+
+                // Getting StudentId
+                row.setStudentId(row.studentId);
+                console.log(row);
+              }}
+              color="success"
+            >
+              پذیرفتن رزرو
+            </Button>
           </div>
         </div>
       );
@@ -185,22 +203,64 @@ const ReserveList = ({ courseDetail }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [reserverDetail, setReserverDetail] = useState([]);
+  const [teacherId, setTeacherId] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [groupId, setGroupId] = useState("");
+  const [courseGroupId, setCourseGroupId] = useState("");
   const handleCourseReserver = async (id) => {
     const res = await GetCourseReserver(id);
     setReserverDetail(res);
   };
+
   useEffect(() => {
     if (courseDetail.courseId != undefined) {
       handleCourseReserver(courseDetail.courseId);
     }
   }, [courseDetail.courseId]);
+  // course Group Id Catching
+  const handleGroupId = async (teacherId) => {
+    const res = await getCourseGroup(teacherId, courseDetail.courseId);
+    setGroupId(res[0].groupId);
+  };
+  const handleGroupDetail = async (groupId) => {
+    const res = await GetCourseGroupDetail(groupId);
+    setCourseGroupId(res.courseUserListDto[0].courseGroupId);
+  };
+  const handleAcceptReserve = async (courseGroupId, courseId, studentId) => {
+    await AcceptReserve({
+      courseId: courseId,
+      courseGroupId: courseGroupId,
+      studentId: studentId,
+    });
+  };
   useEffect(() => {
-    if (reserverDetail) console.log(reserverDetail);
-  }, [reserverDetail]);
+    if (studentId) console.log(studentId);
+  }, [studentId]);
 
+  // Catchong Course Group Detail
+  useEffect(() => {
+    if (courseGroupId) {
+      // handleAcceptReserve(courseGroupId, courseDetail.courseId, studentId);
+    }
+  }, [courseGroupId]);
+
+  useEffect(() => {
+    if (teacherId) {
+      handleGroupId(teacherId);
+    }
+  }, [teacherId]);
+
+  // Catching GroupId
+  useEffect(() => {
+    if (groupId) {
+      handleGroupDetail(groupId);
+    }
+  }, [groupId]);
   // Pagination
   const CustomPagination = () => {
     const count = Number(Math.ceil(reserverDetail.length / rowsPerPage));
+
+    // Course Detail useState
 
     return (
       <ReactPaginate
@@ -222,6 +282,7 @@ const ReserveList = ({ courseDetail }) => {
       />
     );
   };
+
   return (
     <Card className="overflow-hidden">
       <div className="react-dataTable">
@@ -238,7 +299,18 @@ const ReserveList = ({ courseDetail }) => {
           sortIcon={<ChevronDown />}
           className="react-dataTable"
           paginationComponent={CustomPagination}
-          data={reserverDetail}
+          data={reserverDetail.map((it) => {
+            return {
+              ...it,
+              GetCourseDetailApi: GetCourseDetailApi,
+              setTeacherId: setTeacherId,
+              teacherId: teacherId,
+              setStudentId: setStudentId,
+              studentId: studentId,
+              getCourseGroup: getCourseGroup,
+              setGroupId: setGroupId,
+            };
+          })}
           // subHeaderComponent={
           //   <CustomHeader
           //     store={store}

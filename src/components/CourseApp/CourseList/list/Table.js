@@ -9,7 +9,7 @@ import { columns } from "./columns";
 
 // ** Store & Actions
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 // ** Third Party Components
 import Select from "react-select";
@@ -205,10 +205,10 @@ const CustomHeader = ({
   );
 };
 
-const UsersList = () => {
+const CourseList = () => {
   // ** Store Vars
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.users);
+  // const store = useSelector((state) => state.users);
 
   // ** States
   const [sort, setSort] = useState("desc");
@@ -259,12 +259,21 @@ const UsersList = () => {
   // ** Custom Pagination
   const CustomPagination = () => {
     const count = Number(Math.ceil(allCourses.totalCount / rowsPerPage));
+
     const handlePagination = async (pageNum) => {
       setSearchParams((op) => {
         op.set("PageNumber", pageNum + 1);
         return op;
       });
     };
+    const handleIncPage = () => {
+      setCurrentPage(9);
+    };
+    useEffect(() => {
+      if (currentPage != 1) {
+        console.log(currentPage);
+      }
+    }, [currentPage]);
 
     return (
       <ReactPaginate
@@ -272,8 +281,11 @@ const UsersList = () => {
         nextLabel={""}
         pageCount={count || 1}
         activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => handlePagination(page.selected)}
+        forcePage={currentPage != 0 ? currentPage : 0}
+        onPageChange={(page) => {
+          handlePagination(page.selected);
+          handleIncPage();
+        }}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}
         nextClassName={"page-item next"}
@@ -393,4 +405,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default CourseList;
