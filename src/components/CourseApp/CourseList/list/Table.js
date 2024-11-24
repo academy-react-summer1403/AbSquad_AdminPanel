@@ -9,7 +9,7 @@ import { columns } from "./columns";
 
 // ** Store & Actions
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 // ** Third Party Components
 import Select from "react-select";
@@ -49,7 +49,8 @@ import {
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { AllCourseAdmin } from "../../../../@core/services/API/AllCoursesAdmin/allCourse.api";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { DeleteCourse } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/delete.course.api";
 // ** Get Courses Api *************************************************************************************
 
 // ** Table Header
@@ -62,49 +63,7 @@ const CustomHeader = ({
   setSearchParams,
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  // ** Converts table to CSV
-  function convertArrayOfObjectsToCSV(array) {
-    let result;
 
-    const columnDelimiter = ",";
-    const lineDelimiter = "\n";
-    const keys = Object.keys(store.data[0]);
-
-    result = "";
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
-
-    array.forEach((item) => {
-      let ctr = 0;
-      keys.forEach((key) => {
-        if (ctr > 0) result += columnDelimiter;
-
-        result += item[key];
-
-        ctr++;
-      });
-      result += lineDelimiter;
-    });
-
-    return result;
-  }
-
-  // ** Downloads CSV
-  function downloadCSV(array) {
-    const link = document.createElement("a");
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv === null) return;
-
-    const filename = "export.csv";
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = `data:text/csv;charset=utf-8,${csv}`;
-    }
-
-    link.setAttribute("href", encodeURI(csv));
-    link.setAttribute("download", filename);
-    link.click();
-  }
   // Search
   const handleSearch = (val) => {
     setSearchParams((op) => {
@@ -112,6 +71,8 @@ const CustomHeader = ({
       return op;
     });
   };
+  // Use Navigate
+  const navigate = useNavigate();
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
@@ -156,7 +117,6 @@ const CustomHeader = ({
           </div>
 
           <div className="d-flex align-items-center table-header-actions">
-            {" "}
             {/* <UncontrolledDropdown className="me-1">
               <DropdownToggle color="secondary" caret outline>
                 <Share className="font-small-4 me-50" />
@@ -191,7 +151,9 @@ const CustomHeader = ({
             <Button
               className="add-new-user"
               color="primary"
-              onClick={toggleSidebar}
+              onClick={() => {
+                navigate("/Course/AddNewCourse");
+              }}
             >
               ساخت دوره
             </Button>
@@ -202,10 +164,10 @@ const CustomHeader = ({
   );
 };
 
-const UsersList = () => {
+const CourseList = () => {
   // ** Store Vars
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.users);
+  // const store = useSelector((state) => state.users);
 
   // ** States
   const [sort, setSort] = useState("desc");
@@ -256,11 +218,15 @@ const UsersList = () => {
   // ** Custom Pagination
   const CustomPagination = () => {
     const count = Number(Math.ceil(allCourses.totalCount / rowsPerPage));
+
     const handlePagination = async (pageNum) => {
       setSearchParams((op) => {
         op.set("PageNumber", pageNum + 1);
         return op;
       });
+    };
+    const handleIncPage = () => {
+      setCurrentPage(1);
     };
 
     return (
@@ -269,8 +235,11 @@ const UsersList = () => {
         nextLabel={""}
         pageCount={count || 1}
         activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => handlePagination(page.selected)}
+        forcePage={currentPage != 0 ? currentPage : 0}
+        onPageChange={(page) => {
+          handlePagination(page.selected);
+          handleIncPage();
+        }}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}
         nextClassName={"page-item next"}
@@ -313,6 +282,11 @@ const UsersList = () => {
     setAllCourses(res);
   };
 
+  const handleDeleteCourse = async (courseId) => {
+    await DeleteCourse({
+      data: { active: true, id: courseId },
+    });
+  };
   useEffect(() => {
     if (location) handleGetAllCourse(location.search);
   }, [searchParams]);
@@ -373,7 +347,13 @@ const UsersList = () => {
             sortIcon={<ChevronDown />}
             className="react-dataTable"
             paginationComponent={CustomPagination}
-            data={allCourses.courseDtos}
+            data={
+              allCourses.courseDtos != undefined
+                ? allCourses.courseDtos.map((it) => {
+                    return { ...it, handleDeleteCourse: handleDeleteCourse };
+                  })
+                : []
+            }
             subHeaderComponent={
               <CustomHeader
                 // store={store}
@@ -390,4 +370,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default CourseList;
