@@ -10,11 +10,10 @@ import { ArrowLeft, ArrowRight } from "react-feather";
 import Select from "react-select";
 
 // ** Reactstrap Imports
-import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
+import { Label, Row, Col, Button, Form } from "reactstrap";
 
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
 import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
-import { addCourseTechnology } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.tech.api";
 
 const StandardOptionsForm = (data, itName) => {
   const array = [];
@@ -27,15 +26,19 @@ const StandardOptionsForm = (data, itName) => {
   });
   return array;
 };
-const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
+const DetailedInfo = ({
+  stepper,
+  finalData,
+  setFinalData,
+  initialInfo,
+  setInitialInfo,
+}) => {
   // All Details UseStates
   const [courseType, setCourseType] = useState([]);
   const [courseLevel, setCourseLevel] = useState([]);
   const [courseSemester, setCourseSemester] = useState([]);
   const [courseClass, setCourseClass] = useState([]);
   const [courseTeacher, setCourseTeacher] = useState([]);
-  const [courseTech, setCourseTech] = useState([]);
-  const [tech, setTech] = useState([]);
 
   // Get All The Detailed Info Api
   const [getCreate, setGetCreate] = useState({});
@@ -77,7 +80,55 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
     setError,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+    reset,
+  } = useForm();
+  useEffect(() => {
+    if (initialInfo) {
+      reset({
+        CourseTypeId: () => {
+          switch (initialInfo.courseTypeName) {
+            case "حضوری":
+              return { id: 1, value: "حضوری", label: "حضوری" };
+
+            case "آنلاین":
+              return { id: 2, value: "آنلاین", label: "آنلاین" };
+
+            case "حضوری آنلاین":
+              return { id: 3, value: "حضوری آنلاین", label: "حضوری آنلاین" };
+          }
+        },
+        CourseLvlId: () => {
+          switch (initialInfo.courseLevelName) {
+            case "مبتدی":
+              return { id: 1, value: "مبتدی", label: "مبتدی" };
+
+            case "متوسط":
+              return { id: 2, value: "متوسط", label: "متوسط" };
+
+            case "پیشرفته":
+              return { id: 3, value: "پیشرفته", label: "پیشرفته" };
+          }
+        },
+        ClassId: () => {
+          switch (initialInfo.courseClassRoomName) {
+            case "ClassRoom 1":
+              return { id: 1, value: "ClassRoom 1", label: "ClassRoom 1" };
+
+            case "ClassRoom 2":
+              return { id: 2, value: "ClassRoom 2", label: "ClassRoom 2" };
+
+            case "ClassRoom 3":
+              return { id: 3, value: "ClassRoom 3", label: "ClassRoom 3" };
+          }
+        },
+      });
+    }
+  }, [
+    initialInfo,
+    initialInfo.courseTypeName,
+    initialInfo.courseTypeName,
+    initialInfo.courseClassRoomName,
+  ]);
   // Api For Creating The Course
   const handleCreateCourse = async (form) => {
     await CreateCourseApi(form);
@@ -119,13 +170,14 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
               id="CourseTypeId"
               name="CourseTypeId"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Select
                   theme={selectThemeColors}
                   className="react-select"
                   classNamePrefix="select"
                   options={courseType}
                   isClearable={false}
+                  value={value}
                   onChange={(e) => {
                     onChange(e.id);
                   }}
@@ -139,13 +191,14 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
               id="CourseLvlId"
               name="CourseLvlId"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Select
                   theme={selectThemeColors}
                   className="react-select"
                   classNamePrefix="select"
                   options={courseLevel}
                   isClearable={false}
+                  value={value}
                   onChange={(e) => {
                     onChange(e.id);
                   }}
@@ -159,14 +212,16 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
               id="TremId"
               name="TremId"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Select
                   theme={selectThemeColors}
                   className="react-select"
                   classNamePrefix="select"
                   options={courseSemester}
+                  value={value}
                   isClearable={false}
                   onChange={(e) => {
+                    console.log(e);
                     onChange(e.id);
                   }}
                 />
@@ -188,7 +243,10 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
                   classNamePrefix="select"
                   options={courseClass}
                   isClearable={false}
-                  onChange={(e) => onChange(e.id)}
+                  onChange={(e) => {
+                    console.log(e);
+                    onChange(e.id);
+                  }}
                 />
               )}
             />
@@ -263,4 +321,4 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
   );
 };
 
-export  {DetailedInfo};
+export { DetailedInfo };

@@ -70,12 +70,6 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
     setCourseCapacity(res.courseGroupDto.courseCapacity);
   };
   useEffect(() => {
-    if (courseCapacity) {
-      console.log(courseCapacity);
-    }
-  }, [courseCapacity]);
-
-  useEffect(() => {
     if (groupId) {
       handleGroupDetail(groupId);
     }
@@ -149,12 +143,6 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
       setEndTime(finalDate);
     }
   }, [initialInfo.startTime, initialInfo.endTime]);
-  useEffect(() => {
-    if (startTime) {
-      console.log(startTime);
-      console.log(typeof startTime);
-    }
-  }, [startTime]);
 
   return (
     <Fragment>
