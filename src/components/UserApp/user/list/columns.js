@@ -5,8 +5,6 @@ import { Link } from "react-router-dom";
 import Avatar from "@components/avatar";
 
 // ** Store & Actions
-import { store } from "@store/store";
-import { getUser, deleteUser } from "../store";
 
 // ** Icons Imports
 import {
@@ -31,16 +29,26 @@ import {
 } from "reactstrap";
 
 // ** Renders Client Columns
+
 const renderClient = (row) => {
-  if (row.avatar.length) {
-    return <Avatar className="me-1" img={row.avatar} width="32" height="32" />;
+  console.log("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+  if (row) {
+    return (
+      <Avatar
+        className="me-1"
+        // img={row.pictureAddress ? row.pictureAddress : "/ErrImg.jpg"}
+        img={"/ErrImg.jpg"}
+        width="32"
+        height="32"
+      />
+    );
   } else {
     return (
       <Avatar
         initials
         className="me-1"
-        color={row.avatarColor || "light-primary"}
-        content={row.fullName || "John Doe"}
+        color={"light-primary"}
+        content={row.fname || "John Doe"}
       />
     );
   }
@@ -53,7 +61,7 @@ const renderRole = (row) => {
       class: "text-primary",
       icon: User,
     },
-    maintainer: {
+    "شروع ثبت نام": {
       class: "text-success",
       icon: Database,
     },
@@ -65,21 +73,23 @@ const renderRole = (row) => {
       class: "text-warning",
       icon: Settings,
     },
-    admin: {
+    "منقضی شده": {
       class: "text-danger",
       icon: Slack,
     },
   };
 
-  const Icon = roleObj[row.role] ? roleObj[row.role].icon : Edit2;
+  const Icon = roleObj[row.fname] ? roleObj[row.fname].icon : Edit2;
 
   return (
     <span className="text-truncate text-capitalize align-middle">
       <Icon
         size={18}
-        className={`${roleObj[row.role] ? roleObj[row.role].class : ""} me-50`}
+        className={`${
+          roleObj[row.fname] ? roleObj[row.fname].class : ""
+        } me-50`}
       />
-      {row.role}
+      {row.fname}
     </span>
   );
 };
@@ -96,19 +106,19 @@ export const columns = [
     sortable: true,
     minWidth: "300px",
     sortField: "fullName",
-    selector: (row) => row.fullName,
+    selector: (row) => row.fname,
     cell: (row) => (
       <div className="d-flex justify-content-left align-items-center">
-        {renderClient(row)}
+        {/* {renderClient(row)} */}
         <div className="d-flex flex-column">
           <Link
             to={`/apps/user/view/${row.id}`}
             className="user_name text-truncate text-body"
-            onClick={() => store.dispatch(getUser(row.id))}
+            onClick={() => {}}
           >
-            <span className="fw-bolder">{row.fullName}</span>
+            <span className="fw-bolder">{row.fname}</span>
           </Link>
-          <small className="text-truncate text-muted mb-0">{row.email}</small>
+          <small className="text-truncate text-muted mb-0">{row.fname}</small>
         </div>
       </div>
     ),
@@ -118,79 +128,73 @@ export const columns = [
     sortable: true,
     minWidth: "172px",
     sortField: "role",
-    selector: (row) => row.role,
-    cell: (row) => renderRole(row),
+    selector: (row) => row.fname,
+    cell: (row) => (
+      <span className="fw-bolder text-capitalize">{row.fname}</span>
+    ),
   },
   {
     name: "Plan",
     minWidth: "138px",
     sortable: true,
     sortField: "currentPlan",
-    selector: (row) => row.currentPlan,
-    cell: (row) => <span className="text-capitalize">{row.currentPlan}</span>,
+    selector: (row) => row.fname,
+    cell: (row) => <span className="text-capitalize">{row.fname}</span>,
   },
   {
     name: "Billing",
     minWidth: "230px",
     sortable: true,
     sortField: "billing",
-    selector: (row) => row.billing,
-    cell: (row) => <span className="text-capitalize">{row.billing}</span>,
+    selector: (row) => row.fname,
+    cell: (row) => <span className="text-capitalize">{row.fname}</span>,
   },
   {
     name: "Status",
     minWidth: "138px",
     sortable: true,
     sortField: "status",
-    selector: (row) => row.status,
+    selector: (row) => row.fname,
     cell: (row) => (
-      <Badge className="text-capitalize" color={statusObj[row.status]} pill>
-        {row.status}
+      <Badge className="text-capitalize" color={statusObj[row.fname]} pill>
+        {row.fname}
       </Badge>
     ),
   },
-  {
-    name: "Actions",
-    minWidth: "100px",
-    cell: (row) => (
-      <div className="column-action">
-        <UncontrolledDropdown>
-          <DropdownToggle tag="div" className="btn btn-sm">
-            <MoreVertical size={14} className="cursor-pointer" />
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem
-              tag={Link}
-              className="w-100"
-              to={`/apps/user/view/${row.id}`}
-            >
-              <FileText size={14} className="me-50" />
-              <span className="align-middle">Details</span>
-            </DropdownItem>
-            <DropdownItem
-              tag="a"
-              href="/"
-              className="w-100"
-              onClick={(e) => e.preventDefault()}
-            >
-              <Archive size={14} className="me-50" />
-              <span className="align-middle">Edit</span>
-            </DropdownItem>
-            <DropdownItem
-              tag="a"
-              href="/"
-              className="w-100"
-              onClick={(e) => {
-                e.preventDefault();
-                store.dispatch(deleteUser(row.id));
-              }}
-            >
-              <Trash2 size={14} className="me-50" />
-              <span className="align-middle">Delete</span>
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      </div>
-    ),
-  },
+  // {
+  //   name: "Actions",
+  //   minWidth: "100px",
+  //   cell: (row) => (
+  //     <div className="column-action">
+  //       <UncontrolledDropdown>
+  //         <DropdownToggle tag="div" className="btn btn-sm">
+  //           <MoreVertical size={14} className="cursor-pointer" />
+  //         </DropdownToggle>
+  //         <DropdownMenu>
+  //           <DropdownItem
+  //             tag={Link}
+  //             className="w-100"
+  //             to={`/apps/user/view/${row.id}`}
+  //           >
+  //             <FileText size={14} className="me-50" />
+  //             <span className="align-middle">Details</span>
+  //           </DropdownItem>
+  //           <DropdownItem
+  //             tag="a"
+  //             href="/"
+  //             className="w-100"
+  //             onClick={(e) => e.preventDefault()}
+  //           >
+  //             <Archive size={14} className="me-50" />
+  //             <span className="align-middle">Edit</span>
+  //           </DropdownItem>
+  //           <DropdownItem tag="a" href="/" className="w-100" onClick={() => {}}>
+  //             <Trash2 size={14} className="me-50" />
+  //             <span className="align-middle">Delete</span>
+  //           </DropdownItem>
+  //         </DropdownMenu>
+  //       </UncontrolledDropdown>
+  //     </div>
+  //   ),
+  // },
 ];

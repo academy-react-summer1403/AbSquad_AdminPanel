@@ -55,7 +55,7 @@ const UserDropdown = () => {
 
   // Track changes in AdminDetail to confirm state update
   useEffect(() => {
-    console.log("Updated AdminDetail:", AdminDetail); // This will reflect the updated state
+    // console.log("Updated AdminDetail:", AdminDetail); // This will reflect the updated state
   }, [AdminDetail]);
 
   return (

@@ -187,8 +187,26 @@ const CustomHeader = ({
     </div>
   );
 };
-
+// MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 const UsersList = () => {
+  const [userList, setUserList] = useState({});
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const UserListManage = async (loc) => {
+    const res = await GetUserManageList(loc); //*************************************************************
+    console.log(res);
+    setUserList(res.listUser);
+  };
+  useEffect(() => {
+    if (location) UserListManage(location.search);
+  }, [searchParams]);
+  useEffect(() => {
+    if (userList) {
+      console.log(userList, "userListeeeeeeeeeeeeeeeeeeeeeeeee");
+      console.log(userList.length, "lenthgrue");
+    }
+  }, [userList]);
+
   // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.users);
@@ -312,53 +330,6 @@ const UsersList = () => {
     setSort(sortDirection);
     setSortColumn(column.sortField);
   };
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [userList, setUserList] = useState([]);
-
-  const handleGetUserManageList = async (loc) => {
-    const params = new URLSearchParams(loc);
-
-    const PageNumber = parseInt(params.get("PageNumber")) || 0;
-    const RowsOfPage = parseInt(params.get("RowsOfPage")) || 0;
-    const SortingCol = params.get("SortingCol") || "InsertDate";
-    const SortType = params.get("SortType") || "DESC";
-    const Query = params.get("Query") || "";
-    const IsActiveUser = params.get("IsActiveUser") === "true";
-    const IsDeletedUser = params.get("IsDeletedUser") === "true";
-    const roleId = parseInt(params.get("roleId")) || 1;
-
-    try {
-      const res = await GetUserManageList({
-        PageNumber: 1,
-        RowsOfPage: 10,
-        SortingCol: "InsertDate",
-        SortType: "DESC",
-        Query: "",
-        IsActiveUser: true,
-        IsDeletedUser: true,
-        roleId: 1,
-      });
-      console.log(res);
-      console.log("Full response from API:", res); // Log the full response
-      console.log(
-        "Data portion (listUser) from response:",
-        res?.data?.listUser
-      ); // Log the specific data list
-
-      setUserList(res?.data?.listUser || []); // Set to listUser if it exists
-    } catch (error) {
-      console.error("Error in handleGetUserManageList:", error); // Log error if request fails
-    }
-  };
-
-  useEffect(() => {
-    if (location.search) handleGetUserManageList(location.search);
-  }, [location.search, searchParams]);
-
-  useEffect(() => {
-    console.log("Updated userList:", userList); // This will show the updated user list data
-  }, [userList]);
 
   return (
     <Fragment>
@@ -418,21 +389,21 @@ const UsersList = () => {
             responsive
             paginationServer
             columns={columns}
-            onSort={handleSort}
+            onSort={() => {}}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
-            paginationComponent={CustomPagination}
+            paginationComponent={() => {}}
             data={userList}
-            subHeaderComponent={
-              <CustomHeader
-                store={store}
-                searchTerm={searchTerm}
-                rowsPerPage={rowsPerPage}
-                handleFilter={() => {}}
-                handlePerPage={() => {}}
-                toggleSidebar={() => {}}
-              />
-            }
+            // subHeaderComponent={
+            //   <CustomHeader
+            //     // store={store}
+            //     searchTerm={searchTerm}
+            //     rowsPerPage={rowsPerPage}
+            //     handleFilter={() => {}}
+            //     handlePerPage={() => {}}
+            //     toggleSidebar={() => {}}
+            //   />
+            // }
           />
         </div>
       </Card>
