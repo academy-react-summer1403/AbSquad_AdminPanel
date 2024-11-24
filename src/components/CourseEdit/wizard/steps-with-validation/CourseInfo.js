@@ -18,15 +18,17 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 
 // Date Related
-import { compareAsc, format, newDate } from "date-fns-jalali";
+import { newDate } from "date-fns-jalali";
 
 // Generating Random Things for the rest of the api
 import { v4 as uuidv4 } from "uuid";
+import { getCourseGroup } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.coursegroup.api";
+import { GetCourseGroupDetail } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/courseGroup.detail.api";
 
 const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
   // random string
   const randomString = Math.random();
-
+  const [courseCapacity, setCourseCapacity] = useState(0);
   // ** Hooks
   const {
     control,
@@ -40,10 +42,44 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
     if (initialInfo) {
       reset({
         Title: initialInfo.title,
-        MiniDescribe: initialInfo.describe,
+        Cost: initialInfo.cost,
+        Capacity: courseCapacity,
+        Describe: initialInfo.describe,
+        // StartTime: startTime,
+        // EndTime: endTime,
       });
     }
-  }, [initialInfo]);
+  }, [initialInfo, courseCapacity]);
+
+  // Getting Group Id Of Course
+  const [groupId, setGroupId] = useState(0);
+
+  // Handle Capacity
+  const handleGroupId = async (teacherId, courseId) => {
+    const res = await getCourseGroup(teacherId, courseId);
+    setGroupId(res[0].groupId);
+  };
+  useEffect(() => {
+    if (initialInfo.teacherId && initialInfo.courseId) {
+      handleGroupId(initialInfo.teacherId, initialInfo.courseId);
+    }
+  }, [initialInfo.teacherId, initialInfo.courseId]);
+
+  const handleGroupDetail = async (id) => {
+    const res = await GetCourseGroupDetail(id);
+    setCourseCapacity(res.courseGroupDto.courseCapacity);
+  };
+  useEffect(() => {
+    if (courseCapacity) {
+      console.log(courseCapacity);
+    }
+  }, [courseCapacity]);
+
+  useEffect(() => {
+    if (groupId) {
+      handleGroupDetail(groupId);
+    }
+  }, [groupId]);
 
   const onSubmit = (data) => {
     setFinalData({
@@ -57,6 +93,7 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
     });
     stepper.next();
   };
+
   // Price Convert
   const [shownPrice, setShownPrice] = useState();
   const handlePriceConvert = (price) => {
@@ -68,15 +105,15 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
   const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
 
   // Date Conversion To ISO
-  const date = "1392-05-12";
-  const splittedDate = date.split("-");
-  const UTCDate = new Date();
-  const time = UTCDate.toUTCString().split(" ");
-  const convertedDate = newDate(
-    parseInt(splittedDate[0]),
-    parseInt(splittedDate[1]),
-    parseInt(splittedDate[2])
-  );
+  // const date = "1392-05-12";
+  // const splittedDate = date.split("-");
+  // const UTCDate = new Date();
+  // const time = UTCDate.toUTCString().split(" ");
+  // const convertedDate = newDate(
+  //   parseInt(splittedDate[0]),
+  //   parseInt(splittedDate[1]),
+  //   parseInt(splittedDate[2])
+  // );
 
   const handleDateConvert = (date) => {
     const splittedDate = date.split("-");
@@ -94,6 +131,31 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
 
     return finalDate.toISOString();
   };
+
+  // Setting Dates
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  useEffect(() => {
+    if (initialInfo.startTime) {
+      var isodate = new Date(initialInfo.startTime);
+      var localedateformat = isodate.toLocaleDateString("fa-IR");
+      // const finalDate = localedateformat.replaceAll("/", "-");
+      setStartTime(localedateformat);
+    }
+    if (initialInfo.endTime) {
+      var isodate = new Date(initialInfo.endTime);
+      var localedateformat = isodate.toLocaleDateString("fa-IR");
+      const finalDate = localedateformat.replaceAll("/", "-");
+      setEndTime(finalDate);
+    }
+  }, [initialInfo.startTime, initialInfo.endTime]);
+  useEffect(() => {
+    if (startTime) {
+      console.log(startTime);
+      console.log(typeof startTime);
+    }
+  }, [startTime]);
+
   return (
     <Fragment>
       <div className="content-header">
@@ -140,8 +202,9 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
               id="capacity"
               name="Capacity"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
+                  value={value}
                   onChange={onChange}
                   placeholder="ظرفیت دوره"
                   type="number"
@@ -165,8 +228,9 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
               id="coursePrice"
               name="Cost"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
+                  value={value}
                   onChange={(e) =>
                     // handlePriceConvert(e.target.value)
                     onChange(e.target.value)
@@ -263,9 +327,10 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
               id="description"
               name="Describe"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
                   onChange={onChange}
+                  value={value}
                   style={{ resize: "none", height: "200px" }}
                   placeholder="توضیحات کامل دوره"
                   type="textarea"

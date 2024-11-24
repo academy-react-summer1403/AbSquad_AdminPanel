@@ -33,12 +33,18 @@ const ImageUpload = ({ stepper, setFinalData, initialInfo }) => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      TumbImageAddress: initialInfo.imageAddress,
-    },
-  });
+    reset,
+  } = useForm();
 
+  useEffect(() => {
+    if (initialInfo) {
+      reset({
+        defaultValues: {
+          TumbImageAddress: initialInfo.imageAddress,
+        },
+      });
+    }
+  }, [initialInfo]);
   const onSubmit = (data) => {
     if (isObjEmpty(errors)) {
       setFinalData({
