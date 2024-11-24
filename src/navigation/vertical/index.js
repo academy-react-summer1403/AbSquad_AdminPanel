@@ -1,5 +1,4 @@
-import { Mail, Home, Archive, List, Circle, User } from "react-feather";
-import { Mail, Home, Archive, List, UserPlus } from "react-feather";
+import { Mail, Home, Archive, List, UserPlus, User } from "react-feather";
 
 export default [
   {
