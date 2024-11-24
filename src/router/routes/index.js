@@ -34,6 +34,12 @@ const Error = lazy(() => import("../../pages/Error"));
 const CourseList = lazy(() =>
   import("../../components/CourseApp/CourseList/list")
 );
+const CourseDetail = lazy(() =>
+  import("../../components/CourseApp/CourseDetails")
+);
+const EditCourse = lazy(() => import("../../pages/Course/EditCourse"));
+
+const AddNewCourse = lazy(() => import("../../pages/Course/AddNewCourse"));
 
 // ** Merge Routes
 const Routes = [
@@ -50,7 +56,18 @@ const Routes = [
     path: "/Course/CourseList",
     element: <CourseList />,
   },
-
+  {
+    path: "/Course/CourseList/CourseDetail/:id?",
+    element: <CourseDetail />,
+  },
+  {
+    path: "/Course/AddNewCourse",
+    element: <AddNewCourse />,
+  },
+  {
+    path: "/Course/EditCourse/:id?",
+    element: <EditCourse />,
+  },
   {
     path: "/second-page",
     element: <SecondPage />,

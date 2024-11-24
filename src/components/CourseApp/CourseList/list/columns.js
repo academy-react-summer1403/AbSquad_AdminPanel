@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 // ** Custom Components
 import Avatar from "@components/avatar";
 
-// ** Store & Actions
-
 // ** Icons Imports
 import {
   Slack,
@@ -27,6 +25,8 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import { useState } from "react";
+// Scroll Modal
 
 // ** Renders Client Columns
 const renderClient = (row) => {
@@ -53,6 +53,7 @@ const renderClient = (row) => {
 
 // ** Renders Role Columns
 const renderRole = (row) => {
+  const [scrollModal, setScrollModal] = useState(false);
   const roleObj = {
     subscriber: {
       class: "text-primary",
@@ -101,7 +102,7 @@ export const columns = [
   {
     name: "نام دوره",
     sortable: true,
-    minWidth: "300px",
+    minWidth: "178px",
     sortField: "fullName",
     selector: (row) => row.title,
     cell: (row) => (
@@ -109,9 +110,8 @@ export const columns = [
         {renderClient(row)}
         <div className="d-flex flex-column">
           <Link
-            to={`/apps/user/view/${row.courseId}`}
+            to={`/Course/CourseList/CourseDetail/${row.courseId}`}
             className="user_name text-truncate text-body"
-            onClick={() => store.dispatch(getUser(row.courseId))}
           >
             <span className="fw-bolder">{row.title}</span>
           </Link>
@@ -154,7 +154,7 @@ export const columns = [
   },
   {
     name: "وضعیت",
-    minWidth: "230px",
+    minWidth: "178px",
     sortable: true,
     sortField: "billing",
     selector: (row) => row.isActive,
@@ -189,35 +189,133 @@ export const columns = [
             <DropdownItem
               tag={Link}
               className="w-100"
-              to={`/apps/user/view/${row.id}`}
-              onClick={() => store.dispatch(getUser(row.id))}
+              to={`/Course/CourseList/CourseDetail/${row.courseId}`}
             >
               <FileText size={14} className="me-50" />
-              <span className="align-middle">Details</span>
+              <span className="align-middle">جزئیات</span>
             </DropdownItem>
             <DropdownItem
-              tag="a"
-              href="/"
+              tag={Link}
               className="w-100"
-              onClick={(e) => e.preventDefault()}
+              //
+              to={`/Course/EditCourse/${row.courseId}`}
             >
               <Archive size={14} className="me-50" />
-              <span className="align-middle">Edit</span>
+              <span className="align-middle">ویرایش</span>
             </DropdownItem>
             <DropdownItem
-              tag="a"
-              href="/"
-              className="w-100"
               onClick={(e) => {
                 e.preventDefault();
-                store.dispatch(deleteUser(row.id));
+                row.handleDeleteCourse(row.courseId);
               }}
+              className="w-100"
             >
               <Trash2 size={14} className="me-50" />
-              <span className="align-middle">Delete</span>
+              <span className="align-middle">پاک کردن دوره</span>
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
+        {/* <Modal
+          isOpen={scrollModal}
+          toggle={() => setScrollModal(!scrollModal)}
+          className="modal-dialog-centered"
+        >
+          <ModalHeader toggle={() => setScrollModal(!scrollModal)}>
+            Modal Title
+          </ModalHeader>
+          <ModalBody>
+            <p>
+              Biscuit powder jelly beans. Lollipop candy canes croissant icing
+              chocolate cake. Cake fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels
+              halvah chocolate bar. Cotton candy gummi bears pudding pie apple
+              pie cookie. Cheesecake jujubes lemon drops danish dessert I love
+              caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll
+              cake. Cupcake dessert icing dragée dessert. Liquorice jujubes cake
+              tart pie donut. Cotton candy candy canes lollipop liquorice
+              chocolate marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love
+              powder sugar plum tiramisu. Liquorice pudding chocolate cake
+              cupcake topping biscuit. Lemon drops apple pie sesame snaps
+              tootsie roll carrot cake soufflé halvah. Biscuit powder jelly
+              beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels
+              halvah chocolate bar. Cotton candy gummi bears pudding pie apple
+              pie cookie. Cheesecake jujubes lemon drops danish dessert I love
+              caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll
+              cake. Cupcake dessert icing dragée dessert. Liquorice jujubes cake
+              tart pie donut. Cotton candy candy canes lollipop liquorice
+              chocolate marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love
+              powder sugar plum tiramisu. Liquorice pudding chocolate cake
+              cupcake topping biscuit. Lemon drops apple pie sesame snaps
+              tootsie roll carrot cake soufflé halvah. Biscuit powder jelly
+              beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels
+              halvah chocolate bar. Cotton candy gummi bears pudding pie apple
+              pie cookie. Cheesecake jujubes lemon drops danish dessert I love
+              caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll
+              cake. Cupcake dessert icing dragée dessert. Liquorice jujubes cake
+              tart pie donut. Cotton candy candy canes lollipop liquorice
+              chocolate marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love
+              powder sugar plum tiramisu. Liquorice pudding chocolate cake
+              cupcake topping biscuit. Lemon drops apple pie sesame snaps
+              tootsie roll carrot cake soufflé halvah. Biscuit powder jelly
+              beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels
+              halvah chocolate bar. Cotton candy gummi bears pudding pie apple
+              pie cookie. Cheesecake jujubes lemon drops danish dessert I love
+              caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll
+              cake. Cupcake dessert icing dragée dessert. Liquorice jujubes cake
+              tart pie donut. Cotton candy candy canes lollipop liquorice
+              chocolate marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love
+              powder sugar plum tiramisu. Liquorice pudding chocolate cake
+              cupcake topping biscuit. Lemon drops apple pie sesame snaps
+              tootsie roll carrot cake soufflé halvah.
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="primary"
+              onClick={() => setScrollModal(!scrollModal)}
+            >
+              Accept
+            </Button>
+          </ModalFooter>
+        </Modal> */}
       </div>
     ),
   },
