@@ -15,6 +15,7 @@ import { Label, Row, Col, Button, Form } from "reactstrap";
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
 import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
 
+
 const StandardOptionsForm = (data, itName) => {
   const array = [];
   data.map((it) => {
