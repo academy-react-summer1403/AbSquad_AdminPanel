@@ -112,7 +112,6 @@ export const columns = [
           <Link
             to={`/Course/CourseList/CourseDetail/${row.courseId}`}
             className="user_name text-truncate text-body"
-            onClick={() => store.dispatch(getUser(row.courseId))}
           >
             <span className="fw-bolder">{row.title}</span>
           </Link>
@@ -191,28 +190,25 @@ export const columns = [
               tag={Link}
               className="w-100"
               to={`/Course/CourseList/CourseDetail/${row.courseId}`}
-              onClick={() => {}}
             >
               <FileText size={14} className="me-50" />
               <span className="align-middle">جزئیات</span>
             </DropdownItem>
             <DropdownItem
-              tag="a"
-              href="/"
+              tag={Link}
               className="w-100"
-              onClick={(e) => e.preventDefault()}
+              //
+              to={`/Course/EditCourse/${row.courseId}`}
             >
               <Archive size={14} className="me-50" />
               <span className="align-middle">ویرایش</span>
             </DropdownItem>
             <DropdownItem
-              tag="a"
-              href="/"
-              className="w-100"
               onClick={(e) => {
                 e.preventDefault();
-                store.dispatch(deleteUser(row.id));
+                row.handleDeleteCourse(row.courseId);
               }}
+              className="w-100"
             >
               <Trash2 size={14} className="me-50" />
               <span className="align-middle">پاک کردن دوره</span>
