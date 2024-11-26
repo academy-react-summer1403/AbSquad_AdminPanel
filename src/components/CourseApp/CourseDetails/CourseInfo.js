@@ -19,36 +19,14 @@ import {
 
 // ** Third Party Components
 import Swal from "sweetalert2";
-import Select from "react-select";
 import { Check, Briefcase, X, RefreshCw } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
 import withReactContent from "sweetalert2-react-content";
-
-// ** Custom Components
-import Avatar from "@components/avatar";
-
-// ** Utils
-import { selectThemeColors } from "@utils";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import { ActiveDeactiveCourse } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/active.deactive.api";
 import { DeleteCourse } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/delete.course.api";
-
-const roleColors = {
-  editor: "light-info",
-  admin: "light-danger",
-  author: "light-warning",
-  maintainer: "light-success",
-  subscriber: "light-primary",
-};
-const courseTechs = {
-  editor: "light-info",
-  admin: "light-danger",
-  author: "light-warning",
-  maintainer: "light-success",
-  subscriber: "light-primary",
-};
 
 const courseLevelColor = {
   مبتدی: "light-success",
@@ -59,42 +37,8 @@ const statusColor = {
   true: "success",
   false: "danger",
 };
-const statusOptions = [
-  { value: "active", label: "Active" },
-  { value: "inactive", label: "Inactive" },
-  { value: "suspended", label: "Suspended" },
-];
-
-const countryOptions = [
-  { value: "uk", label: "UK" },
-  { value: "usa", label: "USA" },
-  { value: "france", label: "France" },
-  { value: "russia", label: "Russia" },
-  { value: "canada", label: "Canada" },
-];
-
-const languageOptions = [
-  { value: "english", label: "English" },
-  { value: "spanish", label: "Spanish" },
-  { value: "french", label: "French" },
-  { value: "german", label: "German" },
-  { value: "dutch", label: "Dutch" },
-];
 
 const UserInfoCard = ({ courseDetail, refresh, setRefresh }) => {
-  const onSubmit = (data) => {
-    if (Object.values(data).every((field) => field.length > 0)) {
-      setShow(false);
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: "manual",
-          });
-        }
-      }
-    }
-  };
   // ** State
   const [show, setShow] = useState(false);
 
@@ -124,6 +68,7 @@ const UserInfoCard = ({ courseDetail, refresh, setRefresh }) => {
   // Post Api
   const postActiveDeactive = async (obj) => {
     await ActiveDeactiveCourse(obj);
+    setRefresh(!refresh);
   };
 
   // Delete
@@ -154,7 +99,7 @@ const UserInfoCard = ({ courseDetail, refresh, setRefresh }) => {
           active: courseDetail.isActive == true ? false : true,
           id: courseDetail.courseId,
         });
-        setRefresh(!refresh);
+
         MySwal.fire({
           icon: "success",
           title: `${status == true ? "غیرفعال" : "فعال"} شد!`,

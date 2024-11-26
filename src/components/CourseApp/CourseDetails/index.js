@@ -32,9 +32,7 @@ const CourseDetail = () => {
     setCourseDetail(res);
   };
   useEffect(() => {
-    if (refresh !== 2) {
-      handleGetCourseDetail(id);
-    }
+    handleGetCourseDetail(id);
   }, [refresh]);
   // useEffect(() => {
   //   if (JSON.stringify(courseDetail) != "{}") {
