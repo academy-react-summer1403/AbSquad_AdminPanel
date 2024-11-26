@@ -20,7 +20,7 @@ import {
 // ** Third Party Components
 import Swal from "sweetalert2";
 import Select from "react-select";
-import { Check, Briefcase, X } from "react-feather";
+import { Check, Briefcase, X, RefreshCw } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
 import withReactContent from "sweetalert2-react-content";
 
@@ -81,7 +81,7 @@ const languageOptions = [
   { value: "dutch", label: "Dutch" },
 ];
 
-const UserInfoCard = ({ courseDetail }) => {
+const UserInfoCard = ({ courseDetail, refresh, setRefresh }) => {
   const onSubmit = (data) => {
     if (Object.values(data).every((field) => field.length > 0)) {
       setShow(false);
@@ -154,6 +154,7 @@ const UserInfoCard = ({ courseDetail }) => {
           active: courseDetail.isActive == true ? false : true,
           id: courseDetail.courseId,
         });
+        setRefresh(!refresh);
         MySwal.fire({
           icon: "success",
           title: `${status == true ? "غیرفعال" : "فعال"} شد!`,
