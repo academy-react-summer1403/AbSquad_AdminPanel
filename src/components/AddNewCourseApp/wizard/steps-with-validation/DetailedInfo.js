@@ -14,7 +14,6 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
 import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
-import { addCourseTechnology } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.tech.api";
 
 const StandardOptionsForm = (data, itName) => {
   const array = [];
@@ -91,6 +90,7 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
         formData.append(key, finalData[key]);
       }
     }
+
     handleCreateCourse(formData);
   };
   // On Submit
@@ -104,7 +104,7 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
       handleFinalData();
     }
   }, [finalData]);
-
+  console.log(finalData);
   return (
     <Fragment>
       <div className="content-header">
