@@ -214,24 +214,20 @@ const CourseList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [allCourses, setAllCourses] = useState([]);
   const [refresh, setRefresh] = useState(false);
-
   const handleGetAllCourse = async (params) => {
     const res = await AllCourseAdmin(params);
     setAllCourses(res);
   };
-  const handleDeleteCourse = async (courseId) => {
+
+  const handleDeleteCourse = async (deleteItem, courseId) => {
     await DeleteCourse({
-      data: { active: true, id: courseId },
+      data: { active: deleteItem, id: courseId },
     });
+    setRefresh(!refresh);
   };
   useEffect(() => {
-    if (refresh !== 2) {
-      handleGetAllCourse(parameters);
-    }
+    handleGetAllCourse(parameters);
   }, [parameters, refresh]);
-  useEffect(() => {
-    console.log(parameters);
-  }, [parameters]);
 
   // searchTerm ** copy this above after making a button for search
   return (
