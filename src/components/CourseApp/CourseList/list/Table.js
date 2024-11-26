@@ -65,8 +65,10 @@ const CustomHeader = ({
   setSearchTerm,
   setParameters,
   parameters,
+  rowsPerPage,
+  setRowsPerPage,
 }) => {
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // Search
   const handleSearch = (val) => {};
@@ -313,6 +315,8 @@ const CourseList = () => {
                 searchTerm={searchTerm}
                 setParameters={setParameters}
                 parameters={parameters}
+                setRowsPerPage={setRowsPerPage}
+                rowsPerPage={rowsPerPage}
                 setSearchParams={setSearchParams}
                 handleFilter={() => {}}
                 handlePerRow={() => {}}
