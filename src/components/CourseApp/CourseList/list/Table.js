@@ -277,6 +277,7 @@ const CourseList = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [allCourses, setAllCourses] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const handleGetAllCourse = async (loc) => {
     const res = await AllCourseAdmin(loc);
     setAllCourses(res);
@@ -288,8 +289,10 @@ const CourseList = () => {
     });
   };
   useEffect(() => {
-    if (location) handleGetAllCourse(location.search);
-  }, [searchParams]);
+    if (location) {
+      handleGetAllCourse(location.search);
+    }
+  }, [searchParams, refresh]);
 
   return (
     <Fragment>
@@ -350,7 +353,12 @@ const CourseList = () => {
             data={
               allCourses.courseDtos != undefined
                 ? allCourses.courseDtos.map((it) => {
-                    return { ...it, handleDeleteCourse: handleDeleteCourse };
+                    return {
+                      ...it,
+                      handleDeleteCourse: handleDeleteCourse,
+                      setRefresh: setRefresh,
+                      refresh: refresh,
+                    };
                   })
                 : []
             }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
-
+import { NavLink } from "react-router-dom";
 // ** Icons Imports
 import {
   Slack,
@@ -186,27 +186,35 @@ export const columns = [
             <MoreVertical size={14} className="cursor-pointer" />
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem
-              tag={Link}
-              className="w-100"
-              to={`/Course/CourseList/CourseDetail/${row.courseId}`}
-            >
+            <DropdownItem className="w-100">
               <FileText size={14} className="me-50" />
-              <span className="align-middle">جزئیات</span>
+              <NavLink
+                to={`/Course/CourseList/CourseDetail/${row.courseId}`}
+                className="align-middle"
+                onClick={() => {
+                  row.setRefresh(!row.refresh);
+                }}
+              >
+                جزئیات
+              </NavLink>
             </DropdownItem>
-            <DropdownItem
-              tag={Link}
-              className="w-100"
-              //
-              to={`/Course/EditCourse/${row.courseId}`}
-            >
+            <DropdownItem className="w-100">
               <Archive size={14} className="me-50" />
-              <span className="align-middle">ویرایش</span>
+              <NavLink
+                to={`/Course/EditCourse/${row.courseId}`}
+                className="align-middle"
+                onClick={() => {
+                  row.setRefresh(!row.refresh);
+                }}
+              >
+                ویرایش
+              </NavLink>
             </DropdownItem>
             <DropdownItem
               onClick={(e) => {
                 e.preventDefault();
                 row.handleDeleteCourse(row.courseId);
+                row.setRefresh(!row.refresh);
               }}
               className="w-100"
             >
