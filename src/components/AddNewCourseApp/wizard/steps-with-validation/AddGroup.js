@@ -44,13 +44,11 @@ const AddGroup = ({ stepper, courseId }) => {
         formData.append(key, finalData[key]);
       }
     }
-    console.log(formData);
     handleAddGroup(formData);
   };
 
   useEffect(() => {
-    if (finalData) {
-      console.log(finalData);
+    if (finalData.length != 0) {
       handleFinalData(finalData);
     }
   }, [finalData]);
