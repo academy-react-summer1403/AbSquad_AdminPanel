@@ -26,7 +26,12 @@ const StandardOptionsForm = (data, itName) => {
   });
   return array;
 };
-const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
+const DetailedInfo = ({
+  stepper,
+  finalData,
+  setFinalData,
+  setFinalCourseId,
+}) => {
   // All Details UseStates
   const [courseType, setCourseType] = useState([]);
   const [courseLevel, setCourseLevel] = useState([]);
@@ -79,7 +84,8 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
   } = useForm({});
   // Api For Creating The Course
   const handleCreateCourse = async (form) => {
-    await CreateCourseApi(form);
+    const res = await CreateCourseApi(form);
+    setFinalCourseId(res.id);
   };
 
   // Handling FInal Data
@@ -98,13 +104,13 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
     setFinalData({ ...finalData, ...data });
     stepper.next();
   };
-  console.log(finalData);
+
   useEffect(() => {
     if (finalData.CourseTypeId) {
       handleFinalData();
     }
   }, [finalData]);
-  console.log(finalData);
+
   return (
     <Fragment>
       <div className="content-header">
