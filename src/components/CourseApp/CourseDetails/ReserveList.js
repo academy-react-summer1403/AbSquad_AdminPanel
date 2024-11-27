@@ -112,6 +112,7 @@ export const columns = [
 
                 // Getting StudentId
                 row.setStudentId(row.studentId);
+                console.log(res);
               }}
               color="success"
             >
@@ -132,6 +133,7 @@ const ReserveList = ({ courseDetail }) => {
   const [studentId, setStudentId] = useState("");
   const [groupId, setGroupId] = useState("");
   const [courseGroupId, setCourseGroupId] = useState("");
+  const [ref, setRef] = useState(false);
   const handleCourseReserver = async (id) => {
     const res = await GetCourseReserver(id);
     setReserverDetail(res);
@@ -145,22 +147,25 @@ const ReserveList = ({ courseDetail }) => {
   // course Group Id Catching
   const handleGroupId = async (teacherId) => {
     const res = await getCourseGroup(teacherId, courseDetail.courseId);
+    console.log(res);
     setGroupId(res[0].groupId);
   };
   const handleGroupDetail = async (groupId) => {
     const res = await GetCourseGroupDetail(groupId);
-    setCourseGroupId(res.courseUserListDto[0].courseGroupId);
+    console.log(res);
+    setCourseGroupId(res.courseGroupDto.groupId);
   };
   const handleAcceptReserve = async (courseGroupId, courseId, studentId) => {
-    await AcceptReserve({
+    const res = await AcceptReserve({
       courseId: courseId,
       courseGroupId: courseGroupId,
       studentId: studentId,
     });
+    setRef(!ref);
   };
-  useEffect(() => {
-    if (studentId) console.log(studentId);
-  }, [studentId]);
+  // useEffect(() => {
+  //   if (studentId) console.log(studentId);
+  // }, [studentId]);
 
   // Catchong Course Group Detail
   useEffect(() => {
@@ -231,7 +236,7 @@ const ReserveList = ({ courseDetail }) => {
               setTeacherId: setTeacherId,
               teacherId: teacherId,
               setStudentId: setStudentId,
-              studentId: studentId,
+              studentId: it.studentId,
               getCourseGroup: getCourseGroup,
               setGroupId: setGroupId,
             };
