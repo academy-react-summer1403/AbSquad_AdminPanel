@@ -18,14 +18,20 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 
 // Date Related
-import { newDate } from "date-fns-jalali";
+import { format, newDate } from "date-fns-jalali";
 
 // Generating Random Things for the rest of the api
 import { v4 as uuidv4 } from "uuid";
 import { getCourseGroup } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.coursegroup.api";
 import { GetCourseGroupDetail } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/courseGroup.detail.api";
 
-const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
+const CourseInfo = ({
+  stepper,
+  finalData,
+  setFinalData,
+  initialInfo,
+  secondInitialInfo,
+}) => {
   // random string
   const randomString = Math.random();
   const [courseCapacity, setCourseCapacity] = useState(0);
@@ -43,9 +49,11 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
       reset({
         Title: initialInfo.title,
         Cost: initialInfo.cost,
-        Capacity: courseCapacity,
+        Capacity: secondInitialInfo.capacity,
         Describe: initialInfo.describe,
-        // StartTime: startTime,
+        MiniDescribe: secondInitialInfo.miniDescribe,
+        StartTime: startDate,
+
         // EndTime: endTime,
       });
     }
@@ -96,18 +104,8 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
   };
 
   // Date Options
+  const [startDate, setStartDate] = useState("");
   const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
-
-  // Date Conversion To ISO
-  // const date = "1392-05-12";
-  // const splittedDate = date.split("-");
-  // const UTCDate = new Date();
-  // const time = UTCDate.toUTCString().split(" ");
-  // const convertedDate = newDate(
-  //   parseInt(splittedDate[0]),
-  //   parseInt(splittedDate[1]),
-  //   parseInt(splittedDate[2])
-  // );
 
   const handleDateConvert = (date) => {
     const splittedDate = date.split("-");
@@ -125,6 +123,18 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
 
     return finalDate.toISOString();
   };
+  // handling the Conversion and replacing the init date
+  const handleInitDate = (date) => {
+    const initDate = new Date(date); // Convert ISO date string to a Date object
+    const finalDate = format(initDate, "yyyy/MM/dd").replaceAll("/", "-"); // Format the date in the Persian calendar
+    return finalDate.toString();
+  };
+
+  // Getting For Initing The Start
+  useEffect(() => {
+    if (secondInitialInfo.startTime)
+      setStartDate(handleInitDate(secondInitialInfo.startTime));
+  }, [secondInitialInfo]);
 
   // Setting Dates
   const [startTime, setStartTime] = useState("");
@@ -238,11 +248,12 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
               id="StartTime"
               name="StartTime"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Cleave
                   className="form-control"
                   placeholder="1403-01-01"
                   options={options}
+                  value={value}
                   id="date"
                   onChange={(e) => {
                     onChange(handleDateConvert(e.target.value));
