@@ -15,7 +15,6 @@ import { Label, Row, Col, Button, Form } from "reactstrap";
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
 import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
 
-
 const StandardOptionsForm = (data, itName) => {
   const array = [];
   data.map((it) => {
@@ -33,6 +32,7 @@ const DetailedInfo = ({
   setFinalData,
   initialInfo,
   setInitialInfo,
+  secondInitialInfo,
 }) => {
   // All Details UseStates
   const [courseType, setCourseType] = useState([]);
@@ -83,6 +83,7 @@ const DetailedInfo = ({
     formState: { errors },
     reset,
   } = useForm();
+
   useEffect(() => {
     if (initialInfo) {
       reset({
@@ -122,6 +123,13 @@ const DetailedInfo = ({
               return { id: 3, value: "ClassRoom 3", label: "ClassRoom 3" };
           }
         },
+        TeacherId: () => {
+          const te = getCreate.teachers.find(
+            (item) => item.teacherId == initialInfo.teacherId
+          );
+          console.log(te);
+          return te;
+        },
       });
     }
   }, [
@@ -129,6 +137,7 @@ const DetailedInfo = ({
     initialInfo.courseTypeName,
     initialInfo.courseTypeName,
     initialInfo.courseClassRoomName,
+    getCreate,
   ]);
   // Api For Creating The Course
   const handleCreateCourse = async (form) => {
@@ -237,15 +246,15 @@ const DetailedInfo = ({
               id="ClassId"
               name="ClassId"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Select
                   theme={selectThemeColors}
                   className="react-select"
                   classNamePrefix="select"
                   options={courseClass}
+                  value={value}
                   isClearable={false}
                   onChange={(e) => {
-                    console.log(e);
                     onChange(e.id);
                   }}
                 />
@@ -258,12 +267,13 @@ const DetailedInfo = ({
               id="TeacherId"
               name="TeacherId"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Select
                   theme={selectThemeColors}
                   className="react-select"
                   classNamePrefix="select"
                   options={courseTeacher}
+                  value={value}
                   isClearable={false}
                   onChange={(e) => {
                     onChange(e.id);

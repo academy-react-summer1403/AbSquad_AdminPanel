@@ -14,6 +14,7 @@ import {
   MoreVertical,
   FileText,
   Trash2,
+  Upload,
   Archive,
 } from "react-feather";
 
@@ -211,15 +212,23 @@ export const columns = [
               </NavLink>
             </DropdownItem>
             <DropdownItem
-              onClick={(e) => {
-                e.preventDefault();
-                row.handleDeleteCourse(row.courseId);
-                row.setRefresh(!row.refresh);
+              onClick={() => {
+                if (row.isdelete === false) {
+                  row.handleDeleteCourse(true, row.courseId);
+                } else {
+                  row.handleDeleteCourse(false, row.courseId);
+                }
               }}
               className="w-100"
             >
-              <Trash2 size={14} className="me-50" />
-              <span className="align-middle">پاک کردن دوره</span>
+              {row.isdelete ? (
+                <Upload size={14} className="me-50" />
+              ) : (
+                <Trash2 size={14} className="me-50" />
+              )}
+              <span className="align-middle">
+                {row.isdelete ? "بارگذاری دوره" : "پاک کردن دوره"}
+              </span>
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>

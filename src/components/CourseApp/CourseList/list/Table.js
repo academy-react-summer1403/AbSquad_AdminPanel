@@ -51,6 +51,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { AllCourseAdmin } from "../../../../@core/services/API/AllCoursesAdmin/allCourse.api";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { DeleteCourse } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/delete.course.api";
+
 // ** Get Courses Api *************************************************************************************
 
 // ** Table Header
@@ -61,18 +62,25 @@ const CustomHeader = ({
   handleFilter,
   searchTerm,
   setSearchParams,
+  setSearchTerm,
+  setParameters,
+  parameters,
+  rowsPerPage,
+  setRowsPerPage,
 }) => {
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // Search
-  const handleSearch = (val) => {
-    setSearchParams((op) => {
-      op.set("Query", val);
-      return op;
-    });
-  };
+  const handleSearch = (val) => {};
   // Use Navigate
   const navigate = useNavigate();
+  useEffect(() => {
+    setParameters({ ...parameters, RowsOfPage: rowsPerPage });
+  }, [rowsPerPage]);
+  useEffect(() => {
+    setParameters({ ...parameters, Query: searchTerm });
+  }, [searchTerm]);
+
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
@@ -82,10 +90,7 @@ const CustomHeader = ({
             <Input
               className="mx-50"
               onChange={(e) => {
-                setSearchParams((op) => {
-                  op.set("RowsOfPage", e.target.value);
-                  return op;
-                });
+                setRowsPerPage(parseInt(e.target.value));
               }}
               type="select"
               id="rows-per-page"
@@ -111,7 +116,8 @@ const CustomHeader = ({
               type="text"
               value={searchTerm}
               onChange={(e) => {
-                handleSearch(e.target.value);
+                setSearchTerm(e.target.value);
+                handleSearch(searchTerm);
               }}
             />
           </div>
@@ -165,70 +171,23 @@ const CustomHeader = ({
 };
 
 const CourseList = () => {
-  // ** Store Vars
-  const dispatch = useDispatch();
-  // const store = useSelector((state) => state.users);
-
   // ** States
   const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [parameters, setParameters] = useState({});
+  const [currentPage, setCurrentPage] = useState(0);
   const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  // const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentRole, setCurrentRole] = useState({
-    value: "",
-    label: "Select Role",
-  });
-  const [currentPlan, setCurrentPlan] = useState({
-    value: "",
-    label: "Select Plan",
-  });
-  const [currentStatus, setCurrentStatus] = useState({
-    value: "",
-    label: "Select Status",
-    number: 0,
-  });
-
-  // ** User filter options
-  const roleOptions = [
-    { value: "", label: "Select Role" },
-    { value: "admin", label: "Admin" },
-    { value: "author", label: "Author" },
-    { value: "editor", label: "Editor" },
-    { value: "maintainer", label: "Maintainer" },
-    { value: "subscriber", label: "Subscriber" },
-  ];
-
-  const planOptions = [
-    { value: "", label: "Select Plan" },
-    { value: "basic", label: "Basic" },
-    { value: "company", label: "Company" },
-    { value: "enterprise", label: "Enterprise" },
-    { value: "team", label: "Team" },
-  ];
-
-  const statusOptions = [
-    { value: "", label: "Select Status", number: 0 },
-    { value: "pending", label: "Pending", number: 1 },
-    { value: "active", label: "Active", number: 2 },
-    { value: "inactive", label: "Inactive", number: 3 },
-  ];
+  useEffect(() => {
+    setParameters({ ...parameters, PageNumber: currentPage + 1 });
+  }, [currentPage]);
 
   // ** Custom Pagination
   const CustomPagination = () => {
     const count = Number(Math.ceil(allCourses.totalCount / rowsPerPage));
-
-    const handlePagination = async (pageNum) => {
-      setSearchParams((op) => {
-        op.set("PageNumber", pageNum + 1);
-        return op;
-      });
+    const handlePagination = (pageNum) => {
+      setCurrentPage(pageNum);
     };
-    const handleIncPage = () => {
-      setCurrentPage(1);
-    };
-
     return (
       <ReactPaginate
         previousLabel={""}
@@ -236,10 +195,7 @@ const CourseList = () => {
         pageCount={count || 1}
         activeClassName="active"
         forcePage={currentPage != 0 ? currentPage : 0}
-        onPageChange={(page) => {
-          handlePagination(page.selected);
-          handleIncPage();
-        }}
+        onPageChange={(page) => handlePagination(page.selected)}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}
         nextClassName={"page-item next"}
@@ -254,46 +210,26 @@ const CourseList = () => {
   };
 
   // ** Table data to render
-  const dataToRender = () => {
-    const filters = {
-      role: currentRole.value,
-      currentPlan: currentPlan.value,
-      status: currentStatus.value,
-      q: searchTerm,
-    };
 
-    const isFiltered = Object.keys(filters).some(function (k) {
-      return filters[k].length > 0;
-    });
-
-    if (store.data.length > 0) {
-      return store.data;
-    } else if (store.data.length === 0 && isFiltered) {
-      return [];
-    } else {
-      return store.allData.slice(0, rowsPerPage);
-    }
-  };
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [allCourses, setAllCourses] = useState([]);
   const [refresh, setRefresh] = useState(false);
-  const handleGetAllCourse = async (loc) => {
-    const res = await AllCourseAdmin(loc);
+  const handleGetAllCourse = async (params) => {
+    const res = await AllCourseAdmin(params);
     setAllCourses(res);
   };
 
-  const handleDeleteCourse = async (courseId) => {
+  const handleDeleteCourse = async (deleteItem, courseId) => {
     await DeleteCourse({
-      data: { active: true, id: courseId },
+      data: { active: deleteItem, id: courseId },
     });
+    setRefresh(!refresh);
   };
   useEffect(() => {
-    if (location) {
-      handleGetAllCourse(location.search);
-    }
-  }, [searchParams, refresh]);
+    handleGetAllCourse(parameters);
+  }, [parameters, refresh]);
 
+  // searchTerm ** copy this above after making a button for search
   return (
     <Fragment>
       {/* <Card>
@@ -349,7 +285,13 @@ const CourseList = () => {
             onSort={() => {}}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
-            paginationComponent={CustomPagination}
+            paginationComponent={() => (
+              <CustomPagination
+                currentPage={currentPage}
+                setParameters={setParameters}
+                parameters={parameters}
+              />
+            )}
             data={
               allCourses.courseDtos != undefined
                 ? allCourses.courseDtos.map((it) => {
@@ -365,7 +307,12 @@ const CourseList = () => {
             subHeaderComponent={
               <CustomHeader
                 // store={store}
+                setSearchTerm={setSearchTerm}
                 searchTerm={searchTerm}
+                setParameters={setParameters}
+                parameters={parameters}
+                setRowsPerPage={setRowsPerPage}
+                rowsPerPage={rowsPerPage}
                 setSearchParams={setSearchParams}
                 handleFilter={() => {}}
                 handlePerRow={() => {}}

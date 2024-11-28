@@ -14,7 +14,6 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
 import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
-import { addCourseTechnology } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.tech.api";
 
 const StandardOptionsForm = (data, itName) => {
   const array = [];
@@ -27,7 +26,12 @@ const StandardOptionsForm = (data, itName) => {
   });
   return array;
 };
-const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
+const DetailedInfo = ({
+  stepper,
+  finalData,
+  setFinalData,
+  setFinalCourseId,
+}) => {
   // All Details UseStates
   const [courseType, setCourseType] = useState([]);
   const [courseLevel, setCourseLevel] = useState([]);
@@ -80,7 +84,8 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
   } = useForm({});
   // Api For Creating The Course
   const handleCreateCourse = async (form) => {
-    await CreateCourseApi(form);
+    const res = await CreateCourseApi(form);
+    setFinalCourseId(res.id);
   };
 
   // Handling FInal Data
@@ -91,6 +96,7 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
         formData.append(key, finalData[key]);
       }
     }
+
     handleCreateCourse(formData);
   };
   // On Submit
@@ -98,7 +104,7 @@ const DetailedInfo = ({ stepper, finalData, setFinalData }) => {
     setFinalData({ ...finalData, ...data });
     stepper.next();
   };
-  console.log(finalData);
+
   useEffect(() => {
     if (finalData.CourseTypeId) {
       handleFinalData();
