@@ -40,7 +40,11 @@ const DetailedInfo = ({
   const [courseSemester, setCourseSemester] = useState([]);
   const [courseClass, setCourseClass] = useState([]);
   const [courseTeacher, setCourseTeacher] = useState([]);
-
+  const [courseTypeReal, setCourseTypeReal] = useState({});
+  const [courseLevelReal, setCourseLevelReal] = useState({});
+  const [courseSemesterReal, setCourseSemesterReal] = useState({});
+  const [courseClassReal, setCourseClassReal] = useState({});
+  const [courseTeacherReal, setCourseTeacherReal] = useState({});
   // Get All The Detailed Info Api
   const [getCreate, setGetCreate] = useState({});
   // Handling Get Create Api
@@ -85,7 +89,7 @@ const DetailedInfo = ({
   } = useForm();
 
   useEffect(() => {
-    if (initialInfo) {
+    if (initialInfo && JSON.stringify(getCreate) !== "{}") {
       reset({
         CourseTypeId: () => {
           switch (initialInfo.courseTypeName) {
@@ -127,8 +131,7 @@ const DetailedInfo = ({
           const te = getCreate.teachers.find(
             (item) => item.teacherId == initialInfo.teacherId
           );
-          console.log(te);
-          return te;
+          return StandardOptionsForm([{ ...te }], "fullName");
         },
       });
     }
@@ -137,7 +140,7 @@ const DetailedInfo = ({
     initialInfo.courseTypeName,
     initialInfo.courseTypeName,
     initialInfo.courseClassRoomName,
-    getCreate,
+    getCreate.teachers,
   ]);
   // Api For Creating The Course
   const handleCreateCourse = async (form) => {
@@ -187,8 +190,13 @@ const DetailedInfo = ({
                   classNamePrefix="select"
                   options={courseType}
                   isClearable={false}
-                  value={value}
+                  value={
+                    JSON.stringify(courseTypeReal) != "{}"
+                      ? courseTypeReal
+                      : value
+                  }
                   onChange={(e) => {
+                    setCourseTypeReal(e);
                     onChange(e.id);
                   }}
                 />
@@ -208,8 +216,13 @@ const DetailedInfo = ({
                   classNamePrefix="select"
                   options={courseLevel}
                   isClearable={false}
-                  value={value}
+                  value={
+                    JSON.stringify(courseLevelReal) != "{}"
+                      ? courseLevelReal
+                      : value
+                  }
                   onChange={(e) => {
+                    setCourseLevelReal(e);
                     onChange(e.id);
                   }}
                 />
@@ -228,10 +241,14 @@ const DetailedInfo = ({
                   className="react-select"
                   classNamePrefix="select"
                   options={courseSemester}
-                  value={value}
+                  value={
+                    JSON.stringify(courseSemesterReal) != "{}"
+                      ? courseSemesterReal
+                      : value
+                  }
                   isClearable={false}
                   onChange={(e) => {
-                    console.log(e);
+                    setCourseSemesterReal(e);
                     onChange(e.id);
                   }}
                 />
@@ -252,9 +269,14 @@ const DetailedInfo = ({
                   className="react-select"
                   classNamePrefix="select"
                   options={courseClass}
-                  value={value}
+                  value={
+                    JSON.stringify(courseClassReal) != "{}"
+                      ? courseClassReal
+                      : value
+                  }
                   isClearable={false}
                   onChange={(e) => {
+                    setCourseClassReal(e);
                     onChange(e.id);
                   }}
                 />
@@ -273,9 +295,14 @@ const DetailedInfo = ({
                   className="react-select"
                   classNamePrefix="select"
                   options={courseTeacher}
-                  value={value}
+                  value={
+                    JSON.stringify(courseTeacherReal) != "{}"
+                      ? courseTeacherReal
+                      : value
+                  }
                   isClearable={false}
                   onChange={(e) => {
+                    setCourseTeacherReal(e);
                     onChange(e.id);
                   }}
                 />
