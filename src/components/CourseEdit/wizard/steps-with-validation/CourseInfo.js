@@ -47,13 +47,14 @@ const CourseInfo = ({
   useEffect(() => {
     if (initialInfo) {
       reset({
+        Id: secondInitialInfo.courseId,
         Title: initialInfo.title,
         Cost: initialInfo.cost,
         Capacity: secondInitialInfo.capacity,
         Describe: initialInfo.describe,
         MiniDescribe: secondInitialInfo.miniDescribe,
-        StartTime: startDate,
-        EndTime: endDate,
+        StartTime: secondInitialInfo.startTime,
+        EndTime: secondInitialInfo.endTime,
 
         // EndTime: endTime,
       });
