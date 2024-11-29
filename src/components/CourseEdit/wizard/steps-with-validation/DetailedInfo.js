@@ -87,52 +87,45 @@ const DetailedInfo = ({
     formState: { errors },
     reset,
   } = useForm();
-
+  const handleDefaultSelectValues = (
+    getCreateName,
+    itemName,
+    initInfoName,
+    teacherApiName
+  ) => {
+    const val = getCreate[`${getCreateName}`].find(
+      (item) => item[`${itemName}`] == initialInfo[`${initInfoName}`]
+    );
+    const finalVal = StandardOptionsForm(
+      [{ ...val }],
+      `${itemName != "teacherId" ? itemName : teacherApiName}`
+    );
+    return finalVal[0];
+  };
   useEffect(() => {
     if (initialInfo && JSON.stringify(getCreate) !== "{}") {
       reset({
-        CourseTypeId: () => {
-          switch (initialInfo.courseTypeName) {
-            case "حضوری":
-              return { id: 1, value: "حضوری", label: "حضوری" };
-
-            case "آنلاین":
-              return { id: 2, value: "آنلاین", label: "آنلاین" };
-
-            case "حضوری آنلاین":
-              return { id: 3, value: "حضوری آنلاین", label: "حضوری آنلاین" };
-          }
-        },
-        CourseLvlId: () => {
-          switch (initialInfo.courseLevelName) {
-            case "مبتدی":
-              return { id: 1, value: "مبتدی", label: "مبتدی" };
-
-            case "متوسط":
-              return { id: 2, value: "متوسط", label: "متوسط" };
-
-            case "پیشرفته":
-              return { id: 3, value: "پیشرفته", label: "پیشرفته" };
-          }
-        },
-        ClassId: () => {
-          switch (initialInfo.courseClassRoomName) {
-            case "ClassRoom 1":
-              return { id: 1, value: "ClassRoom 1", label: "ClassRoom 1" };
-
-            case "ClassRoom 2":
-              return { id: 2, value: "ClassRoom 2", label: "ClassRoom 2" };
-
-            case "ClassRoom 3":
-              return { id: 3, value: "ClassRoom 3", label: "ClassRoom 3" };
-          }
-        },
-        TeacherId: () => {
-          const te = getCreate.teachers.find(
-            (item) => item.teacherId == initialInfo.teacherId
-          );
-          return StandardOptionsForm([{ ...te }], "fullName");
-        },
+        CourseTypeId: handleDefaultSelectValues(
+          "courseTypeDtos",
+          "typeName",
+          "courseTypeName"
+        ).id,
+        CourseLvlId: handleDefaultSelectValues(
+          "courseLevelDtos",
+          "levelName",
+          "courseLevelName"
+        ).id,
+        ClassId: handleDefaultSelectValues(
+          "classRoomDtos",
+          "classRoomName",
+          "courseClassRoomName"
+        ).id,
+        TeacherId: handleDefaultSelectValues(
+          "teachers",
+          "teacherId",
+          "teacherId",
+          "fullName"
+        ).id,
       });
     }
   }, [
@@ -193,7 +186,13 @@ const DetailedInfo = ({
                   value={
                     JSON.stringify(courseTypeReal) != "{}"
                       ? courseTypeReal
-                      : value
+                      : initialInfo && JSON.stringify(getCreate) !== "{}"
+                      ? handleDefaultSelectValues(
+                          "courseTypeDtos",
+                          "typeName",
+                          "courseTypeName"
+                        )
+                      : {}
                   }
                   onChange={(e) => {
                     setCourseTypeReal(e);
@@ -219,7 +218,13 @@ const DetailedInfo = ({
                   value={
                     JSON.stringify(courseLevelReal) != "{}"
                       ? courseLevelReal
-                      : value
+                      : initialInfo && JSON.stringify(getCreate) !== "{}"
+                      ? handleDefaultSelectValues(
+                          "courseLevelDtos",
+                          "levelName",
+                          "courseLevelName"
+                        )
+                      : {}
                   }
                   onChange={(e) => {
                     setCourseLevelReal(e);
@@ -272,7 +277,13 @@ const DetailedInfo = ({
                   value={
                     JSON.stringify(courseClassReal) != "{}"
                       ? courseClassReal
-                      : value
+                      : initialInfo && JSON.stringify(getCreate) !== "{}"
+                      ? handleDefaultSelectValues(
+                          "classRoomDtos",
+                          "classRoomName",
+                          "courseClassRoomName"
+                        )
+                      : {}
                   }
                   isClearable={false}
                   onChange={(e) => {
@@ -298,7 +309,14 @@ const DetailedInfo = ({
                   value={
                     JSON.stringify(courseTeacherReal) != "{}"
                       ? courseTeacherReal
-                      : value
+                      : initialInfo && JSON.stringify(getCreate) !== "{}"
+                      ? handleDefaultSelectValues(
+                          "teachers",
+                          "teacherId",
+                          "teacherId",
+                          "fullName"
+                        )
+                      : {}
                   }
                   isClearable={false}
                   onChange={(e) => {
