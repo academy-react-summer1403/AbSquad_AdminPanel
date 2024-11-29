@@ -45,6 +45,7 @@ const ImageUpload = ({ stepper, setFinalData, initialInfo }) => {
       });
     }
   }, [initialInfo]);
+
   const onSubmit = (data) => {
     if (isObjEmpty(errors)) {
       setFinalData({
@@ -66,7 +67,11 @@ const ImageUpload = ({ stepper, setFinalData, initialInfo }) => {
               name="TumbImageAddress"
               control={control}
               render={({ field: { onChange } }) => (
-                <Import onChange={onChange} initialInfo={initialInfo} />
+                <Import
+                  {...field}
+                  onChange={onChange}
+                  initialInfo={initialInfo}
+                />
               )}
             />
           </Col>

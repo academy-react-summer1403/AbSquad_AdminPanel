@@ -13,7 +13,7 @@ import Select from "react-select";
 import { Label, Row, Col, Button, Form } from "reactstrap";
 
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
-import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
+import { UpdateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/UpdateCourse/update.course.api";
 
 const StandardOptionsForm = (data, itName) => {
   const array = [];
@@ -144,7 +144,7 @@ const DetailedInfo = ({
   ]);
   // Api For Creating The Course
   const handleCreateCourse = async (form) => {
-    await CreateCourseApi(form);
+    await UpdateCourseApi(form);
   };
 
   // Handling FInal Data
@@ -168,7 +168,7 @@ const DetailedInfo = ({
       handleFinalData();
     }
   }, [finalData]);
-
+  console.log(finalData);
   return (
     <Fragment>
       <div className="content-header">
