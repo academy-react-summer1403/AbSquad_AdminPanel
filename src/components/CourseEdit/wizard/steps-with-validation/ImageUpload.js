@@ -39,9 +39,7 @@ const ImageUpload = ({ stepper, setFinalData, initialInfo }) => {
   useEffect(() => {
     if (initialInfo) {
       reset({
-        defaultValues: {
-          TumbImageAddress: initialInfo.imageAddress,
-        },
+        TumbImageAddress: initialInfo.imageAddress,
       });
     }
   }, [initialInfo]);
@@ -66,10 +64,10 @@ const ImageUpload = ({ stepper, setFinalData, initialInfo }) => {
               id="TumbImageAddress"
               name="TumbImageAddress"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field }) => (
                 <Import
                   {...field}
-                  onChange={onChange}
+                  onChange={field.onChange}
                   initialInfo={initialInfo}
                 />
               )}
