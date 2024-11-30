@@ -18,14 +18,20 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 
 // Date Related
-import { newDate } from "date-fns-jalali";
+import { format, newDate } from "date-fns-jalali";
 
 // Generating Random Things for the rest of the api
 import { v4 as uuidv4 } from "uuid";
 import { getCourseGroup } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.coursegroup.api";
 import { GetCourseGroupDetail } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/courseGroup.detail.api";
 
-const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
+const CourseInfo = ({
+  stepper,
+  finalData,
+  setFinalData,
+  initialInfo,
+  secondInitialInfo,
+}) => {
   // random string
   const randomString = Math.random();
   const [courseCapacity, setCourseCapacity] = useState(0);
@@ -41,11 +47,15 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
   useEffect(() => {
     if (initialInfo) {
       reset({
+        Id: secondInitialInfo.courseId,
         Title: initialInfo.title,
         Cost: initialInfo.cost,
-        Capacity: courseCapacity,
+        Capacity: secondInitialInfo.capacity,
         Describe: initialInfo.describe,
-        // StartTime: startTime,
+        MiniDescribe: secondInitialInfo.miniDescribe,
+        StartTime: secondInitialInfo.startTime,
+        EndTime: secondInitialInfo.endTime,
+
         // EndTime: endTime,
       });
     }
@@ -96,18 +106,8 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
   };
 
   // Date Options
-  const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
 
-  // Date Conversion To ISO
-  // const date = "1392-05-12";
-  // const splittedDate = date.split("-");
-  // const UTCDate = new Date();
-  // const time = UTCDate.toUTCString().split(" ");
-  // const convertedDate = newDate(
-  //   parseInt(splittedDate[0]),
-  //   parseInt(splittedDate[1]),
-  //   parseInt(splittedDate[2])
-  // );
+  const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
 
   const handleDateConvert = (date) => {
     const splittedDate = date.split("-");
@@ -125,24 +125,41 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
 
     return finalDate.toISOString();
   };
+  // handling the Conversion and replacing the init date
+  const handleInitDate = (date) => {
+    const initDate = new Date(date); // Convert ISO date string to a Date object
+    const finalDate = format(initDate, "yyyy/MM/dd").replaceAll("/", "-"); // Format the date in the Persian calendar
+    return finalDate.toString();
+  };
+
+  // Getting For Initing The Start
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startDateReal, setStartDateReal] = useState("");
+  const [endDateReal, setEndDateReal] = useState("");
+  useEffect(() => {
+    if (secondInitialInfo.startTime)
+      setStartDate(handleInitDate(secondInitialInfo.startTime));
+    if (secondInitialInfo.endTime)
+      setEndDate(handleInitDate(secondInitialInfo.endTime));
+  }, [secondInitialInfo]);
 
   // Setting Dates
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  useEffect(() => {
-    if (initialInfo.startTime) {
-      var isodate = new Date(initialInfo.startTime);
-      var localedateformat = isodate.toLocaleDateString("fa-IR");
-      // const finalDate = localedateformat.replaceAll("/", "-");
-      setStartTime(localedateformat);
-    }
-    if (initialInfo.endTime) {
-      var isodate = new Date(initialInfo.endTime);
-      var localedateformat = isodate.toLocaleDateString("fa-IR");
-      const finalDate = localedateformat.replaceAll("/", "-");
-      setEndTime(finalDate);
-    }
-  }, [initialInfo.startTime, initialInfo.endTime]);
+  // const [startTime, setStartTime] = useState("");
+  // const [endTime, setEndTime] = useState("");
+  // useEffect(() => {
+  //   if (initialInfo.startTime) {
+  //     var isodate = new Date(initialInfo.startTime);
+  //     var localedateformat = isodate.toLocaleDateString("fa-IR");
+  //     setStartTime(localedateformat);
+  //   }
+  //   if (initialInfo.endTime) {
+  //     var isodate = new Date(initialInfo.endTime);
+  //     var localedateformat = isodate.toLocaleDateString("fa-IR");
+  //     const finalDate = localedateformat.replaceAll("/", "-");
+  //     setEndTime(finalDate);
+  //   }
+  // }, [initialInfo.startTime, initialInfo.endTime]);
 
   return (
     <Fragment>
@@ -238,13 +255,15 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
               id="StartTime"
               name="StartTime"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Cleave
                   className="form-control"
                   placeholder="1403-01-01"
                   options={options}
+                  value={startDate ? startDate : value}
                   id="date"
                   onChange={(e) => {
+                    setStartDateReal(e.target.value);
                     onChange(handleDateConvert(e.target.value));
                   }}
                 />
@@ -260,13 +279,15 @@ const CourseInfo = ({ stepper, finalData, setFinalData, initialInfo }) => {
               id="EndTime"
               name="EndTime"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Cleave
                   className="form-control"
                   placeholder="1403-02-01"
                   options={options}
                   id="date"
+                  value={endDate ? endDate : value}
                   onChange={(e) => {
+                    setEndDateReal(e.target.value);
                     onChange(handleDateConvert(e.target.value));
                   }}
                 />

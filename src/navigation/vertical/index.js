@@ -32,6 +32,18 @@ export default [
         icon: <UserPlus size={20} />,
         navLink: "/Course/AddNewCourse",
       },
+      {
+        id: "TeacherCourseList",
+        title: "لیست دوره های شما",
+        icon: <List size={20} />,
+        navLink: "/Course/YourCourseList",
+      },
+      {
+        id: "CourseCommentManagement",
+        title: "مدیریت کامنت ها",
+        icon: <List size={20} />,
+        navLink: "/Course/CommentManangement",
+      },
     ],
   },
   {
