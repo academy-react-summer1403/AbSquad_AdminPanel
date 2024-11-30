@@ -25,21 +25,13 @@ import {
 
 // ** Styles
 import "@styles/react/libs/file-uploader/file-uploader.scss";
-import { changeLanguage } from "i18next";
 
-const Import = ({ onChange, initialInfo }) => {
+const Import = ({ onChange, initialInfo, value }) => {
   // ** States
-  const [name, setName] = useState("");
-  const [value, setValue] = useState("");
-  const [tableData, setTableData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
   const [Imgopen, setImgOpen] = useState("close");
   const [fileUrl, setFileUrl] = useState("");
   const [imgObj, setImgObj] = useState({});
-  const getTableData = (arr, name) => {
-    setTableData(arr);
-    setName(name);
-  };
+
   useEffect(() => {
     if (initialInfo) {
       setFileUrl(initialInfo.imageAddress);
@@ -68,29 +60,6 @@ const Import = ({ onChange, initialInfo }) => {
     },
   });
 
-  /*eslint-disable */
-  const headArr = tableData.length
-    ? tableData.map((col, index) => {
-        if (index === 0) return [...Object.keys(col)];
-        else return null;
-      })
-    : [];
-  /*eslint-enable */
-  const dataArr = value.length
-    ? filteredData
-    : tableData.length && !value.length
-    ? tableData
-    : null;
-
-  const renderTableHead = () => {
-    if (headArr.length) {
-      return headArr[0].map((head, index) => {
-        return <th key={index}>{head}</th>;
-      });
-    } else {
-      return null;
-    }
-  };
   // For Passing The Image Url For Hook Form
   useEffect(() => {
     if (!!imgObj) {

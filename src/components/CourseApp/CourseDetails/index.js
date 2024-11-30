@@ -26,13 +26,14 @@ const CourseDetail = () => {
   };
   // Get Detail Api
   const [courseDetail, setCourseDetail] = useState({});
+  const [refresh, setRefresh] = useState(false);
   const handleGetCourseDetail = async (id) => {
     const res = await GetCourseDetailApi(id);
     setCourseDetail(res);
   };
   useEffect(() => {
     handleGetCourseDetail(id);
-  }, []);
+  }, [refresh]);
   // useEffect(() => {
   //   if (JSON.stringify(courseDetail) != "{}") {
   //     console.log(courseDetail);
@@ -43,7 +44,11 @@ const CourseDetail = () => {
     <div className="app-user-view">
       <Row>
         <Col xl="4" lg="5" xs={{ order: 1 }} md={{ order: 0, size: 5 }}>
-          <CourseInfo courseDetail={courseDetail} />
+          <CourseInfo
+            courseDetail={courseDetail}
+            refresh={refresh}
+            setRefresh={setRefresh}
+          />
           {/* <PlanCard /> */}
         </Col>
         <Col xl="8" lg="7" xs={{ order: 0 }} md={{ order: 1, size: 7 }}>

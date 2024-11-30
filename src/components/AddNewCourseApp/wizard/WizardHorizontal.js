@@ -8,6 +8,7 @@ import Wizard from "@components/wizard";
 import DetailedInfo from "./steps-with-validation/DetailedInfo";
 import CourseInfo from "./steps-with-validation/CourseInfo";
 import ImageUpload from "./steps-with-validation/ImageUpload";
+import AddGroup from "./steps-with-validation/AddGroup";
 import AddTech from "./steps-with-validation/AddTech";
 
 const WizardHorizontal = () => {
@@ -18,7 +19,7 @@ const WizardHorizontal = () => {
   const [stepper, setStepper] = useState(null);
 
   const [finalData, setFinalData] = useState({});
-
+  const [finalCourseId, setFinalCourseId] = useState("");
   const steps = [
     {
       id: "Image",
@@ -53,6 +54,19 @@ const WizardHorizontal = () => {
           stepper={stepper}
           finalData={finalData}
           setFinalData={setFinalData}
+          setFinalCourseId={setFinalCourseId}
+        />
+      ),
+    },
+    {
+      id: "AddGroup",
+      title: "اضافه کردن گروه",
+      subtitle: "اطلاعات گروه را اضافه کنید.",
+      content: (
+        <AddGroup
+          stepper={stepper}
+          setFinalData={setFinalData}
+          courseId={finalCourseId}
         />
       ),
     },

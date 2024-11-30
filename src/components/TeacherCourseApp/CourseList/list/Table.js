@@ -7,78 +7,48 @@ import { Fragment, useState, useEffect } from "react";
 // ** Table Columns
 import { columns } from "./columns";
 
-// ** Store & Actions
-
-import { useDispatch } from "react-redux";
-
 // ** Third Party Components
-import Select from "react-select";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
-import {
-  ChevronDown,
-  Share,
-  Printer,
-  FileText,
-  File,
-  Grid,
-  Copy,
-} from "react-feather";
-
-// ** Utils
-import { selectThemeColors } from "@utils";
+import { ChevronDown } from "react-feather";
 
 // ** Reactstrap Imports
-import {
-  Row,
-  Col,
-  Card,
-  Input,
-  Label,
-  Button,
-  CardBody,
-  CardTitle,
-  CardHeader,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
-} from "reactstrap";
+import { Row, Col, Card, Input } from "reactstrap";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { AllCourseAdmin } from "../../../../@core/services/API/AllCoursesAdmin/allCourse.api";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { AllTeacherCourse } from "../../../../@core/services/API/AllCoursesTeacher/get.teacher.course.api";
+import { useSearchParams } from "react-router-dom";
 import { DeleteCourse } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/delete.course.api";
 
 // ** Get Courses Api *************************************************************************************
 
 // ** Table Header
 const CustomHeader = ({
-  store,
-  toggleSidebar,
-  handlePerPage,
-  handleFilter,
   searchTerm,
-  setSearchParams,
   setSearchTerm,
   setParameters,
   parameters,
   rowsPerPage,
   setRowsPerPage,
 }) => {
-  // const [rowsPerPage, setRowsPerPage] = useState(10);
+  // Use Navigate
 
   // Search
   const handleSearch = (val) => {};
-  // Use Navigate
-  const navigate = useNavigate();
+
   useEffect(() => {
     setParameters({ ...parameters, RowsOfPage: rowsPerPage });
   }, [rowsPerPage]);
   useEffect(() => {
-    setParameters({ ...parameters, Query: searchTerm });
+    if (searchTerm != "") {
+      setParameters({ ...parameters, Query: searchTerm });
+    } else {
+      const newData = { ...parameters }; // Create a shallow copy of the object
+      delete newData["Query"]; // Delete the key from the copy
+      setParameters(newData);
+    }
   }, [searchTerm]);
 
   return (
@@ -121,63 +91,19 @@ const CustomHeader = ({
               }}
             />
           </div>
-
-          <div className="d-flex align-items-center table-header-actions">
-            {/* <UncontrolledDropdown className="me-1">
-              <DropdownToggle color="secondary" caret outline>
-                <Share className="font-small-4 me-50" />
-                <span className="align-middle">Export</span>
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className="w-100">
-                  <Printer className="font-small-4 me-50" />
-                  <span className="align-middle">Print</span>
-                </DropdownItem>
-                <DropdownItem
-                  className="w-100"
-                  onClick={() => downloadCSV(store.data)}
-                >
-                  <FileText className="font-small-4 me-50" />
-                  <span className="align-middle">CSV</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <Grid className="font-small-4 me-50" />
-                  <span className="align-middle">Excel</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <File className="font-small-4 me-50" />
-                  <span className="align-middle">PDF</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <Copy className="font-small-4 me-50" />
-                  <span className="align-middle">Copy</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown> */}
-            <Button
-              className="add-new-user"
-              color="primary"
-              onClick={() => {
-                navigate("/Course/AddNewCourse");
-              }}
-            >
-              ساخت دوره
-            </Button>
-          </div>
         </Col>
       </Row>
     </div>
   );
 };
 
-const CourseList = () => {
+const TeacherCourseList = () => {
   // ** States
-  const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [parameters, setParameters] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
-  const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
   useEffect(() => {
     setParameters({ ...parameters, PageNumber: currentPage + 1 });
   }, [currentPage]);
@@ -215,7 +141,7 @@ const CourseList = () => {
   const [allCourses, setAllCourses] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const handleGetAllCourse = async (params) => {
-    const res = await AllCourseAdmin(params);
+    const res = await AllTeacherCourse(params);
     setAllCourses(res);
   };
 
@@ -232,45 +158,6 @@ const CourseList = () => {
   // searchTerm ** copy this above after making a button for search
   return (
     <Fragment>
-      {/* <Card>
-        <CardHeader>
-          <CardTitle tag="h4">Filters</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <Row>
-            <Col md="4">
-              <Label for="role-select">Role</Label>
-              <Select
-                isClearable={false}
-                options={roleOptions}
-                className="react-select"
-                classNamePrefix="select"
-                theme={selectThemeColors}
-              />
-            </Col>
-            <Col className="my-md-0 my-1" md="4">
-              <Label for="plan-select">Plan</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={planOptions}
-              />
-            </Col>
-            <Col md="4">
-              <Label for="status-select">Status</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-              />
-            </Col>
-          </Row>
-        </CardBody>
-      </Card> */}
-
       <Card className="overflow-hidden">
         <div className="react-dataTable">
           <DataTable
@@ -293,8 +180,8 @@ const CourseList = () => {
               />
             )}
             data={
-              allCourses.courseDtos != undefined
-                ? allCourses.courseDtos.map((it) => {
+              allCourses.teacherCourseDtos != undefined
+                ? allCourses.teacherCourseDtos.map((it) => {
                     return {
                       ...it,
                       handleDeleteCourse: handleDeleteCourse,
@@ -325,4 +212,4 @@ const CourseList = () => {
   );
 };
 
-export default CourseList;
+export default TeacherCourseList;

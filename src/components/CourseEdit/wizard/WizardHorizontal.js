@@ -11,6 +11,7 @@ import { ImageUpload } from "./steps-with-validation/ImageUpload";
 import { AddTech } from "./steps-with-validation/AddTech";
 import { useParams } from "react-router-dom";
 import { GetCourseDetailApi } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.course.detail.api";
+import { GetUserCourseDetail } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.user.courseDetail.api";
 
 const WizardHorizontal = () => {
   // Getting Id
@@ -24,18 +25,24 @@ const WizardHorizontal = () => {
 
   const [finalData, setFinalData] = useState({});
   const [initialInfo, setInitialInfo] = useState({});
-
+  const [secondInitialInfo, setSecondInitialInfo] = useState({});
   // Fetching Initialized Information
   const fetchInit = async (courseId) => {
     const res = await GetCourseDetailApi(courseId);
     setInitialInfo(res);
   };
+  const fetchSecondInit = async (courseId) => {
+    const res = await GetUserCourseDetail(courseId);
+
+    setSecondInitialInfo(res);
+  };
   useEffect(() => {
-    if (initialInfo) console.log(initialInfo);
-  }, [initialInfo]);
+    if (secondInitialInfo) console.log(secondInitialInfo);
+  }, [secondInitialInfo]);
 
   useEffect(() => {
     fetchInit(id);
+    fetchSecondInit(id);
   }, []);
 
   const steps = [
@@ -64,6 +71,7 @@ const WizardHorizontal = () => {
           setFinalData={setFinalData}
           setInitialInfo={setInitialInfo}
           initialInfo={initialInfo}
+          secondInitialInfo={secondInitialInfo}
         />
       ),
     },
@@ -78,6 +86,7 @@ const WizardHorizontal = () => {
           setFinalData={setFinalData}
           setInitialInfo={setInitialInfo}
           initialInfo={initialInfo}
+          secondInitialInfo={secondInitialInfo}
         />
       ),
     },
