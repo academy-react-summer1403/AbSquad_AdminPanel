@@ -214,17 +214,21 @@ const UsersList = () => {
     handleGetRoles(parameters);
   }, []);
 
+  const [userRoles, setUserRoles] = useState("");
+  // Handling UserRolesApi
+  const handleUserRoleApi = (data) => {
+    setParameters({ ...parameters, roleId: data.value });
+  };
+
   //*********************************************************** */
   // User Status States
   const [userStatus, setUserStatus] = useState([]);
   const StatusOptions = [
-    { value: "True", label: "کاربران فعال" },
-    { value: "False", label: "کاربران غیرفعال" },
-    { value: "True", label: "کاربران حذف شده" },
+    { value: "Active", label: "کاربران فعال" },
+    { value: "DeActive", label: "کاربران غیرفعال" },
+    { value: "Deleted", label: "کاربران حذف شده" },
   ];
   const handleStatusApi = (obj) => {
-    console.log(obj.label);
-    console.log(obj.value);
     if (obj === StatusOptions[0]) {
       delete parameters.IsDeletedUser;
       setParameters({ ...parameters, IsActiveUser: "True" });
@@ -239,9 +243,6 @@ const UsersList = () => {
       setParameters({ ...parameters, IsDeletedUser: "True" });
   };
   // *********************************************************
-  useEffect(() => {
-    console.log(parameters);
-  }, [parameters]);
 
   // ** Function in get data on page change
   const handlePagination = (page) => {
@@ -304,7 +305,10 @@ const UsersList = () => {
                 className="react-select"
                 classNamePrefix="select"
                 theme={selectThemeColors}
-                onChange={() => {}}
+                onChange={(e) => {
+                  handleUserRoleApi(e);
+                  setCurrentRole(e);
+                }}
               />
             </Col>
             <Col className="my-md-0 my-1" md="4">
