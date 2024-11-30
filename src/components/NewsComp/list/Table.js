@@ -1,8 +1,7 @@
 // ** React Imports
 import { Fragment, useState, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { GetUserManageList } from "../../../../@core/services/API/AllUsersAdmin/allUserAdmin";
-
+import AllNewsAdmin from "../../../@core/services/API/AllNewsAdmin/AllNewsAdmin";
 // ** Invoice List Sidebar
 import Sidebar from "./Sidebar";
 
@@ -188,24 +187,24 @@ const CustomHeader = ({
   );
 };
 // MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-const UsersList = () => {
-  const [userList, setUserList] = useState({});
+const NewsList = () => {
+  const [NewsList, setNewsList] = useState({});
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const UserListManage = async (loc) => {
-    const res = await GetUserManageList(loc); //*************************************************************
+  const NewsListManage = async (loc) => {
+    const res = await AllNewsAdmin(loc); //*************************************************************
     console.log(res);
-    setUserList(res.listUser);
+    setNewsList(res.news);
   };
   useEffect(() => {
-    if (location) UserListManage(location.search);
+    if (location) NewsListManage(location.search);
   }, [searchParams]);
   useEffect(() => {
-    if (userList) {
-      console.log(userList, "userListeeeeeeeeeeeeeeeeeeeeeeeee");
-      console.log(userList.length, "lenthgrue");
+    if (NewsList) {
+      console.log(NewsList, "NewsListNewsListNewsListNewsList");
+      console.log(NewsList.length, "lenthgrue");
     }
-  }, [userList]);
+  }, [NewsList]);
 
   // ** Store Vars
   const dispatch = useDispatch();
@@ -335,45 +334,27 @@ const UsersList = () => {
     <Fragment>
       <Card>
         <CardHeader>
-          <CardTitle tag="h4">Filters</CardTitle>
+          <CardTitle tag="h4">AbSquad News Segment</CardTitle>
         </CardHeader>
         <CardBody>
           <Row>
             <Col md="4">
-              <Label for="role-select">Role</Label>
-              <Select
-                isClearable={false}
-                value={currentRole}
-                options={roleOptions}
-                className="react-select"
-                classNamePrefix="select"
-                theme={selectThemeColors}
-                onChange={() => {}}
-              />
+              <Label for="Active">اخبار فعال</Label>
+              <button
+                className="btn btn-primary mt-2"
+                onClick={() => handleFilter("active")}
+              >
+                <span>Filter Active News</span>
+              </button>
             </Col>
             <Col className="my-md-0 my-1" md="4">
-              <Label for="plan-select">Plan</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={planOptions}
-                value={currentPlan}
-                onChange={() => {}}
-              />
-            </Col>
-            <Col md="4">
-              <Label for="status-select">Status</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={statusOptions}
-                value={currentStatus}
-                onChange={() => {}}
-              />
+              <Label for="deActive">اخبار غیرفعال</Label>
+              <button
+                className="btn btn-secondary mt-2"
+                onClick={() => handleFilter("inactive")}
+              >
+                <span>Filter Inactive News</span>
+              </button>
             </Col>
           </Row>
         </CardBody>
@@ -393,7 +374,7 @@ const UsersList = () => {
             sortIcon={<ChevronDown />}
             className="react-dataTable"
             paginationComponent={() => {}}
-            data={userList}
+            data={NewsList}
             // subHeaderComponent={
             //   <CustomHeader
             //     // store={store}
@@ -413,4 +394,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default NewsList;
