@@ -26,6 +26,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Button,
 } from "reactstrap";
 
 // ** Renders Client Columns
@@ -102,7 +103,7 @@ const statusObj = {
 
 export const columns = [
   {
-    name: "User",
+    name: "نام",
     sortable: true,
     minWidth: "300px",
     sortField: "fullName",
@@ -118,83 +119,96 @@ export const columns = [
           >
             <span className="fw-bolder">{row.fname}</span>
           </Link>
-          <small className="text-truncate text-muted mb-0">{row.fname}</small>
+          <small className="text-truncate text-muted mb-0">{row.lname}</small>
         </div>
       </div>
     ),
   },
   {
-    name: "Role",
+    name: "ایمیل",
     sortable: true,
     minWidth: "172px",
     sortField: "role",
     selector: (row) => row.fname,
     cell: (row) => (
-      <span className="fw-bolder text-capitalize">{row.fname}</span>
+      <span className="fw-bolder text-capitalize">{row.gmail}</span>
     ),
   },
   {
-    name: "Plan",
+    name: "شماره موبایل",
     minWidth: "138px",
     sortable: true,
     sortField: "currentPlan",
     selector: (row) => row.fname,
-    cell: (row) => <span className="text-capitalize">{row.fname}</span>,
+    cell: (row) => <span className="text-capitalize">{row.phoneNumber}</span>,
   },
   {
-    name: "Billing",
+    name: "تاریخ",
     minWidth: "230px",
     sortable: true,
     sortField: "billing",
     selector: (row) => row.fname,
-    cell: (row) => <span className="text-capitalize">{row.fname}</span>,
+    cell: (row) => <span className="text-capitalize">{row.insertDate}</span>,
   },
   {
-    name: "Status",
+    name: "وضیعت",
     minWidth: "138px",
     sortable: true,
     sortField: "status",
     selector: (row) => row.fname,
     cell: (row) => (
       <Badge className="text-capitalize" color={statusObj[row.fname]} pill>
-        {row.fname}
+        {row.active}
       </Badge>
     ),
   },
-  // {
-  //   name: "Actions",
-  //   minWidth: "100px",
-  //   cell: (row) => (
-  //     <div className="column-action">
-  //       <UncontrolledDropdown>
-  //         <DropdownToggle tag="div" className="btn btn-sm">
-  //           <MoreVertical size={14} className="cursor-pointer" />
-  //         </DropdownToggle>
-  //         <DropdownMenu>
-  //           <DropdownItem
-  //             tag={Link}
-  //             className="w-100"
-  //             to={`/apps/user/view/${row.id}`}
-  //           >
-  //             <FileText size={14} className="me-50" />
-  //             <span className="align-middle">Details</span>
-  //           </DropdownItem>
-  //           <DropdownItem
-  //             tag="a"
-  //             href="/"
-  //             className="w-100"
-  //             onClick={(e) => e.preventDefault()}
-  //           >
-  //             <Archive size={14} className="me-50" />
-  //             <span className="align-middle">Edit</span>
-  //           </DropdownItem>
-  //           <DropdownItem tag="a" href="/" className="w-100" onClick={() => {}}>
-  //             <Trash2 size={14} className="me-50" />
-  //             <span className="align-middle">Delete</span>
-  //           </DropdownItem>
-  //         </DropdownMenu>
-  //       </UncontrolledDropdown>
-  //     </div>
-  //   ),
-  // },
+  {
+    name: "مدیریت",
+    minWidth: "100px",
+    cell: (row) => (
+      <div className="column-action">
+        <UncontrolledDropdown>
+          <DropdownToggle tag="div" className="btn btn-sm">
+            <MoreVertical size={14} className="cursor-pointer" />
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem
+              tag={Link}
+              className="w-100"
+              to={`/apps/user/view/${row.id}`}
+            >
+              <FileText size={14} className="me-50" />
+              <span className="align-middle">Details</span>
+            </DropdownItem>
+            <DropdownItem
+              tag="a"
+              href="/"
+              className="w-100"
+              onClick={(e) => e.preventDefault()}
+            >
+              <Archive size={14} className="me-50" />
+              <span className="align-middle">Edit</span>
+            </DropdownItem>
+            <DropdownItem tag="a" href="/" className="w-100" onClick={() => {}}>
+              <Trash2 size={14} className="me-50" />
+              <span className="align-middle">Delete</span>
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      </div>
+    ),
+  },
+  {
+    name: "",
+    minWidth: "138px",
+    sortable: true,
+    sortField: "status",
+    selector: (row) => row.fname,
+    cell: (row) => (
+      <div>
+        <Button>hi</Button>
+        <Button>hi</Button>
+      </div>
+    ),
+  },
 ];
