@@ -38,6 +38,12 @@ export default [
         icon: <List size={20} />,
         navLink: "/Course/YourCourseList",
       },
+      {
+        id: "CourseCommentManagement",
+        title: "مدیریت کامنت ها",
+        icon: <List size={20} />,
+        navLink: "/Course/CommentManangement",
+      },
     ],
   },
   {

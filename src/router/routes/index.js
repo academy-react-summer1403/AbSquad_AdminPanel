@@ -38,6 +38,9 @@ const TeacherCourseList = lazy(() =>
   import("../../components/TeacherCourseApp/CourseList/list")
 );
 
+const CommentManagement = lazy(() =>
+  import("../../pages/Course/CommentManagement")
+);
 const UserList = lazy(() => import("../../components/UserApp/user/list"));
 const ArticleList = lazy(() => import("../../components/NewsComp/list"));
 const CourseDetail = lazy(() =>
@@ -65,6 +68,10 @@ const Routes = [
   {
     path: "/Course/YourCourseList",
     element: <TeacherCourseList />,
+  },
+  {
+    path: "/Course/CommentManangement",
+    element: <CommentManagement />,
   },
   {
     path: "/UserList",
