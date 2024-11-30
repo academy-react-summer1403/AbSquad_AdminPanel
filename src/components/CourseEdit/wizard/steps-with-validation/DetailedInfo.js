@@ -13,7 +13,7 @@ import Select from "react-select";
 import { Label, Row, Col, Button, Form } from "reactstrap";
 
 import { GetCreateApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/get.create.api";
-import { CreateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.course.part1.api";
+import { UpdateCourseApi } from "../../../../@core/services/API/AllCoursesAdmin/UpdateCourse/update.course.api";
 
 const StandardOptionsForm = (data, itName) => {
   const array = [];
@@ -40,7 +40,11 @@ const DetailedInfo = ({
   const [courseSemester, setCourseSemester] = useState([]);
   const [courseClass, setCourseClass] = useState([]);
   const [courseTeacher, setCourseTeacher] = useState([]);
-
+  const [courseTypeReal, setCourseTypeReal] = useState({});
+  const [courseLevelReal, setCourseLevelReal] = useState({});
+  const [courseSemesterReal, setCourseSemesterReal] = useState({});
+  const [courseClassReal, setCourseClassReal] = useState({});
+  const [courseTeacherReal, setCourseTeacherReal] = useState({});
   // Get All The Detailed Info Api
   const [getCreate, setGetCreate] = useState({});
   // Handling Get Create Api
@@ -83,53 +87,45 @@ const DetailedInfo = ({
     formState: { errors },
     reset,
   } = useForm();
-
+  const handleDefaultSelectValues = (
+    getCreateName,
+    itemName,
+    initInfoName,
+    teacherApiName
+  ) => {
+    const val = getCreate[`${getCreateName}`].find(
+      (item) => item[`${itemName}`] == initialInfo[`${initInfoName}`]
+    );
+    const finalVal = StandardOptionsForm(
+      [{ ...val }],
+      `${itemName != "teacherId" ? itemName : teacherApiName}`
+    );
+    return finalVal[0];
+  };
   useEffect(() => {
-    if (initialInfo) {
+    if (initialInfo && JSON.stringify(getCreate) !== "{}") {
       reset({
-        CourseTypeId: () => {
-          switch (initialInfo.courseTypeName) {
-            case "حضوری":
-              return { id: 1, value: "حضوری", label: "حضوری" };
-
-            case "آنلاین":
-              return { id: 2, value: "آنلاین", label: "آنلاین" };
-
-            case "حضوری آنلاین":
-              return { id: 3, value: "حضوری آنلاین", label: "حضوری آنلاین" };
-          }
-        },
-        CourseLvlId: () => {
-          switch (initialInfo.courseLevelName) {
-            case "مبتدی":
-              return { id: 1, value: "مبتدی", label: "مبتدی" };
-
-            case "متوسط":
-              return { id: 2, value: "متوسط", label: "متوسط" };
-
-            case "پیشرفته":
-              return { id: 3, value: "پیشرفته", label: "پیشرفته" };
-          }
-        },
-        ClassId: () => {
-          switch (initialInfo.courseClassRoomName) {
-            case "ClassRoom 1":
-              return { id: 1, value: "ClassRoom 1", label: "ClassRoom 1" };
-
-            case "ClassRoom 2":
-              return { id: 2, value: "ClassRoom 2", label: "ClassRoom 2" };
-
-            case "ClassRoom 3":
-              return { id: 3, value: "ClassRoom 3", label: "ClassRoom 3" };
-          }
-        },
-        TeacherId: () => {
-          const te = getCreate.teachers.find(
-            (item) => item.teacherId == initialInfo.teacherId
-          );
-          console.log(te);
-          return te;
-        },
+        CourseTypeId: handleDefaultSelectValues(
+          "courseTypeDtos",
+          "typeName",
+          "courseTypeName"
+        ).id,
+        CourseLvlId: handleDefaultSelectValues(
+          "courseLevelDtos",
+          "levelName",
+          "courseLevelName"
+        ).id,
+        ClassId: handleDefaultSelectValues(
+          "classRoomDtos",
+          "classRoomName",
+          "courseClassRoomName"
+        ).id,
+        TeacherId: handleDefaultSelectValues(
+          "teachers",
+          "teacherId",
+          "teacherId",
+          "fullName"
+        ).id,
       });
     }
   }, [
@@ -137,11 +133,11 @@ const DetailedInfo = ({
     initialInfo.courseTypeName,
     initialInfo.courseTypeName,
     initialInfo.courseClassRoomName,
-    getCreate,
+    getCreate.teachers,
   ]);
   // Api For Creating The Course
   const handleCreateCourse = async (form) => {
-    await CreateCourseApi(form);
+    await UpdateCourseApi(form);
   };
 
   // Handling FInal Data
@@ -165,7 +161,7 @@ const DetailedInfo = ({
       handleFinalData();
     }
   }, [finalData]);
-
+  console.log(finalData);
   return (
     <Fragment>
       <div className="content-header">
@@ -187,8 +183,19 @@ const DetailedInfo = ({
                   classNamePrefix="select"
                   options={courseType}
                   isClearable={false}
-                  value={value}
+                  value={
+                    JSON.stringify(courseTypeReal) != "{}"
+                      ? courseTypeReal
+                      : initialInfo && JSON.stringify(getCreate) !== "{}"
+                      ? handleDefaultSelectValues(
+                          "courseTypeDtos",
+                          "typeName",
+                          "courseTypeName"
+                        )
+                      : {}
+                  }
                   onChange={(e) => {
+                    setCourseTypeReal(e);
                     onChange(e.id);
                   }}
                 />
@@ -208,8 +215,19 @@ const DetailedInfo = ({
                   classNamePrefix="select"
                   options={courseLevel}
                   isClearable={false}
-                  value={value}
+                  value={
+                    JSON.stringify(courseLevelReal) != "{}"
+                      ? courseLevelReal
+                      : initialInfo && JSON.stringify(getCreate) !== "{}"
+                      ? handleDefaultSelectValues(
+                          "courseLevelDtos",
+                          "levelName",
+                          "courseLevelName"
+                        )
+                      : {}
+                  }
                   onChange={(e) => {
+                    setCourseLevelReal(e);
                     onChange(e.id);
                   }}
                 />
@@ -228,10 +246,14 @@ const DetailedInfo = ({
                   className="react-select"
                   classNamePrefix="select"
                   options={courseSemester}
-                  value={value}
+                  value={
+                    JSON.stringify(courseSemesterReal) != "{}"
+                      ? courseSemesterReal
+                      : value
+                  }
                   isClearable={false}
                   onChange={(e) => {
-                    console.log(e);
+                    setCourseSemesterReal(e);
                     onChange(e.id);
                   }}
                 />
@@ -252,9 +274,20 @@ const DetailedInfo = ({
                   className="react-select"
                   classNamePrefix="select"
                   options={courseClass}
-                  value={value}
+                  value={
+                    JSON.stringify(courseClassReal) != "{}"
+                      ? courseClassReal
+                      : initialInfo && JSON.stringify(getCreate) !== "{}"
+                      ? handleDefaultSelectValues(
+                          "classRoomDtos",
+                          "classRoomName",
+                          "courseClassRoomName"
+                        )
+                      : {}
+                  }
                   isClearable={false}
                   onChange={(e) => {
+                    setCourseClassReal(e);
                     onChange(e.id);
                   }}
                 />
@@ -273,9 +306,21 @@ const DetailedInfo = ({
                   className="react-select"
                   classNamePrefix="select"
                   options={courseTeacher}
-                  value={value}
+                  value={
+                    JSON.stringify(courseTeacherReal) != "{}"
+                      ? courseTeacherReal
+                      : initialInfo && JSON.stringify(getCreate) !== "{}"
+                      ? handleDefaultSelectValues(
+                          "teachers",
+                          "teacherId",
+                          "teacherId",
+                          "fullName"
+                        )
+                      : {}
+                  }
                   isClearable={false}
                   onChange={(e) => {
+                    setCourseTeacherReal(e);
                     onChange(e.id);
                   }}
                 />

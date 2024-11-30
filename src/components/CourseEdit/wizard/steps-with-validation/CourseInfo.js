@@ -47,12 +47,14 @@ const CourseInfo = ({
   useEffect(() => {
     if (initialInfo) {
       reset({
+        Id: secondInitialInfo.courseId,
         Title: initialInfo.title,
         Cost: initialInfo.cost,
         Capacity: secondInitialInfo.capacity,
         Describe: initialInfo.describe,
         MiniDescribe: secondInitialInfo.miniDescribe,
-        StartTime: startDate,
+        StartTime: secondInitialInfo.startTime,
+        EndTime: secondInitialInfo.endTime,
 
         // EndTime: endTime,
       });
@@ -104,7 +106,7 @@ const CourseInfo = ({
   };
 
   // Date Options
-  const [startDate, setStartDate] = useState("");
+
   const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
 
   const handleDateConvert = (date) => {
@@ -131,28 +133,33 @@ const CourseInfo = ({
   };
 
   // Getting For Initing The Start
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startDateReal, setStartDateReal] = useState("");
+  const [endDateReal, setEndDateReal] = useState("");
   useEffect(() => {
     if (secondInitialInfo.startTime)
       setStartDate(handleInitDate(secondInitialInfo.startTime));
+    if (secondInitialInfo.endTime)
+      setEndDate(handleInitDate(secondInitialInfo.endTime));
   }, [secondInitialInfo]);
 
   // Setting Dates
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  useEffect(() => {
-    if (initialInfo.startTime) {
-      var isodate = new Date(initialInfo.startTime);
-      var localedateformat = isodate.toLocaleDateString("fa-IR");
-      // const finalDate = localedateformat.replaceAll("/", "-");
-      setStartTime(localedateformat);
-    }
-    if (initialInfo.endTime) {
-      var isodate = new Date(initialInfo.endTime);
-      var localedateformat = isodate.toLocaleDateString("fa-IR");
-      const finalDate = localedateformat.replaceAll("/", "-");
-      setEndTime(finalDate);
-    }
-  }, [initialInfo.startTime, initialInfo.endTime]);
+  // const [startTime, setStartTime] = useState("");
+  // const [endTime, setEndTime] = useState("");
+  // useEffect(() => {
+  //   if (initialInfo.startTime) {
+  //     var isodate = new Date(initialInfo.startTime);
+  //     var localedateformat = isodate.toLocaleDateString("fa-IR");
+  //     setStartTime(localedateformat);
+  //   }
+  //   if (initialInfo.endTime) {
+  //     var isodate = new Date(initialInfo.endTime);
+  //     var localedateformat = isodate.toLocaleDateString("fa-IR");
+  //     const finalDate = localedateformat.replaceAll("/", "-");
+  //     setEndTime(finalDate);
+  //   }
+  // }, [initialInfo.startTime, initialInfo.endTime]);
 
   return (
     <Fragment>
@@ -253,9 +260,10 @@ const CourseInfo = ({
                   className="form-control"
                   placeholder="1403-01-01"
                   options={options}
-                  value={value}
+                  value={startDate ? startDate : value}
                   id="date"
                   onChange={(e) => {
+                    setStartDateReal(e.target.value);
                     onChange(handleDateConvert(e.target.value));
                   }}
                 />
@@ -271,13 +279,15 @@ const CourseInfo = ({
               id="EndTime"
               name="EndTime"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Cleave
                   className="form-control"
                   placeholder="1403-02-01"
                   options={options}
                   id="date"
+                  value={endDate ? endDate : value}
                   onChange={(e) => {
+                    setEndDateReal(e.target.value);
                     onChange(handleDateConvert(e.target.value));
                   }}
                 />
