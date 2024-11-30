@@ -50,17 +50,7 @@ const UsersList = () => {
           />
         </Col>
       </Row>
-
       <Table />
-      <div>
-        <div>
-          <button>
-            <div></div>
-            <span></span>
-          </button>
-        </div>
-        <div></div>
-      </div>
     </div>
   );
 };

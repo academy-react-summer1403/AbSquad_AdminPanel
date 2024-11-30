@@ -55,71 +55,31 @@ const renderClient = (row) => {
   }
 };
 
-// ** Renders Role Columns
-const renderRole = (row) => {
-  const roleObj = {
-    subscriber: {
-      class: "text-primary",
-      icon: User,
-    },
-    "شروع ثبت نام": {
-      class: "text-success",
-      icon: Database,
-    },
-    editor: {
-      class: "text-info",
-      icon: Edit2,
-    },
-    author: {
-      class: "text-warning",
-      icon: Settings,
-    },
-    "منقضی شده": {
-      class: "text-danger",
-      icon: Slack,
-    },
-  };
-
-  const Icon = roleObj[row.fname] ? roleObj[row.fname].icon : Edit2;
-
-  return (
-    <span className="text-truncate text-capitalize align-middle">
-      <Icon
-        size={18}
-        className={`${
-          roleObj[row.fname] ? roleObj[row.fname].class : ""
-        } me-50`}
-      />
-      {row.fname}
-    </span>
-  );
-};
-
 const statusObj = {
-  pending: "light-warning",
-  active: "light-success",
-  inactive: "light-secondary",
+  True: "light-success",
+  False: "light-danger",
 };
 
 export const columns = [
   {
     name: "نام",
     sortable: true,
-    minWidth: "300px",
+    minWidth: "200px",
     sortField: "fullName",
     selector: (row) => row.fname,
     cell: (row) => (
       <div className="d-flex justify-content-left align-items-center">
-        {/* {renderClient(row)} */}
         <div className="d-flex flex-column">
           <Link
             to={`/apps/user/view/${row.id}`}
             className="user_name text-truncate text-body"
             onClick={() => {}}
           >
-            <span className="fw-bolder">{row.fname}</span>
+            <span className="fw-bolder">
+              {row.fname}
+              {" " + row.lname}
+            </span>
           </Link>
-          <small className="text-truncate text-muted mb-0">{row.lname}</small>
         </div>
       </div>
     ),
@@ -127,7 +87,7 @@ export const columns = [
   {
     name: "ایمیل",
     sortable: true,
-    minWidth: "172px",
+    minWidth: "250px",
     sortField: "role",
     selector: (row) => row.fname,
     cell: (row) => (
@@ -144,21 +104,25 @@ export const columns = [
   },
   {
     name: "تاریخ",
-    minWidth: "230px",
+    minWidth: "140px",
     sortable: true,
     sortField: "billing",
     selector: (row) => row.fname,
-    cell: (row) => <span className="text-capitalize">{row.insertDate}</span>,
+    cell: (row) => (
+      <span className="text-capitalize">
+        {new Date(row.insertDate).toLocaleDateString("fa-IR")}
+      </span>
+    ),
   },
   {
-    name: "وضیعت",
-    minWidth: "138px",
+    name: "وضعیت کاربر",
+    minWidth: "100px",
     sortable: true,
     sortField: "status",
     selector: (row) => row.fname,
     cell: (row) => (
-      <Badge className="text-capitalize" color={statusObj[row.fname]} pill>
-        {row.active}
+      <Badge className="text-capitalize" color={statusObj[row.active]} pill>
+        {row.active == "True" ? "فعال" : "غیرفعال"}
       </Badge>
     ),
   },
@@ -166,7 +130,7 @@ export const columns = [
     name: "مدیریت",
     minWidth: "100px",
     cell: (row) => (
-      <div className="column-action">
+      <div className="column-action ">
         <UncontrolledDropdown>
           <DropdownToggle tag="div" className="btn btn-sm">
             <MoreVertical size={14} className="cursor-pointer" />
@@ -205,9 +169,9 @@ export const columns = [
     sortField: "status",
     selector: (row) => row.fname,
     cell: (row) => (
-      <div>
-        <Button>hi</Button>
-        <Button>hi</Button>
+      <div className="d-flex justify-content-right align-items-center text-truncate">
+        <Button color="warning">دسترسی</Button>
+        <Button color="danger">hi</Button>
       </div>
     ),
   },

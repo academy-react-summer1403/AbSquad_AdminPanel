@@ -60,49 +60,6 @@ const CustomHeader = ({
   handleFilter,
   searchTerm,
 }) => {
-  // ** Converts table to CSV
-  function convertArrayOfObjectsToCSV(array) {
-    let result;
-
-    const columnDelimiter = ",";
-    const lineDelimiter = "\n";
-    const keys = Object.keys(store.data[0]);
-
-    result = "";
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
-
-    array.forEach((item) => {
-      let ctr = 0;
-      keys.forEach((key) => {
-        if (ctr > 0) result += columnDelimiter;
-
-        result += item[key];
-
-        ctr++;
-      });
-      result += lineDelimiter;
-    });
-
-    return result;
-  }
-
-  // ** Downloads CSV
-  function downloadCSV(array) {
-    const link = document.createElement("a");
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv === null) return;
-
-    const filename = "export.csv";
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = `data:text/csv;charset=utf-8,${csv}`;
-    }
-
-    link.setAttribute("href", encodeURI(csv));
-    link.setAttribute("download", filename);
-    link.click();
-  }
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
@@ -189,78 +146,102 @@ const CustomHeader = ({
 };
 // MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 const UsersList = () => {
-  const [userList, setUserList] = useState({});
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const UserListManage = async (loc) => {
-    const res = await GetUserManageList(loc); //*************************************************************
-    console.log(res);
-    setUserList(res.listUser);
+  const [userList, setUserList] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [parameters, setParameters] = useState({
+    PageNumber: 1,
+    RowsOfPage: 10,
+  });
+  const UserListManage = async (params) => {
+    const res = await GetUserManageList(params);
+    setUserList(res);
   };
   useEffect(() => {
-    if (location) UserListManage(location.search);
-  }, [searchParams]);
-  useEffect(() => {
-    if (userList) {
-      console.log(userList, "userListeeeeeeeeeeeeeeeeeeeeeeeee");
-      console.log(userList.length, "lenthgrue");
-    }
-  }, [userList]);
-
-  // ** Store Vars
-  const dispatch = useDispatch();
-  const store = useSelector((state) => state.users);
+    UserListManage(parameters);
+  }, [parameters]);
 
   // ** States
-  const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortColumn, setSortColumn] = useState("id");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState({
     value: "",
-    label: "Select Role",
-  });
-  const [currentPlan, setCurrentPlan] = useState({
-    value: "",
-    label: "Select Plan",
+    label: "رول را انتخاب کنید",
   });
   const [currentStatus, setCurrentStatus] = useState({
     value: "",
-    label: "Select Status",
-    number: 0,
+    label: "وضعیت کاربر راانتخاب کنید",
   });
 
-  // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  // ***********************************************************
+  // ** User Roles options
+  const StandardFormSelect = (data) => {
+    const array = data.map((it) => {
+      return { value: it.id, label: `${it.roleName}` };
+    });
+    return array;
+  };
+  const changeRoleName = (data) => {
+    switch (data) {
+      case "Administrator":
+        return "مدیر";
+      case "Teacher":
+        return "استاد";
+      case "Employee.Admin":
+        return "زیرمدیر";
+      case "Employee.Writer":
+        return "نویسنده";
+      case "Student":
+        return "دانشجو";
+      case "CourseAssistance":
+        return "دستیار";
+      case "TournamentAdmin":
+        return "مدیر تورنمنت";
+      case "Referee":
+        return "داور";
+      case "TournamentMentor":
+        return "منتور تورنمنت";
+      case "Support":
+        return "پشتیبان";
+    }
+  };
+  const handleGetRoles = async () => {
+    const res = await GetUserManageList(parameters);
+    setRoles(res.roles);
+  };
+  useEffect(() => {
+    handleGetRoles(parameters);
+  }, []);
 
-  // ** Get data on mount
-
-  // ** User filter options
-  const roleOptions = [
-    { value: "", label: "Select Role" },
-    { value: "admin", label: "Admin" },
-    { value: "author", label: "Author" },
-    { value: "editor", label: "Editor" },
-    { value: "maintainer", label: "Maintainer" },
-    { value: "subscriber", label: "Subscriber" },
+  //*********************************************************** */
+  // User Status States
+  const [userStatus, setUserStatus] = useState([]);
+  const StatusOptions = [
+    { value: "True", label: "کاربران فعال" },
+    { value: "False", label: "کاربران غیرفعال" },
+    { value: "True", label: "کاربران حذف شده" },
   ];
-
-  const planOptions = [
-    { value: "", label: "Select Plan" },
-    { value: "basic", label: "Basic" },
-    { value: "company", label: "Company" },
-    { value: "enterprise", label: "Enterprise" },
-    { value: "team", label: "Team" },
-  ];
-
-  const statusOptions = [
-    { value: "", label: "Select Status", number: 0 },
-    { value: "pending", label: "Pending", number: 1 },
-    { value: "active", label: "Active", number: 2 },
-    { value: "inactive", label: "Inactive", number: 3 },
-  ];
+  const handleStatusApi = (obj) => {
+    console.log(obj.label);
+    console.log(obj.value);
+    if (obj === StatusOptions[0]) {
+      delete parameters.IsDeletedUser;
+      setParameters({ ...parameters, IsActiveUser: "True" });
+    }
+    if (obj === StatusOptions[1]) {
+      {
+        delete parameters.IsDeletedUser;
+        setParameters({ ...parameters, IsActiveUser: "False" });
+      }
+    }
+    if (obj === StatusOptions[2])
+      setParameters({ ...parameters, IsDeletedUser: "True" });
+  };
+  // *********************************************************
+  useEffect(() => {
+    console.log(parameters);
+  }, [parameters]);
 
   // ** Function in get data on page change
   const handlePagination = (page) => {
@@ -304,47 +285,22 @@ const UsersList = () => {
     );
   };
 
-  // ** Table data to render
-  const dataToRender = () => {
-    const filters = {
-      role: currentRole.value,
-      currentPlan: currentPlan.value,
-      status: currentStatus.value,
-      q: searchTerm,
-    };
-
-    const isFiltered = Object.keys(filters).some(function (k) {
-      return filters[k].length > 0;
-    });
-
-    // if (store.data.length > 0) {
-    //   return store.data;
-    // } else if (store.data.length === 0 && isFiltered) {
-    //   return [];
-    // } else {
-    //   return store.allData.slice(0, rowsPerPage);
-    // }
-  };
-
-  const handleSort = (column, sortDirection) => {
-    setSort(sortDirection);
-    setSortColumn(column.sortField);
-  };
-
   return (
     <Fragment>
       <Card>
         <CardHeader>
-          <CardTitle tag="h4">Filters</CardTitle>
+          <CardTitle tag="h4">دسته بندی</CardTitle>
         </CardHeader>
         <CardBody>
           <Row>
             <Col md="4">
-              <Label for="role-select">Role</Label>
+              <Label for="role-select">رول</Label>
               <Select
                 isClearable={false}
                 value={currentRole}
-                options={roleOptions}
+                options={StandardFormSelect(roles).map((it) => {
+                  return { value: it.value, label: changeRoleName(it.label) };
+                })}
                 className="react-select"
                 classNamePrefix="select"
                 theme={selectThemeColors}
@@ -352,27 +308,18 @@ const UsersList = () => {
               />
             </Col>
             <Col className="my-md-0 my-1" md="4">
-              <Label for="plan-select">Plan</Label>
+              <Label for="plan-select">وضعیت کاربر</Label>
               <Select
                 theme={selectThemeColors}
                 isClearable={false}
                 className="react-select"
                 classNamePrefix="select"
-                options={planOptions}
-                value={currentPlan}
-                onChange={() => {}}
-              />
-            </Col>
-            <Col md="4">
-              <Label for="status-select">Status</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={statusOptions}
+                options={StatusOptions}
                 value={currentStatus}
-                onChange={() => {}}
+                onChange={(e) => {
+                  setCurrentStatus(e);
+                  handleStatusApi(e);
+                }}
               />
             </Col>
           </Row>
@@ -392,8 +339,14 @@ const UsersList = () => {
             onSort={() => {}}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
-            paginationComponent={() => {}}
-            data={userList}
+            // paginationComponent={() => {}}
+            data={
+              userList.listUser != undefined
+                ? userList.listUser.map((it) => {
+                    return { ...it };
+                  })
+                : []
+            }
             // subHeaderComponent={
             //   <CustomHeader
             //     // store={store}
