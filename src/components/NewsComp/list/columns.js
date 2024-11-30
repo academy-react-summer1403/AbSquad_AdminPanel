@@ -26,6 +26,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Button,
 } from "reactstrap";
 
 // ** Renders Client Columns
@@ -48,7 +49,7 @@ const renderClient = (row) => {
         initials
         className="me-1"
         color={"light-primary"}
-        content={row.fname || "John Doe"}
+        content={row.title || "John Doe"}
       />
     );
   }
@@ -79,17 +80,17 @@ const renderRole = (row) => {
     },
   };
 
-  const Icon = roleObj[row.fname] ? roleObj[row.fname].icon : Edit2;
+  const Icon = roleObj[row.title] ? roleObj[row.title].icon : Edit2;
 
   return (
     <span className="text-truncate text-capitalize align-middle">
       <Icon
         size={18}
         className={`${
-          roleObj[row.fname] ? roleObj[row.fname].class : ""
+          roleObj[row.title] ? roleObj[row.title].class : ""
         } me-50`}
       />
-      {row.fname}
+      {row.title}
     </span>
   );
 };
@@ -102,11 +103,11 @@ const statusObj = {
 
 export const columns = [
   {
-    name: "User",
+    name: "نام بلاگ",
     sortable: true,
     minWidth: "300px",
     sortField: "fullName",
-    selector: (row) => row.fname,
+    selector: (row) => row.title,
     cell: (row) => (
       <div className="d-flex justify-content-left align-items-center">
         {/* {renderClient(row)} */}
@@ -116,85 +117,86 @@ export const columns = [
             className="user_name text-truncate text-body"
             onClick={() => {}}
           >
-            <span className="fw-bolder">{row.fname}</span>
+            <span className="fw-bolder">{row.title}</span>
           </Link>
-          <small className="text-truncate text-muted mb-0">{row.fname}</small>
+          <small className="text-truncate text-muted mb-0">{row.title}</small>
         </div>
       </div>
     ),
   },
   {
-    name: "Role",
+    name: "دسته بندی",
     sortable: true,
     minWidth: "172px",
     sortField: "role",
-    selector: (row) => row.fname,
+    selector: (row) => row.title,
     cell: (row) => (
-      <span className="fw-bolder text-capitalize">{row.fname}</span>
+      <span className="fw-bolder text-capitalize">{row.newsCatregoryName}</span>
     ),
   },
   {
-    name: "Plan",
+    name: "اخرین اپدیت",
     minWidth: "138px",
     sortable: true,
     sortField: "currentPlan",
-    selector: (row) => row.fname,
-    cell: (row) => <span className="text-capitalize">{row.fname}</span>,
+    selector: (row) => row.title,
+    cell: (row) => <span className="text-capitalize">{row.updateDate}</span>,
   },
   {
-    name: "Billing",
+    name: "تعداد بازدید",
     minWidth: "230px",
     sortable: true,
     sortField: "billing",
-    selector: (row) => row.fname,
-    cell: (row) => <span className="text-capitalize">{row.fname}</span>,
+    selector: (row) => row.title,
+    cell: (row) => <span className="text-capitalize">{row.currentView}</span>,
   },
   {
-    name: "Status",
+    name: "وضیعت",
     minWidth: "138px",
     sortable: true,
     sortField: "status",
-    selector: (row) => row.fname,
+    selector: (row) => row.title,
     cell: (row) => (
-      <Badge className="text-capitalize" color={statusObj[row.fname]} pill>
-        {row.fname}
+      <Badge className="text-capitalize" color={statusObj[row.title]} pill>
+        {row.isActive}
       </Badge>
     ),
   },
-  // {
-  //   name: "Actions",
-  //   minWidth: "100px",
-  //   cell: (row) => (
-  //     <div className="column-action">
-  //       <UncontrolledDropdown>
-  //         <DropdownToggle tag="div" className="btn btn-sm">
-  //           <MoreVertical size={14} className="cursor-pointer" />
-  //         </DropdownToggle>
-  //         <DropdownMenu>
-  //           <DropdownItem
-  //             tag={Link}
-  //             className="w-100"
-  //             to={`/apps/user/view/${row.id}`}
-  //           >
-  //             <FileText size={14} className="me-50" />
-  //             <span className="align-middle">Details</span>
-  //           </DropdownItem>
-  //           <DropdownItem
-  //             tag="a"
-  //             href="/"
-  //             className="w-100"
-  //             onClick={(e) => e.preventDefault()}
-  //           >
-  //             <Archive size={14} className="me-50" />
-  //             <span className="align-middle">Edit</span>
-  //           </DropdownItem>
-  //           <DropdownItem tag="a" href="/" className="w-100" onClick={() => {}}>
-  //             <Trash2 size={14} className="me-50" />
-  //             <span className="align-middle">Delete</span>
-  //           </DropdownItem>
-  //         </DropdownMenu>
-  //       </UncontrolledDropdown>
-  //     </div>
-  //   ),
-  // },
+  {
+    name: "انجام عملیات",
+    minWidth: "100px",
+    cell: (row) => (
+      <div className="column-action">
+        <UncontrolledDropdown>
+          <DropdownToggle tag="div" className="btn btn-sm">
+            <MoreVertical size={14} className="cursor-pointer" />
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem
+              tag={Link}
+              className="w-100"
+              to={`/apps/user/view/${row.id}`}
+            >
+              <FileText size={14} className="me-50" />
+              <span className="align-middle">Details</span>
+            </DropdownItem>
+            <DropdownItem
+              tag="a"
+              href="/"
+              className="w-100"
+              onClick={(e) => e.preventDefault()}
+            >
+              <Archive size={14} className="me-50" />
+              <span className="align-middle">Edit</span>
+            </DropdownItem>
+            <DropdownItem tag="a" href="/" className="w-100" onClick={() => {}}>
+              <Trash2 size={14} className="me-50" />
+              <span className="align-middle">Delete</span>
+            </DropdownItem>
+          </DropdownMenu>
+          <Button>hi</Button>
+        </UncontrolledDropdown>
+      </div>
+    ),
+  },
 ];
