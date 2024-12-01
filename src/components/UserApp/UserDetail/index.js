@@ -7,9 +7,9 @@ import axios from "axios";
 // ** Custom Components
 import UILoader from "@components/ui-loader";
 import Breadcrumbs from "@components/breadcrumbs";
-
+import { AlignJustify, Rss, Info, Image, Users, Edit } from "react-feather";
 // ** Reactstrap Imports
-import { Row, Col, Button } from "reactstrap";
+import { Row, Col, Button, Nav, NavItem, NavLink, Collapse } from "reactstrap";
 
 // ** Demo Components
 // import ProfilePoll from "./ProfilePolls";
@@ -25,9 +25,12 @@ import ProfileHeader from "./ProfileHeader";
 import "@styles/react/pages/page-profile.scss";
 import { useParams } from "react-router-dom";
 import { GetUserDetail } from "../../../@core/services/API/AllUsersAdmin/UserEdit/user.details.api";
+import ProfileSocialMedia from "./ProfileSocialMedia";
+import ProfileRoles from "./ProfileRoles";
 
 const UserDetailApp = () => {
   const { id } = useParams();
+  const [isOpen, setIsOpen] = useState("course");
   // *************************************************
   // Getting User Detail
   const [detail, setDetail] = useState({});
@@ -79,46 +82,67 @@ const UserDetailApp = () => {
                 sm={{ size: 12 }}
                 xs={{ order: 2 }}
               >
-                <ProfileAbout
-                  user={detail ? { ...detail, bg: "/UserBg.jpg" } : {}}
-                />
+                <ProfileAbout user={detail ? { ...detail } : {}} />
+              </Col>
+              <Col
+                lg={{ size: 3, order: 1 }}
+                sm={{ size: 12 }}
+                xs={{ order: 2 }}
+              >
+                <ProfileSocialMedia user={detail ? { ...detail } : {}} />
                 {/*<ProfileSuggestedPages data={data.suggestedPages} />
                 <ProfileTwitterFeeds data={data.twitterFeeds} /> */}
               </Col>
-              <Col
-                lg={{ size: 6, order: 2 }}
-                sm={{ size: 12 }}
-                xs={{ order: 1 }}
-              >
-                {/* <ProfilePosts data={data.post} /> */}
-              </Col>
+
               <Col
                 lg={{ size: 3, order: 3 }}
                 sm={{ size: 12 }}
                 xs={{ order: 3 }}
               >
-                {/* <ProfileLatestPhotos data={data.latestPhotos} /> */}
-                {/* <ProfileFriendsSuggestions data={data.suggestions} /> */}
-                {/* <ProfilePoll data={data.polls} /> */}
+                <ProfileRoles user={detail ? { ...detail } : {}} />
               </Col>
             </Row>
             <Row>
-              <Col className="text-center" sm="12">
-                <Button
-                  color="primary"
-                  className="border-0 mb-1 profile-load-more"
-                  size="sm"
-                  onClick={handleBlock}
-                >
-                  <UILoader
-                    blocking={block}
-                    overlayColor="rgba(255,255,255, .5)"
-                  >
-                    <span> Load More</span>
-                  </UILoader>
-                </Button>
-              </Col>
+              <Collapse isOpen={true} navbar>
+                <div className="profile-tabs d-flex justify-content-between flex-wrap mt-1 mt-md-0">
+                  <Nav className="mb-0" pills>
+                    <NavItem>
+                      <NavLink
+                        className="fw-bold"
+                        onClick={(e) => {
+                          setIsOpen("course");
+                        }}
+                        active={isOpen === "course"}
+                      >
+                        <span className="d-none d-md-block">
+                          لیست دوره های کاربر
+                        </span>
+                        <Rss className="d-block d-md-none" size={14} />
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className="fw-bold"
+                        onClick={() => {
+                          setIsOpen("reserve");
+                        }}
+                        active={isOpen === "reserve"}
+                      >
+                        <span className="d-none d-md-block">
+                          لیست دوره های رزرو شده
+                        </span>
+                        <Info className="d-block d-md-none" size={14} />
+                      </NavLink>
+                    </NavItem>
+                  </Nav>
+                  <Button color="primary">
+                    <Edit className="d-block d-md-none" size={14} />
+                    <span className="fw-bold d-none d-md-block">Edit</span>
+                  </Button>
+                </div>
+              </Collapse>
             </Row>
+            <Row>s</Row>
           </section>
         </div>
       ) : null}
