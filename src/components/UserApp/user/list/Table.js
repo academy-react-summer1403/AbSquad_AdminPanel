@@ -4,6 +4,8 @@ import { GetUserManageList } from "../../../../@core/services/API/AllUsersAdmin/
 
 // ** Invoice List Sidebar
 import Sidebar from "./Sidebar";
+// Add User
+import AddUser from "./AddCard";
 
 // ** Table Columns
 import { columns } from "./columns";
@@ -58,6 +60,8 @@ const CustomHeader = ({
   parameters,
   rowsPerPage,
   setRowsPerPage,
+  show,
+  setShow,
 }) => {
   // const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -119,7 +123,7 @@ const CustomHeader = ({
               className="add-new-user"
               color="primary"
               onClick={() => {
-                navigate("/Course/AddNewCourse");
+                setShow(true);
               }}
             >
               ساخت کاربر
@@ -132,6 +136,7 @@ const CustomHeader = ({
 };
 // MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 const UsersList = () => {
+  const [show, setShow] = useState(false);
   const [userList, setUserList] = useState([]);
   const [roles, setRoles] = useState([]);
   const [parameters, setParameters] = useState({
@@ -143,7 +148,6 @@ const UsersList = () => {
     setUserList(res);
   };
   useEffect(() => {
-    console.log(parameters);
     UserListManage(parameters);
   }, [parameters]);
 
@@ -209,7 +213,7 @@ const UsersList = () => {
 
   //*********************************************************** */
   // User Status States
-  const [userStatus, setUserStatus] = useState([]);
+
   const StatusOptions = [
     { value: "Active", label: "کاربران فعال" },
     { value: "DeActive", label: "کاربران غیرفعال" },
@@ -249,7 +253,6 @@ const UsersList = () => {
     setSearchTerm(val);
   };
   useEffect(() => {
-    console.log(currentPage);
     setParameters({ ...parameters, PageNumber: currentPage + 1 });
   }, [currentPage]);
   // ** Custom Pagination
@@ -358,7 +361,8 @@ const UsersList = () => {
             }
             subHeaderComponent={
               <CustomHeader
-                // store={store}
+                show={show}
+                setShow={setShow}
                 setSearchTerm={setSearchTerm}
                 searchTerm={searchTerm}
                 setParameters={setParameters}
@@ -370,7 +374,7 @@ const UsersList = () => {
           />
         </div>
       </Card>
-
+      <AddUser show={show} setShow={setShow} />
       <Sidebar open={sidebarOpen} toggleSidebar={() => {}} />
     </Fragment>
   );
