@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Row, Col, Button } from "reactstrap";
 import InputGroupMerged from "./InputGroupMerged";
 import ImageUpload from "./ImageUpload";
+import { CreateNewNews } from "../../@core/services/API/AllNewsAdmin/AddNewNews/CreateNewNews";
 
 const AddNewNews = () => {
   const [formData, setFormData] = useState({
-    title: "",
+    Title: "",
     category: null,
     shortDescription: "",
     keywords: "",
@@ -26,79 +27,57 @@ const AddNewNews = () => {
   // Submit form data to the API
   const handleSubmit = async () => {
     try {
-      // Pre-validation: Ensure required fields are not empty
-      if (
-        !formData.title ||
-        !formData.googleTitle ||
-        !formData.googleDescription ||
-        !formData.shortDescription ||
-        !formData.blogDescription ||
-        !formData.keywords ||
-        !formData.TumbImageAddress ||
-        !formData.category?.value
-      ) {
-        console.error("All required fields must be filled.");
-        alert("Please fill in all required fields before submitting.");
-        return;
-      }
-
-      // Create FormData object
       const formDataToSend = new FormData();
-      formDataToSend.append("Title", formData.title);
+      formDataToSend.append("Title", formData.Title);
       formDataToSend.append("GoogleTitle", formData.googleTitle);
       formDataToSend.append("GoogleDescribe", formData.googleDescription);
       formDataToSend.append("MiniDescribe", formData.shortDescription);
       formDataToSend.append("Describe", formData.blogDescription);
       formDataToSend.append("Keyword", formData.keywords);
       formDataToSend.append("IsSlider", formData.isSlider || false); // Boolean
-      formDataToSend.append("NewsCategoryId", formData.category?.value); // Integer
+      formDataToSend.append("NewsCatregoryId", formData.category?.value); // Integer
       if (formData.TumbImageAddress instanceof File) {
         formDataToSend.append("Image", formData.TumbImageAddress); // File
       } else if (typeof formData.TumbImageAddress === "string") {
-        formDataToSend.append("Image", formData.TumbImageAddress); // Base64
+        formDataToSend.append("Image", formData.TumbImageAddress); // Base64 string
       }
 
-      // Log FormData for debugging
+      // Log FormData entries
+      console.log("FormData content:");
       for (let [key, value] of formDataToSend.entries()) {
-        console.log(`${key}: ${value}`);
+        if (value instanceof File) {
+          console.log(`${key}: File -`, value.name, value.size, value.type);
+        } else if (typeof value === "string" && value.length > 50) {
+          console.log(`${key}:`, value.substring(0, 50) + "...");
+        } else {
+          console.log(`${key}:`, value);
+        }
       }
-
-      // Retrieve token from localStorage
       const token = localStorage.getItem("token");
 
-      // Send the request
-      const response = await fetch(
-        "https://classapi.sepehracademy.ir/api/News/CreateNews",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`, // Authorization header
-          },
-          body: formDataToSend, // FormData
-        }
-      );
-      //axios use................................................................................
-      // Handle response
-      if (response.ok) {
-        const responseData = await response.json();
+      const res = await CreateNewNews(formDataToSend);
+      console.log(res);
+
+      if (res.ok) {
+        const responseData = await res.json();
         console.log("Form submitted successfully:", responseData);
         alert("News successfully added!");
       } else {
-        const errorData = await response.json();
+        const errorData = await res.json();
         console.error("Submission failed:", errorData);
-        alert("Submission failed: " + JSON.stringify(errorData.ErrorMessage));
+        // alert("Submission failed: " + JSON.stringify(errorData.ErrorMessage));
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("An error occurred. Please try again.");
+      // alert("An error occurred. Please try again.");
     }
   };
 
   return (
     <>
       <Row>
-        <Col className="d-flex align-items-center p-0">
-          <div>اضافه کردن دوره</div>
+        <Col className="d-flex align-items-center p-0 mb-2">
+          <div>اضافه کردن خبر</div>
         </Col>
       </Row>
       <Row>
@@ -113,7 +92,7 @@ const AddNewNews = () => {
         <Col sm="12">
           <ImageUpload
             stepper={{
-              next: () => console.log("Proceeding to next step..."), // Dummy stepper function
+              next: () => console.log("Proceeding to next step..."),
             }}
             setFinalData={(updatedData) => {
               setFormData((prev) => ({
@@ -121,7 +100,7 @@ const AddNewNews = () => {
                 ...updatedData,
               }));
             }}
-            formData={formData} // Pass shared state
+            formData={formData}
           />
         </Col>
       </Row>

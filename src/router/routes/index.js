@@ -52,6 +52,9 @@ const AddNewCourse = lazy(() => import("../../pages/Course/AddNewCourse"));
 const AddNewNews = lazy(() =>
   import("../../components/AddNewNews/AddNewNews.js")
 );
+const NewsDetails = lazy(() =>
+  import("../../components/NewsDetails/blog/details/index.js")
+);
 // ** Merge Routes
 const Routes = [
   {
@@ -86,6 +89,10 @@ const Routes = [
   {
     path: "/Artcle/AddNewArticle",
     element: <AddNewNews />,
+  },
+  {
+    path: "/Artcle/NewsDetails/:id?",
+    element: <NewsDetails />,
   },
   {
     path: "/Artcle/categoriesList",

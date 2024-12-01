@@ -1,5 +1,5 @@
 // ** React Imports
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
@@ -154,11 +154,11 @@ export const columns = [
     name: "وضیعت",
     minWidth: "138px",
     sortable: true,
-    sortField: "status",
-    selector: (row) => row.title,
+    sortField: "isActive",
+    selector: (row) => row.isActive,
     cell: (row) => (
-      <Badge className="text-capitalize" color={statusObj[row.title]} pill>
-        {row.isActive}
+      <Badge className="text-capitalize" color={statusObj[row.isActive]} pill>
+        {`${row.isActive}`}
       </Badge>
     ),
   },
@@ -175,11 +175,12 @@ export const columns = [
             <DropdownItem
               tag={Link}
               className="w-100"
-              to={`/apps/user/view/${row.id}`}
+              to={`/Artcle/NewsDetails/${row.id}`}
             >
               <FileText size={14} className="me-50" />
-              <span className="align-middle">Details</span>
+              <span className="align-middle">جزئیات</span>
             </DropdownItem>
+
             <DropdownItem
               tag="a"
               href="/"
@@ -187,14 +188,10 @@ export const columns = [
               onClick={(e) => e.preventDefault()}
             >
               <Archive size={14} className="me-50" />
-              <span className="align-middle">Edit</span>
-            </DropdownItem>
-            <DropdownItem tag="a" href="/" className="w-100" onClick={() => {}}>
-              <Trash2 size={14} className="me-50" />
-              <span className="align-middle">Delete</span>
+              <span className="align-middle">ویرایش</span>
             </DropdownItem>
           </DropdownMenu>
-          <Button>hi</Button>
+          <Button>غیرفعال کردن</Button>
         </UncontrolledDropdown>
       </div>
     ),

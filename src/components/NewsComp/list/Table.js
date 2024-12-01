@@ -4,6 +4,7 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import AllNewsAdmin from "../../../@core/services/API/AllNewsAdmin/AllNewsAdmin";
 // ** Invoice List Sidebar
 import Sidebar from "./Sidebar";
+import { NavLink } from "react-router-dom";
 
 // ** Table Columns
 import { columns } from "./columns";
@@ -355,6 +356,13 @@ const NewsList = () => {
               >
                 <span>Filter Inactive News</span>
               </button>
+            </Col>
+            <Col>
+              <NavLink to="/Artcle/AddNewArticle">
+                <button className="btn btn-primary mt-2">
+                  اضافه کردن خبر جدید
+                </button>
+              </NavLink>
             </Col>
           </Row>
         </CardBody>

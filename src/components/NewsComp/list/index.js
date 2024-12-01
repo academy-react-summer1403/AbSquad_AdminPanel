@@ -12,12 +12,11 @@ import { User, UserPlus, UserCheck, UserX } from "react-feather";
 
 // ** Styles
 import "@styles/react/apps/app-users.scss";
+import { NavLink } from "react-router-dom";
 
 const NewsList = () => {
   return (
     <div className="app-user-list">
-      <Row></Row>
-
       <Table />
     </div>
   );
