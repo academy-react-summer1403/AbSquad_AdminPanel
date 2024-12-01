@@ -192,7 +192,7 @@ export const columns = [
           }}
           color="danger"
         >
-          hi
+          حذف
         </Button>
       </div>
     ),
