@@ -8,9 +8,7 @@ const ProfileRoles = ({ user }) => {
   useEffect(() => {
     if (user) setUserRoles(user.roles);
   }, [user]);
-  useEffect(() => {
-    if (userRoles) console.log(userRoles);
-  }, [userRoles]);
+
   const changeRoleName = (data) => {
     switch (data) {
       case "Administrator":

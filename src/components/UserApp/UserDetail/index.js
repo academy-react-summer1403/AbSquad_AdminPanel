@@ -25,8 +25,12 @@ import ProfileHeader from "./ProfileHeader";
 import "@styles/react/pages/page-profile.scss";
 import { useParams } from "react-router-dom";
 import { GetUserDetail } from "../../../@core/services/API/AllUsersAdmin/UserEdit/user.details.api";
+
+import UserCourseTable from "./CourseTable";
+import UserReserveTable from "./ReserveTable";
 import ProfileSocialMedia from "./ProfileSocialMedia";
 import ProfileRoles from "./ProfileRoles";
+import { GetCourseDetailApi } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.course.detail.api";
 
 const UserDetailApp = () => {
   const { id } = useParams();
@@ -38,27 +42,17 @@ const UserDetailApp = () => {
     const res = await GetUserDetail(id);
     setDetail(res);
   };
-  useEffect(() => {
-    if (detail) console.log(detail);
-  }, [detail]);
 
   useEffect(() => {
     handleGetUserDetail(id);
   }, []);
   // ** States
-  const [block, setBlock] = useState(false);
   const [data, setData] = useState({
     coverImg: "/UserBg.jpg",
     avatar: "/ErrImg.jpg",
     username: "asdasasdhassalyfuaguyasftuasuda",
     designation: "koskho",
   });
-  const handleBlock = () => {
-    setBlock(true);
-    setTimeout(() => {
-      setBlock(false);
-    }, 2000);
-  };
 
   return (
     <Fragment>
@@ -142,7 +136,16 @@ const UserDetailApp = () => {
                 </div>
               </Collapse>
             </Row>
-            <Row>s</Row>
+            <Row>
+              {isOpen == "course" ? (
+                <UserCourseTable user={detail ? detail : {}} />
+              ) : (
+                <UserReserveTable
+                  user={detail ? detail : {}}
+                  getCourseApi={GetCourseDetailApi}
+                />
+              )}
+            </Row>
           </section>
         </div>
       ) : null}
