@@ -1,7 +1,12 @@
 ﻿import React from "react";
+import EditUserApp from "../../components/UserApp/EditUserApp/EditCourseApp";
 
 const EditUser = () => {
-  return <div>EditUser</div>;
+  return (
+    <>
+      <EditUserApp />
+    </>
+  );
 };
 
 export default EditUser;
