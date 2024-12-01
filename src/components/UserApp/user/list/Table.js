@@ -122,7 +122,7 @@ const CustomHeader = ({
                 navigate("/Course/AddNewCourse");
               }}
             >
-              ساخت دوره
+              ساخت کاربر
             </Button>
           </div>
         </Col>

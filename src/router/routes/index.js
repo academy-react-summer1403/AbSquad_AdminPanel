@@ -34,9 +34,13 @@ const Error = lazy(() => import("../../pages/Error"));
 const CourseList = lazy(() =>
   import("../../components/CourseApp/CourseList/list")
 );
+
 const TeacherCourseList = lazy(() =>
   import("../../components/TeacherCourseApp/CourseList/list")
 );
+
+const EditUser = lazy(() => import("../../pages/Users/EditUser.js"));
+const UserDetail = lazy(() => import("../../pages/Users/UserDetail.js"));
 
 const CommentManagement = lazy(() =>
   import("../../pages/Course/CommentManagement")
@@ -78,6 +82,14 @@ const Routes = [
   {
     path: "/UserList",
     element: <UserList />,
+  },
+  {
+    path: "/UserList/EditUser/:id?",
+    element: <EditUser />,
+  },
+  {
+    path: "/UserList/UserDetail/:id?",
+    element: <UserDetail />,
   },
   {
     path: "/Artcle/articleList",
