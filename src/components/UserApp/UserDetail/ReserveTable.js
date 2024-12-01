@@ -20,6 +20,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useNavigate } from "react-router-dom";
 import { ReserveCol } from "./ReserveCol";
+import { GetCourseDetailApi } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.course.detail.api";
 
 // ** Get Courses Api *************************************************************************************
 
@@ -112,6 +113,8 @@ const UserReserveTable = ({ user, getCourseApi }) => {
   const [userCourses, setUserCourses] = useState([]);
   const [coursesCount, setCoursesCount] = useState([]);
 
+  // End Of Reserve Part
+  // *******************************************************
   useEffect(() => {
     if (user.coursesReseves) {
       setCoursesCount(user.coursesReseves.length);
@@ -179,6 +182,7 @@ const UserReserveTable = ({ user, getCourseApi }) => {
                     return {
                       ...it,
                       getCourseApi: getCourseApi,
+                      GetCourseDetailApi: GetCourseDetailApi,
                     };
                   })
                 : []
