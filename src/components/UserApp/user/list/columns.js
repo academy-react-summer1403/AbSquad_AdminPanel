@@ -153,7 +153,7 @@ export const columns = [
               <Archive size={14} className="me-50" />
               <span className="align-middle">Edit</span>
             </DropdownItem>
-            <DropdownItem tag="a" href="/" className="w-100" onClick={() => {}}>
+            <DropdownItem tag="a" href="/" className="w-100">
               <Trash2 size={14} className="me-50" />
               <span className="align-middle">Delete</span>
             </DropdownItem>
@@ -178,7 +178,12 @@ export const columns = [
         >
           دسترسی
         </Button>
-        <Button onClick={() => {}} color="danger">
+        <Button
+          onClick={() => {
+            row.handleDeleteUser({ userId: row.id });
+          }}
+          color="danger"
+        >
           hi
         </Button>
       </div>

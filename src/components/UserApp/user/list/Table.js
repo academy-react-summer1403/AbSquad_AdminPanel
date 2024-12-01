@@ -48,6 +48,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { AddRoleApi } from "../../../../@core/services/API/AllUsersAdmin/add.role.api";
 import { param } from "jquery";
 import { useNavigate } from "react-router-dom";
+import { DeleteUserApi } from "../../../../@core/services/API/AllUsersAdmin/delete.user.api";
 
 // ** Table Header
 const CustomHeader = ({
@@ -232,21 +233,15 @@ const UsersList = () => {
   };
   // *********************************************************
 
+  // Deleting User Handle
+  // *********************************************************
+  const handleDeleteUser = async (obj) => {
+    console.log(obj);
+    await DeleteUserApi(obj);
+  };
   // Handling Adding Role To User
   const handleAddRole = async (bool, data) => {
     await AddRoleApi(bool, data);
-  };
-
-  // ** Function in get data on page change
-  const handlePagination = (page) => {
-    setCurrentPage(page.selected + 1);
-  };
-
-  // ** Function in get data on rows per page
-  const handlePerPage = (e) => {
-    const value = parseInt(e.currentTarget.value);
-
-    setRowsPerPage(value);
   };
 
   // ** Function in get data on search query change
@@ -353,7 +348,11 @@ const UsersList = () => {
             data={
               userList.listUser != undefined
                 ? userList.listUser.map((it) => {
-                    return { ...it, handleAddRole: handleAddRole };
+                    return {
+                      ...it,
+                      handleAddRole: handleAddRole,
+                      handleDeleteUser: handleDeleteUser,
+                    };
                   })
                 : []
             }
