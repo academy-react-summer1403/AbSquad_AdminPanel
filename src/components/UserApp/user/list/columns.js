@@ -170,8 +170,17 @@ export const columns = [
     selector: (row) => row.fname,
     cell: (row) => (
       <div className="d-flex justify-content-right align-items-center text-truncate">
-        <Button color="warning">دسترسی</Button>
-        <Button color="danger">hi</Button>
+        <Button
+          onClick={() => {
+            row.handleAddRole(true, { roleId: "5", userId: row.id });
+          }}
+          color="warning"
+        >
+          دسترسی
+        </Button>
+        <Button onClick={() => {}} color="danger">
+          hi
+        </Button>
       </div>
     ),
   },

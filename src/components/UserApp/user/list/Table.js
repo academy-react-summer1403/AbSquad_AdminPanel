@@ -1,6 +1,5 @@
 // ** React Imports
 import { Fragment, useState, useEffect } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
 import { GetUserManageList } from "../../../../@core/services/API/AllUsersAdmin/allUserAdmin";
 
 // ** Invoice List Sidebar
@@ -8,10 +7,6 @@ import Sidebar from "./Sidebar";
 
 // ** Table Columns
 import { columns } from "./columns";
-
-// ** Store & Actions
-import { getAllData, getData } from "../store";
-import { useDispatch, useSelector } from "react-redux";
 
 // ** Third Party Components
 import Select from "react-select";
@@ -50,35 +45,52 @@ import {
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { AddRoleApi } from "../../../../@core/services/API/AllUsersAdmin/add.role.api";
+import { param } from "jquery";
+import { useNavigate } from "react-router-dom";
 
 // ** Table Header
 const CustomHeader = ({
-  store,
-  toggleSidebar,
-  handlePerPage,
-  rowsPerPage,
-  handleFilter,
   searchTerm,
+  setSearchTerm,
+  setParameters,
+  parameters,
+  rowsPerPage,
+  setRowsPerPage,
 }) => {
+  // const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // Search
+  const handleSearch = (val) => {};
+  // Use Navigate
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    setParameters({ ...parameters, RowsOfPage: rowsPerPage });
+  }, [rowsPerPage]);
+  useEffect(() => {
+    setParameters({ ...parameters, Query: searchTerm });
+  }, [searchTerm]);
+
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
         <Col xl="6" className="d-flex align-items-center p-0">
           <div className="d-flex align-items-center w-100">
-            <label htmlFor="rows-per-page">Show</label>
+            <label htmlFor="rows-per-page">تعداد:</label>
             <Input
               className="mx-50"
+              onChange={(e) => {
+                setRowsPerPage(parseInt(e.target.value));
+              }}
               type="select"
               id="rows-per-page"
-              value={rowsPerPage}
-              onChange={handlePerPage}
               style={{ width: "5rem" }}
             >
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
             </Input>
-            <label htmlFor="rows-per-page">Entries</label>
           </div>
         </Col>
         <Col
@@ -87,56 +99,29 @@ const CustomHeader = ({
         >
           <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
             <label className="mb-0" htmlFor="search-invoice">
-              Search:
+              جستجو:
             </label>
             <Input
               id="search-invoice"
               className="ms-50 w-100"
               type="text"
               value={searchTerm}
-              onChange={(e) => handleFilter(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                handleSearch(searchTerm);
+              }}
             />
           </div>
 
           <div className="d-flex align-items-center table-header-actions">
-            <UncontrolledDropdown className="me-1">
-              <DropdownToggle color="secondary" caret outline>
-                <Share className="font-small-4 me-50" />
-                <span className="align-middle">Export</span>
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className="w-100">
-                  <Printer className="font-small-4 me-50" />
-                  <span className="align-middle">Print</span>
-                </DropdownItem>
-                <DropdownItem
-                  className="w-100"
-                  onClick={() => downloadCSV(store.data)}
-                >
-                  <FileText className="font-small-4 me-50" />
-                  <span className="align-middle">CSV</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <Grid className="font-small-4 me-50" />
-                  <span className="align-middle">Excel</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <File className="font-small-4 me-50" />
-                  <span className="align-middle">PDF</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <Copy className="font-small-4 me-50" />
-                  <span className="align-middle">Copy</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-
             <Button
               className="add-new-user"
               color="primary"
-              onClick={toggleSidebar}
+              onClick={() => {
+                navigate("/Course/AddNewCourse");
+              }}
             >
-              Add New User
+              ساخت دوره
             </Button>
           </div>
         </Col>
@@ -157,12 +142,13 @@ const UsersList = () => {
     setUserList(res);
   };
   useEffect(() => {
+    console.log(parameters);
     UserListManage(parameters);
   }, [parameters]);
 
   // ** States
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState({
@@ -239,10 +225,17 @@ const UsersList = () => {
         setParameters({ ...parameters, IsActiveUser: "False" });
       }
     }
-    if (obj === StatusOptions[2])
+    if (obj === StatusOptions[2]) {
+      delete parameters.IsActiveUser;
       setParameters({ ...parameters, IsDeletedUser: "True" });
+    }
   };
   // *********************************************************
+
+  // Handling Adding Role To User
+  const handleAddRole = async (bool, data) => {
+    await AddRoleApi(bool, data);
+  };
 
   // ** Function in get data on page change
   const handlePagination = (page) => {
@@ -260,19 +253,26 @@ const UsersList = () => {
   const handleFilter = (val) => {
     setSearchTerm(val);
   };
-
+  useEffect(() => {
+    console.log(currentPage);
+    setParameters({ ...parameters, PageNumber: currentPage + 1 });
+  }, [currentPage]);
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(store.total / rowsPerPage));
-
+    const count = Number(Math.ceil(userList.totalCount / rowsPerPage));
+    const handlePagination = (pageNum) => {
+      setCurrentPage(pageNum);
+    };
     return (
       <ReactPaginate
         previousLabel={""}
         nextLabel={""}
         pageCount={count || 1}
         activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => handlePagination(page)}
+        forcePage={currentPage !== 0 ? currentPage : 0}
+        onPageChange={(page) => {
+          handlePagination(page.selected);
+        }}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}
         nextClassName={"page-item next"}
@@ -343,24 +343,31 @@ const UsersList = () => {
             onSort={() => {}}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
-            // paginationComponent={() => {}}
+            paginationComponent={() => (
+              <CustomPagination
+                currentPage={currentPage}
+                setParameters={setParameters}
+                parameters={parameters}
+              />
+            )}
             data={
               userList.listUser != undefined
                 ? userList.listUser.map((it) => {
-                    return { ...it };
+                    return { ...it, handleAddRole: handleAddRole };
                   })
                 : []
             }
-            // subHeaderComponent={
-            //   <CustomHeader
-            //     // store={store}
-            //     searchTerm={searchTerm}
-            //     rowsPerPage={rowsPerPage}
-            //     handleFilter={() => {}}
-            //     handlePerPage={() => {}}
-            //     toggleSidebar={() => {}}
-            //   />
-            // }
+            subHeaderComponent={
+              <CustomHeader
+                // store={store}
+                setSearchTerm={setSearchTerm}
+                searchTerm={searchTerm}
+                setParameters={setParameters}
+                parameters={parameters}
+                setRowsPerPage={setRowsPerPage}
+                rowsPerPage={rowsPerPage}
+              />
+            }
           />
         </div>
       </Card>
