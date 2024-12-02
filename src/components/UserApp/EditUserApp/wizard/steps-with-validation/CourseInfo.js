@@ -13,7 +13,7 @@ import { selectThemeColors } from "@utils";
 
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
-
+import Select from "react-select";
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 
@@ -32,15 +32,22 @@ const CourseInfo = ({ stepper, initialInfo }) => {
   } = useForm();
 
   const onSubmit = (data) => {
+    console.log(data);
     stepper.next();
   };
 
   useEffect(() => {
-    if (initialInfo) {
+    if (initialInfo && initialInfo.gender) {
       setValue("fName", initialInfo.fName);
       setValue("lName", initialInfo.lName);
+      setValue("nationalCode", initialInfo.nationalCode);
+      setValue("birthDay", initialInfo.birthDay);
+      setValue("phoneNumber", initialInfo.phoneNumber);
+      setValue("homeAdderess", initialInfo.homeAdderess);
+      setValue("userAbout", initialInfo.userAbout);
+      setValue("gender", handleGenderObj(initialInfo.gender).value);
     }
-  }, [initialInfo]);
+  }, [initialInfo, initialInfo.gender]);
 
   // Date Options
 
@@ -69,12 +76,26 @@ const CourseInfo = ({ stepper, initialInfo }) => {
     return finalDate.toString();
   };
 
+  useEffect(() => {
+    if (initialInfo.birthDay)
+      setStartDate(handleInitDate(initialInfo.birthDay));
+  }, [initialInfo]);
+
   // Getting For Initing The Start
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startDateReal, setStartDateReal] = useState("");
   const [endDateReal, setEndDateReal] = useState("");
 
+  // Function for Gender Select
+  const [genderObj, setGenderObj] = useState({});
+  const Genders = [
+    { value: true, label: "آقا" },
+    { value: false, label: "خانم" },
+  ];
+  const handleGenderObj = (val) => {
+    if (val) return Genders.find((it) => it.value === val);
+  };
   return (
     <Fragment>
       <div className="content-header">
@@ -147,7 +168,7 @@ const CourseInfo = ({ stepper, initialInfo }) => {
                   className="form-control"
                   placeholder="1403-01-01"
                   options={options}
-                  value={startDateReal ? startDateReal : ""}
+                  value={startDate ? startDate : ""}
                   id="date"
                   onChange={(e) => {
                     setStartDateReal(e.target.value);
@@ -161,12 +182,12 @@ const CourseInfo = ({ stepper, initialInfo }) => {
 
         <Row>
           <Col md="3" className="mb-1">
-            <Label className="form-label" for="userAbout">
+            <Label className="form-label" for="phoneNumber">
               شماره تلفن:
             </Label>
             <Controller
-              id="userAbout"
-              name="userAbout"
+              id="phoneNumber"
+              name="phoneNumber"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Input
@@ -211,8 +232,35 @@ const CourseInfo = ({ stepper, initialInfo }) => {
               )}
             />
           </Col>
+          <Col className="mb-1" md="3" sm="12">
+            <Label className="form-label">جنسیت</Label>
+            <Controller
+              id="gender"
+              name="gender"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  theme={selectThemeColors}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={Genders}
+                  isClearable={false}
+                  value={
+                    JSON.stringify(genderObj) != "{}"
+                      ? genderObj
+                      : initialInfo.gender
+                      ? handleGenderObj(initialInfo.gender)
+                      : {}
+                  }
+                  onChange={(e) => {
+                    setGenderObj(e);
+                    onChange(e.value);
+                  }}
+                />
+              )}
+            />
+          </Col>
         </Row>
-        <Row></Row>
         <div className="d-flex justify-content-between">
           <Button
             type="button"
