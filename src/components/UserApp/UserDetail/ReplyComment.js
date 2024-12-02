@@ -50,7 +50,7 @@ const ReplyModal = ({
   const handleReply = async (data) => {
     await ReplyComment(data);
   };
-  console.log("parameters : ", parameters);
+
   const onSubmit = (data) => {
     setParameters({ ...data, ...parameters });
     setShow(!show);
@@ -62,7 +62,6 @@ const ReplyModal = ({
         formData.append(key, finalData[key]);
       }
     }
-    console.log(formData);
     handleReply(formData);
   };
   useEffect(() => {

@@ -33,8 +33,17 @@ export const columns = [
     name: "نام دوره",
     selector: (row) => row.courseTitle,
     cell: (row) => {
+      const [courseDetail, setCourseDetail] = useState({});
+      const handleCourseDetail = async (id) => {
+        const res = await GetCourseDetailApi(id);
+        setCourseDetail(res);
+      };
+
       useEffect(() => {
-        row.handleCourseDetail(row.courseId);
+        if (courseDetail) console.log(courseDetail);
+      }, [courseDetail]);
+      useEffect(() => {
+        handleCourseDetail(row.courseId);
       }, []);
 
       return (
@@ -43,8 +52,8 @@ export const columns = [
             <Avatar
               className="me-1"
               img={
-                row.courseDetail.imageAddress
-                  ? row.courseDetail.imageAddress
+                courseDetail.imageAddress
+                  ? courseDetail.imageAddress
                   : "/ErrImg.jpg"
               }
               alt={row.title}
@@ -169,7 +178,7 @@ const UserComment = ({ id }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [comments, setComments] = useState([]);
-  const [courseDetail, setCourseDetail] = useState({});
+
   const [ref, setRef] = useState(false);
   const [parameters, setParameters] = useState({
     PageNumber: 1,
@@ -190,10 +199,6 @@ const UserComment = ({ id }) => {
   }, [parameters]);
 
   // hamdling CourseDetail
-  const handleCourseDetail = async (id) => {
-    const res = await GetCourseDetailApi(id);
-    setCourseDetail(res);
-  };
 
   const CustomPagination = () => {
     const count = Number(Math.ceil(comments.totalCount / rowsPerPage));
@@ -250,9 +255,6 @@ const UserComment = ({ id }) => {
               ? comments.comments.map((it, index) => {
                   return {
                     ...it,
-                    courseDetail: courseDetail,
-                    setCourseDetail: setCourseDetail,
-                    handleCourseDetail: handleCourseDetail,
                     AcceptCourseCommentApi: AcceptCourseCommentApi,
                     RejectCourseCommentApi: RejectCourseCommentApi,
                   };
