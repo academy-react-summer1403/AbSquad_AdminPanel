@@ -2,7 +2,12 @@
 import { Badge, Card, Button } from "reactstrap";
 
 // ** Third Party Components
-import { ChevronDown, CheckCircle, MinusCircle } from "react-feather";
+import {
+  ChevronDown,
+  CheckCircle,
+  MinusCircle,
+  MessageCircle,
+} from "react-feather";
 import DataTable from "react-data-table-component";
 import ReactPaginate from "react-paginate";
 // ** Custom Components
@@ -15,7 +20,7 @@ import { CourseCommentManagementApi } from "../../../@core/services/API/AllCours
 import { GetCourseDetailApi } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.course.detail.api";
 import { AcceptCourseCommentApi } from "../../../@core/services/API/AllCoursesAdmin/CommentManagement/accept.comment.api";
 import { RejectCourseCommentApi } from "../../../@core/services/API/AllCoursesAdmin/CommentManagement/reject.comment.api";
-
+import ReplyModal from "./ReplyComment";
 const statusColor = {
   true: "success",
   false: "danger",
@@ -26,11 +31,10 @@ export const columns = [
     sortable: true,
     minWidth: "100px",
     name: "نام دوره",
-    selector: (row) => row.courseDetail.title,
+    selector: (row) => row.courseTitle,
     cell: (row) => {
       useEffect(() => {
         row.handleCourseDetail(row.courseId);
-        console.log(row);
       }, []);
 
       return (
@@ -48,9 +52,7 @@ export const columns = [
             />
           </div>
           <div className="d-flex flex-column">
-            <span className="text-truncate fw-bolder">
-              {row.courseDetail.title}
-            </span>
+            <span className="text-truncate fw-bolder">{row.courseTitle}</span>
           </div>
         </div>
       );
@@ -101,6 +103,37 @@ export const columns = [
     },
   },
   {
+    name: "ریپلای",
+    minWidth: "100px",
+    selector: (row) => row.courseId,
+    cell: (row) => {
+      const [show, setShow] = useState(false);
+      return (
+        <div className="d-flex justify-content-left align-items-center text-truncate">
+          <div className="d-flex flex-row text-truncate">
+            <Button
+              onClick={() => {
+                setShow(true);
+              }}
+              color="primary"
+            >
+              <MessageCircle />
+            </Button>
+          </div>
+          <ReplyModal
+            show={show}
+            setShow={setShow}
+            userName={row.userFullName}
+            commentTitle={row.commentTitle}
+            describe={row.describe}
+            courseId={row.courseId}
+            commentId={row.commentId}
+          />
+        </div>
+      );
+    },
+  },
+  {
     name: "عملیات تایید",
     minWidth: "100px",
     selector: (row) => row.accept,
@@ -145,7 +178,7 @@ const UserComment = ({ id }) => {
   });
 
   useEffect(() => {
-    setParameters({ ...parameters, PageNumber: currentPage + 1 });
+    setParameters({ ...parameters, PageNumber: currentPage });
   }, [currentPage]);
   // Getting Comments Api
   const handleGetComments = async (params) => {
@@ -214,7 +247,7 @@ const UserComment = ({ id }) => {
           )}
           data={
             comments.comments != undefined
-              ? comments.comments.map((it) => {
+              ? comments.comments.map((it, index) => {
                   return {
                     ...it,
                     courseDetail: courseDetail,
