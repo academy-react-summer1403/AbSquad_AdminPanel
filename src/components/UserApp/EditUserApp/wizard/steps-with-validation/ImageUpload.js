@@ -45,6 +45,7 @@ const ImageUpload = ({ stepper, initialInfo, setFinalData }) => {
 
   const onSubmit = (data) => {
     if (isObjEmpty(errors)) {
+      setFinalData({ ...data });
       stepper.next();
     }
   };

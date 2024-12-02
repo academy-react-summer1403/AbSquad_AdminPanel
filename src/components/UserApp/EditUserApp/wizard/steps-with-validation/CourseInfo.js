@@ -20,7 +20,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 // Date Related
 import { format, newDate } from "date-fns-jalali";
 
-const CourseInfo = ({ stepper, initialInfo }) => {
+const CourseInfo = ({ stepper, initialInfo, finalData, setFinalData }) => {
   // ** Hooks
   const {
     control,
@@ -32,10 +32,10 @@ const CourseInfo = ({ stepper, initialInfo }) => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
+    setFinalData({ ...finalData, ...data });
     stepper.next();
   };
-
+  console.log(finalData);
   useEffect(() => {
     if (initialInfo && initialInfo.gender) {
       setValue("fName", initialInfo.fName);
