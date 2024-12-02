@@ -145,9 +145,7 @@ export const columns = [
               <NavLink
                 to={`/UserList/UserDetail/${row.id}`}
                 className="align-middle"
-                onClick={() => {
-                  // row.setRefresh(!row.refresh);
-                }}
+                onClick={() => {}}
               >
                 جزئیات
               </NavLink>
@@ -159,11 +157,13 @@ export const columns = [
               onClick={(e) => e.preventDefault()}
             >
               <Archive size={14} className="me-50" />
-              <span className="align-middle">Edit</span>
-            </DropdownItem>
-            <DropdownItem tag="a" href="/" className="w-100">
-              <Trash2 size={14} className="me-50" />
-              <span className="align-middle">Delete</span>
+              <NavLink
+                to={`/UserList/EditUser/${row.id}`}
+                className="align-middle"
+                onClick={() => {}}
+              >
+                ویرایش
+              </NavLink>
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -192,7 +192,7 @@ export const columns = [
           }}
           color="danger"
         >
-          hi
+          حذف
         </Button>
       </div>
     ),
