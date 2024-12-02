@@ -1,123 +1,151 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from "react";
 
 // ** Third Party Components
-import { ArrowLeft } from 'react-feather'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller } from "react-hook-form";
+import { ArrowLeft, ArrowRight } from "react-feather";
 
 // ** Reactstrap Imports
-import { Label, Row, Col, Button, Form, Input, FormFeedback } from 'reactstrap'
+import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 
-const defaultValues = {
-  google: '',
-  twitter: '',
-  facebook: '',
-  linkedin: ''
-}
+// ** Styles
+import "@styles/react/libs/react-select/_react-select.scss";
 
-const SocialLinks = ({ stepper }) => {
+import { UpdateUserApi } from "../../../../../@core/services/API/AllUsersAdmin/UserEdit/update.user.api";
+
+const SocialInfo = ({ stepper, initialInfo, finalData, setFinalData, id }) => {
   // ** Hooks
   const {
     control,
     setError,
     handleSubmit,
-    formState: { errors }
-  } = useForm({ defaultValues })
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm();
 
-  const onSubmit = data => {
-    if (Object.values(data).every(field => field.length > 0)) {
-      alert('submitted')
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: 'manual',
-            message: `Please enter a valid ${key} url`
-          })
-        }
-      }
+  const onSubmit = (data) => {
+    setFinalData({ ...finalData, ...data, id: id });
+    stepper.next();
+  };
+  const handleUpdateUser = async (data) => {
+    await UpdateUserApi(data);
+  };
+  useEffect(() => {
+    if (finalData.gmail) handleUpdateUser(finalData);
+  }, [finalData]);
+
+  useEffect(() => {
+    if (initialInfo) {
+      setValue("gmail", initialInfo.gmail);
+      setValue("recoveryEmail", initialInfo.recoveryEmail);
+      setValue("telegramLink", initialInfo.telegramLink);
+      setValue("linkdinProfile", initialInfo.linkdinProfile);
     }
-  }
+  }, [initialInfo]);
 
   return (
     <Fragment>
-      <div className='content-header'>
-        <h5 className='mb-0'>Social Links</h5>
-        <small>Enter Your Social Links.</small>
+      <div className="content-header">
+        <h5 className="mb-0">اطلاعات دوره</h5>
+        <small>اطلاعات دوره را اضافه کنید.</small>
       </div>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
-          <Col md='6' className='mb-1'>
-            <Label className='form-label' for='twitter'>
-              Twitter
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="gmail">
+              ایمیل
             </Label>
             <Controller
-              id='twitter'
-              name='twitter'
+              id="gmail"
+              name="gmail"
               control={control}
-              render={({ field }) => (
-                <Input placeholder='https://twitter.com/johndoe' invalid={errors.twitter && true} {...field} />
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value}
+                  onChange={onChange}
+                  placeholder="ایمیل کاربر را وارد کنید"
+                />
               )}
             />
-            {errors.twitter && <FormFeedback>{errors.twitter.message}</FormFeedback>}
           </Col>
-          <Col md='6' className='mb-1'>
-            <Label className='form-label' for='facebook'>
-              Facebook
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="recoveryEmail">
+              ایمیل ریکاوری
             </Label>
             <Controller
-              id='facebook'
-              name='facebook'
+              id="recoveryEmail"
+              name="recoveryEmail"
               control={control}
-              render={({ field }) => (
-                <Input placeholder='https://facebook.com/johndoe' invalid={errors.facebook && true} {...field} />
+              render={({ field: { onChange, value } }) => (
+                <Input value={value} onChange={onChange} placeholder="" />
               )}
             />
-            {errors.facebook && <FormFeedback>{errors.facebook.message}</FormFeedback>}
+          </Col>
+
+          <Col md="3" className="mb-1">
+            <Label
+              className="form-label d-flex justify-content-between"
+              for="telegramLink"
+            >
+              لینک تلگرام
+            </Label>
+            <Controller
+              id="telegramLink"
+              name="telegramLink"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder="2087415487"
+                />
+              )}
+            />
+          </Col>
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="linkdinProfile">
+              لینک لینکدین
+            </Label>
+            <Controller
+              id="linkdinProfile"
+              name="linkdinProfile"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder=""
+                />
+              )}
+            />
           </Col>
         </Row>
-        <Row>
-          <Col md='6' className='mb-1'>
-            <Label className='form-label' for='google'>
-              Google+
-            </Label>
-            <Controller
-              id='google'
-              name='google'
-              control={control}
-              render={({ field }) => (
-                <Input placeholder='https://plus.google.com/johndoe' invalid={errors.google && true} {...field} />
-              )}
-            />
-            {errors.google && <FormFeedback>{errors.google.message}</FormFeedback>}
-          </Col>
-          <Col md='6' className='mb-1'>
-            <Label className='form-label' for='linkedin'>
-              Linkedin
-            </Label>
-            <Controller
-              id='linkedin'
-              name='linkedin'
-              control={control}
-              render={({ field }) => (
-                <Input placeholder='https://linkedin.com/johndoe' invalid={errors.linkedin && true} {...field} />
-              )}
-            />
-            {errors.linkedin && <FormFeedback>{errors.linkedin.message}</FormFeedback>}
-          </Col>
-        </Row>
-        <div className='d-flex justify-content-between'>
-          <Button color='primary' className='btn-prev' onClick={() => stepper.previous()}>
-            <ArrowLeft size={14} className='align-middle me-sm-25 me-0'></ArrowLeft>
-            <span className='align-middle d-sm-inline-block d-none'>Previous</span>
+
+        <div className="d-flex justify-content-between">
+          <Button
+            type="button"
+            color="primary"
+            className="btn-prev"
+            onClick={() => stepper.previous()}
+          >
+            <ArrowLeft
+              size={14}
+              className="align-middle me-sm-25 me-0"
+            ></ArrowLeft>
+            <span className="align-middle d-sm-inline-block d-none">قبلی</span>
           </Button>
-          <Button type='submit' color='success' className='btn-submit'>
-            Submit
+          <Button type="submit" color="success" className="btn-next">
+            <span className="align-middle d-sm-inline-block d-none">ثبت</span>
+            <ArrowRight
+              size={14}
+              className="align-middle ms-sm-25 ms-0"
+            ></ArrowRight>
           </Button>
         </div>
       </Form>
     </Fragment>
-  )
-}
+  );
+};
 
-export default SocialLinks
+export { SocialInfo };

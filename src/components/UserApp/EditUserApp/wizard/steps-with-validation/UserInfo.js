@@ -20,7 +20,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 // Date Related
 import { format, newDate } from "date-fns-jalali";
 
-const CourseInfo = ({ stepper, initialInfo, finalData, setFinalData }) => {
+const UserInfo = ({ stepper, initialInfo, finalData, setFinalData }) => {
   // ** Hooks
   const {
     control,
@@ -287,4 +287,4 @@ const CourseInfo = ({ stepper, initialInfo, finalData, setFinalData }) => {
   );
 };
 
-export { CourseInfo };
+export { UserInfo };

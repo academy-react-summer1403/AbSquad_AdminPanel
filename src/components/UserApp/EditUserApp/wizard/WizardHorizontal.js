@@ -5,11 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import Wizard from "@components/wizard";
 
 // ** Steps
-import { CourseInfo } from "./steps-with-validation/CourseInfo";
+import { UserInfo } from "./steps-with-validation/UserInfo";
 import { ImageUpload } from "./steps-with-validation/ImageUpload";
-import { AddTech } from "./steps-with-validation/AddTech";
+
 import { useParams } from "react-router-dom";
 import { GetUserDetail } from "../../../../@core/services/API/AllUsersAdmin/UserEdit/user.details.api";
+import { SocialInfo } from "./steps-with-validation/SocialLinks";
 
 const WizardHorizontal = () => {
   // Getting Id
@@ -33,8 +34,8 @@ const WizardHorizontal = () => {
   const steps = [
     {
       id: "Image",
-      title: "اضافه کردن عکس دوره",
-      subtitle: "عکس دوره وارد شود.",
+      title: "ویرایش کردن عکس کاربر",
+      subtitle: "",
       content: (
         <ImageUpload
           stepper={stepper}
@@ -46,10 +47,10 @@ const WizardHorizontal = () => {
     },
     {
       id: "Info",
-      title: "اطلاعات دوره",
-      subtitle: "اطلاعات دوره را اضافه کنید.",
+      title: "ویرایش اطلاعات کاربر",
+      subtitle: "",
       content: (
-        <CourseInfo
+        <UserInfo
           stepper={stepper}
           setFinalData={setFinalData}
           finalData={finalData}
@@ -58,15 +59,16 @@ const WizardHorizontal = () => {
       ),
     },
     {
-      id: "AddTech",
-      title: "اضافه کردن تکنولوژی دوره",
-      subtitle: "تکنولوژی های مورد نظر را انتخاب کنید.",
+      id: "SocialInfo",
+      title: "ویرایش فضای مجازی",
+      subtitle: "",
       content: (
-        <AddTech
+        <SocialInfo
           stepper={stepper}
           setFinalData={setFinalData}
           finalData={finalData}
           initialInfo={initialInfo}
+          id={id}
         />
       ),
     },
