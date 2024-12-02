@@ -25,10 +25,11 @@ import { CourseCommentManagementApi } from "../../../@core/services/API/AllCours
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GetUserDetail } from "../../../@core/services/API/AllUsersAdmin/UserEdit/user.details.api";
-import ReplyModal from "./ReplyComment";
+import ReplyModal from "./ReplyModal";
 import ReplyCommentList from "./ReplyCommentList";
+import EditCommentModal from "./EditCommentModal";
 
 const statusColor = {
   true: "success",
@@ -38,7 +39,7 @@ const statusColor = {
 const UserCommentDetail = () => {
   const { id, uid } = useParams();
   // ** State
-
+  const navigate = useNavigate();
   const handleGetUser = async (id) => {
     const res = await GetUserDetail(id);
     setUserDetail(res);
@@ -52,7 +53,8 @@ const UserCommentDetail = () => {
   const [comments, setComments] = useState([]);
   const [count, setCount] = useState(10);
   const [userDetail, setUserDetail] = useState({});
-  const [show, setShow] = useState(false);
+  const [showReply, setShowReply] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   // Getting Comments Api
   const handleGetCommentDetail = async (params) => {
     const res = await CourseCommentManagementApi({ ...params });
@@ -168,37 +170,33 @@ const UserCommentDetail = () => {
                 ) : null}
               </div>
               <div className="d-flex justify-content-center pt-2">
-                <Button color="primary" onClick={() => setShow(true)}>
+                <Button color="primary" onClick={() => setShowReply(true)}>
                   ریپلای
                 </Button>
                 <Button
                   className="ms-1"
-                  color={commentDetail.accept == true ? "danger" : "success"}
-                  onClick={() => {
-                    handleActiveClick(commentDetail.accept);
-                  }}
+                  color={"warning"}
+                  onClick={() => setShowEdit(true)}
                 >
-                  {commentDetail.accept == true
-                    ? "غیر فعال کردن دوره"
-                    : "فعال کردن دوره"}
+                  ویرایش
                 </Button>
-                <Button
-                  className="ms-1"
-                  color="danger"
-                  outline
-                  // onClick={() => {
-                  //   handleDeleteComment({
-                  //     data: { active: true, id: commentDetail.courseId },
-                  //   });
-                  // }}
-                >
+                <Button className="ms-1" color="danger" outline>
                   حذف کامنت
                 </Button>
               </div>
             </CardBody>
             <ReplyModal
-              show={show}
-              setShow={setShow}
+              show={showReply}
+              setShow={setShowReply}
+              commentId={commentDetail.commentId}
+              userName={commentDetail.userFullName}
+              commentTitle={commentDetail.commentTitle}
+              describe={commentDetail.describe}
+              courseId={commentDetail.courseId}
+            />
+            <EditCommentModal
+              show={showEdit}
+              setShow={setShowEdit}
               commentId={commentDetail.commentId}
               userName={commentDetail.userFullName}
               commentTitle={commentDetail.commentTitle}
