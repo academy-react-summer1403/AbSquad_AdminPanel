@@ -21,6 +21,7 @@ import { GetCourseDetailApi } from "../../../@core/services/API/AllCoursesAdmin/
 import { AcceptCourseCommentApi } from "../../../@core/services/API/AllCoursesAdmin/CommentManagement/accept.comment.api";
 import { RejectCourseCommentApi } from "../../../@core/services/API/AllCoursesAdmin/CommentManagement/reject.comment.api";
 import ReplyModal from "./ReplyComment";
+import { NavLink } from "react-router-dom";
 const statusColor = {
   true: "success",
   false: "danger",
@@ -60,9 +61,12 @@ export const columns = [
               imgWidth="32"
             />
           </div>
-          <div className="d-flex flex-column">
+          <NavLink
+            to={`/UserList/UserCommentDetail/${row.commentId}/${row.userId}`}
+            className="d-flex flex-column"
+          >
             <span className="text-truncate fw-bolder">{row.courseTitle}</span>
-          </div>
+          </NavLink>
         </div>
       );
     },

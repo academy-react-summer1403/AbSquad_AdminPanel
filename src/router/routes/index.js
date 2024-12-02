@@ -56,6 +56,10 @@ const AddNewCourse = lazy(() => import("../../pages/Course/AddNewCourse"));
 const AddNewNews = lazy(() =>
   import("../../components/AddNewNews/AddNewNews.js")
 );
+const UserCommentDetail = lazy(() =>
+  import("../../components/UserApp/UserDetail/CommentDetail.js")
+);
+
 // ** Merge Routes
 const Routes = [
   {
@@ -78,6 +82,10 @@ const Routes = [
   {
     path: "/Course/CommentManangement",
     element: <CommentManagement />,
+  },
+  {
+    path: "/UserList/UserCommentDetail/:id?/:uid?",
+    element: <UserCommentDetail />,
   },
   {
     path: "/UserList",
