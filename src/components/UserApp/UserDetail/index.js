@@ -31,6 +31,7 @@ import UserReserveTable from "./ReserveTable";
 import ProfileSocialMedia from "./ProfileSocialMedia";
 import ProfileRoles from "./ProfileRoles";
 import { GetCourseDetailApi } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.course.detail.api";
+import UserComment from "./UserComments";
 
 const UserDetailApp = () => {
   const { id } = useParams();
@@ -128,6 +129,20 @@ const UserDetailApp = () => {
                         <Info className="d-block d-md-none" size={14} />
                       </NavLink>
                     </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className="fw-bold"
+                        onClick={() => {
+                          setIsOpen("comment");
+                        }}
+                        active={isOpen === "comment"}
+                      >
+                        <span className="d-none d-md-block">
+                          کامنت های کاربر
+                        </span>
+                        <Info className="d-block d-md-none" size={14} />
+                      </NavLink>
+                    </NavItem>
                   </Nav>
                   <Button color="primary">
                     <Edit className="d-block d-md-none" size={14} />
@@ -139,11 +154,15 @@ const UserDetailApp = () => {
             <Row>
               {isOpen == "course" ? (
                 <UserCourseTable user={detail ? detail : {}} />
-              ) : (
+              ) : isOpen == "reserve" ? (
                 <UserReserveTable
                   user={detail ? detail : {}}
                   getCourseApi={GetCourseDetailApi}
                 />
+              ) : isOpen == "comment" ? (
+                <UserComment id={id} />
+              ) : (
+                ""
               )}
             </Row>
           </section>
