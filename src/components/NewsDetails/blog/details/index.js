@@ -4,7 +4,7 @@ import { Fragment, useState, useEffect } from "react";
 // ** Third Party Components
 import axios from "axios";
 import classnames from "classnames";
-import { GitHub } from "react-feather";
+import { CornerUpLeft, GitHub } from "react-feather";
 
 // ** Utils
 import { kFormatter } from "@utils";
@@ -48,10 +48,12 @@ const BlogDetails = () => {
   // console.log(id, "this is what u asked for");
   // console.log(res);
   const [NewsDetail, setNewsDetail] = useState({});
+  const [NewsComments, setNewsComments] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const handleGetNewsDetail = async (id) => {
     const res = await GetNewsWithID(id);
     setNewsDetail(res.detailsNewsDto);
+    setNewsComments(res.commentDtos);
     console.log(res, "resssssssssss");
     console.log(NewsDetail, "newssssssssss");
   };
@@ -84,32 +86,46 @@ const BlogDetails = () => {
   //   })
   // }
 
-  // const renderComments = () => {
-  //   return data.comments.map(comment => {
-  //     return (
-  //       <Card className='mb-3' key={comment.userFullName}>
-  //         <CardBody>
-  //           <div className='d-flex'>
-  //             <div>
-  //               <Avatar className='me-75' img={comment.avatar} imgHeight='38' imgWidth='38' />
-  //             </div>
-  //             <div>
-  //               <h6 className='fw-bolder mb-25'>{comment.userFullName}</h6>
-  //               <CardText>{comment.commentedAt}</CardText>
-  //               <CardText>{comment.commentText}</CardText>
-  //               <a href='/' onClick={e => e.preventDefault()}>
-  //                 <div className='d-inline-flex align-items-center'>
-  //                   <CornerUpLeft size={18} className='me-50' />
-  //                   <span>Reply</span>
-  //                 </div>
-  //               </a>
-  //             </div>
-  //           </div>
-  //         </CardBody>
-  //       </Card>
-  //     )
-  //   })
-  // }
+  const renderComments = () => {
+    return NewsComments.map((comment) => {
+      return (
+        <Card className="mb-1" key={comment.title}>
+          <CardBody>
+            <div className="d-flex">
+              <div>
+                <Avatar
+                  className="me-75"
+                  img={comment.pictureAddress ? pictureAddress : defimg}
+                  imgHeight="38"
+                  imgWidth="38"
+                />
+              </div>
+              <div>
+                <h6 className="fw-bolder mb-25">{comment.autor}</h6>
+                <Row>
+                  <Col>
+                    <CardText>تعداد لایک: {comment.likeCount}</CardText>
+                  </Col>
+                  <Col>
+                    <CardText>تعداد ریپلای: {comment.replyCount}</CardText>
+                  </Col>
+                </Row>
+
+                <CardText>{comment.title}</CardText>
+                <a href="/" onClick={(e) => e.preventDefault()}>
+                  <div className="d-inline-flex align-items-center">
+                    <CornerUpLeft size={18} className="me-50" />
+
+                    <span>Reply</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+      );
+    });
+  };
   const defimg = "/ErrImg.jpg";
   const GradHat = "/GradHat.png";
   return (
@@ -224,6 +240,7 @@ const BlogDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
+              <Col>{renderComments()}</Col>
             </Row>
           </div>
         </div>
