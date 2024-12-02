@@ -20,7 +20,7 @@ import { CourseCommentManagementApi } from "../../../@core/services/API/AllCours
 import { GetCourseDetailApi } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.course.detail.api";
 import { AcceptCourseCommentApi } from "../../../@core/services/API/AllCoursesAdmin/CommentManagement/accept.comment.api";
 import { RejectCourseCommentApi } from "../../../@core/services/API/AllCoursesAdmin/CommentManagement/reject.comment.api";
-import ReplyModal from "./ReplyComment";
+import ReplyModal from "./ReplyModal";
 import { NavLink } from "react-router-dom";
 const statusColor = {
   true: "success",

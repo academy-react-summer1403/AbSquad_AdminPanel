@@ -35,6 +35,8 @@ const EditCommentModal = ({
   describe,
   courseId,
   commentId,
+  refresh,
+  setRefresh,
 }) => {
   const [parameters, setParameters] = useState({
     courseId: courseId,
@@ -55,6 +57,7 @@ const EditCommentModal = ({
   const onSubmit = (data) => {
     setParameters({ ...data, ...parameters });
     setShow(!show);
+    setRefresh(!refresh);
   };
   const handleFinalData = (finalData) => {
     const formData = new FormData();

@@ -55,6 +55,7 @@ const UserCommentDetail = () => {
   const [userDetail, setUserDetail] = useState({});
   const [showReply, setShowReply] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   // Getting Comments Api
   const handleGetCommentDetail = async (params) => {
     const res = await CourseCommentManagementApi({ ...params });
@@ -71,9 +72,10 @@ const UserCommentDetail = () => {
   }, [comments]);
 
   useEffect(() => {
-    if (count && uid)
+    if (count && uid) {
       handleGetCommentDetail({ userId: uid, RowsOfPage: count });
-  }, [uid, count]);
+    }
+  }, [uid, count, refresh]);
 
   // ** Hook
   const {
@@ -193,6 +195,8 @@ const UserCommentDetail = () => {
               commentTitle={commentDetail.commentTitle}
               describe={commentDetail.describe}
               courseId={commentDetail.courseId}
+              setRefresh={setRefresh}
+              refresh={refresh}
             />
             <EditCommentModal
               show={showEdit}
@@ -202,11 +206,15 @@ const UserCommentDetail = () => {
               commentTitle={commentDetail.commentTitle}
               describe={commentDetail.describe}
               courseId={commentDetail.courseId}
+              setRefresh={setRefresh}
+              refresh={refresh}
             />
           </Card>
           <ReplyCommentList
             commentId={commentDetail.commentId}
             courseId={commentDetail.courseId}
+            setRefresh={setRefresh}
+            refresh={refresh}
           />
         </>
       ) : (
