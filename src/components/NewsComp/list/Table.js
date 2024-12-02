@@ -192,10 +192,21 @@ const NewsList = () => {
   const [NewsList, setNewsList] = useState({});
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const NewsListManage = async (loc) => {
-    const res = await AllNewsAdmin(loc); //*************************************************************
-    console.log(res);
-    setNewsList(res.news);
+  const NewsListManage = async (loc, isActiveFilter = true) => {
+    try {
+      const res = await AllNewsAdmin(loc); // Fetch data from API
+      console.log(res);
+
+      // Filter news based on `isActiveFilter`
+      const filteredNews = res.news.filter(
+        (news) => news.isActive === isActiveFilter
+      );
+
+      // Update the existing `NewsList` state with the filtered results
+      setNewsList(filteredNews);
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    }
   };
   useEffect(() => {
     if (location) NewsListManage(location.search);
@@ -341,21 +352,23 @@ const NewsList = () => {
           <Row>
             <Col md="4">
               <Label for="Active">اخبار فعال</Label>
-              <button
-                className="btn btn-primary mt-2"
-                onClick={() => handleFilter("active")}
+              <Button
+                color="primary"
+                className="mt-2"
+                onClick={() => NewsListManage("", true)} // Show active news
               >
-                <span>Filter Active News</span>
-              </button>
+                Show Active News
+              </Button>
             </Col>
             <Col className="my-md-0 my-1" md="4">
               <Label for="deActive">اخبار غیرفعال</Label>
-              <button
-                className="btn btn-secondary mt-2"
-                onClick={() => handleFilter("inactive")}
+              <Button
+                color="secondary"
+                className="mt-2"
+                onClick={() => NewsListManage("", false)} // Show deactivated news
               >
-                <span>Filter Inactive News</span>
-              </button>
+                Show Deactivated News
+              </Button>
             </Col>
             <Col>
               <NavLink to="/Artcle/AddNewArticle">

@@ -55,6 +55,7 @@ const AddNewNews = lazy(() =>
 const NewsDetails = lazy(() =>
   import("../../components/NewsDetails/blog/details/index.js")
 );
+const EditNews = lazy(() => import("../../components/EditNews/EditNews.js"));
 // ** Merge Routes
 const Routes = [
   {
@@ -93,6 +94,10 @@ const Routes = [
   {
     path: "/Artcle/NewsDetails/:id?",
     element: <NewsDetails />,
+  },
+  {
+    path: "/Artcle/EditNews",
+    element: <EditNews />,
   },
   {
     path: "/Artcle/categoriesList",
