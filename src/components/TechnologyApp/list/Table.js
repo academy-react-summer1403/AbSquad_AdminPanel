@@ -134,7 +134,6 @@ const TechList = () => {
 
   // ** Table data to render
 
-  const [refresh, setRefresh] = useState(false);
   const [techs, setTechs] = useState([]);
   const handleGetTechs = async () => {
     const res = await GetTechApi();
@@ -171,7 +170,9 @@ const TechList = () => {
             data={
               techs
                 ? techs.map((it) => {
-                    return { ...it };
+                    return {
+                      ...it,
+                    };
                   })
                 : ""
             }

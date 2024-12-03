@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 // ** Custom Components
 import Avatar from "@components/avatar";
 import { NavLink } from "react-router-dom";
+
 // ** Icons Imports
 import {
   Slack,
@@ -25,8 +26,10 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Button,
 } from "reactstrap";
 import { useState } from "react";
+import { EditTech } from "../EditTech";
 // Scroll Modal
 
 // ** Renders Client Columns
@@ -117,39 +120,49 @@ export const columns = [
   {
     name: "Actions",
     minWidth: "100px",
-    cell: (row) => (
-      <div className="column-action">
-        <UncontrolledDropdown>
-          <DropdownToggle tag="div" className="btn btn-sm">
-            <MoreVertical size={14} className="cursor-pointer" />
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem className="w-100">
-              <FileText size={14} className="me-50" />
-              <NavLink
-                to={`/MetaData/Semester/SemesterDetail/${row.id}`}
-                className="align-middle"
-                onClick={() => {
-                  row.setRefresh(!row.refresh);
-                }}
-              >
-                جزئیات
-              </NavLink>
-            </DropdownItem>
-            <DropdownItem className="w-100">
-              <Archive size={14} className="me-50" />
-              <NavLink
-                className="align-middle"
-                onClick={() => {
-                  row.setRefresh(!row.refresh);
-                }}
-              >
-                ویرایش
-              </NavLink>
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      </div>
-    ),
+    cell: (row) => {
+      const [showEdit, setShowEdit] = useState(false);
+      return (
+        <div className="column-action">
+          <UncontrolledDropdown>
+            <DropdownToggle tag="div" className="btn btn-sm">
+              <MoreVertical size={14} className="cursor-pointer" />
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem className="w-100">
+                <FileText size={14} className="me-50" />
+                <NavLink
+                  to={`/MetaData/Semester/SemesterDetail/${row.id}`}
+                  className="align-middle"
+                  onClick={() => {
+                    row.setRefresh(!row.refresh);
+                  }}
+                >
+                  جزئیات
+                </NavLink>
+              </DropdownItem>
+              <DropdownItem className="w-100">
+                <Archive size={14} className="me-50" />
+                <span
+                  className="align-middle"
+                  onClick={() => {
+                    setShowEdit(true);
+                  }}
+                >
+                  ویرایش
+                </span>
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+          <EditTech
+            show={showEdit}
+            setShow={setShowEdit}
+            id={row.id}
+            techName={row.techName}
+            describe={row.describe}
+          />
+        </div>
+      );
+    },
   },
 ];
