@@ -82,6 +82,12 @@ export default [
         icon: <List size={20} />,
         navLink: "/MetaData/Semester",
       },
+      {
+        id: "ََSemester",
+        title: "لیست تکنولوژی",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Technology",
+      },
     ],
     navLink: "/MetaData",
   },
