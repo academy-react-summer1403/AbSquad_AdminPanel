@@ -71,4 +71,18 @@ export default [
       },
     ],
   },
+  {
+    id: "MetaData",
+    title: "ریز تنظیمات",
+    icon: <User size={20} />,
+    children: [
+      {
+        id: "ََSemester",
+        title: "لیست ترم",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Semester",
+      },
+    ],
+    navLink: "/MetaData",
+  },
 ];

@@ -56,8 +56,13 @@ const AddNewCourse = lazy(() => import("../../pages/Course/AddNewCourse"));
 const AddNewNews = lazy(() =>
   import("../../components/AddNewNews/AddNewNews.js")
 );
+
 const UserCommentDetail = lazy(() =>
   import("../../components/UserApp/UserDetail/CommentDetail.js")
+);
+const Semester = lazy(() => import("../../pages/MetaData/Semester.js"));
+const SemesterDetail = lazy(() =>
+  import("../../components/SemesterApp/list/SemesterDetail.js")
 );
 
 // ** Merge Routes
@@ -98,6 +103,14 @@ const Routes = [
   {
     path: "/UserList/UserDetail/:id?",
     element: <UserDetail />,
+  },
+  {
+    path: "/MetaData/Semester",
+    element: <Semester />,
+  },
+  {
+    path: "/MetaData/Semester/SemesterDetail/:id?",
+    element: <SemesterDetail />,
   },
   {
     path: "/Artcle/articleList",
