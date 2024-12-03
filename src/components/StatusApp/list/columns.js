@@ -30,6 +30,7 @@ import {
 } from "reactstrap";
 import { useState } from "react";
 import { EditStatus } from "../EditStatus";
+import { DetailStatus } from "../DetailStatus";
 // Scroll Modal
 
 // ** Renders Client Columns
@@ -122,6 +123,7 @@ export const columns = [
     minWidth: "100px",
     cell: (row) => {
       const [showEdit, setShowEdit] = useState(false);
+      const [showDetail, setShowDetail] = useState(false);
       return (
         <div className="column-action">
           <UncontrolledDropdown>
@@ -131,15 +133,15 @@ export const columns = [
             <DropdownMenu>
               <DropdownItem className="w-100">
                 <FileText size={14} className="me-50" />
-                <NavLink
-                  to={`/MetaData/Semester/SemesterDetail/${row.id}`}
+                <span
                   className="align-middle"
                   onClick={() => {
+                    setShowDetail(true);
                     row.setRefresh(!row.refresh);
                   }}
                 >
                   جزئیات
-                </NavLink>
+                </span>
               </DropdownItem>
               <DropdownItem className="w-100">
                 <Archive size={14} className="me-50" />
@@ -161,6 +163,12 @@ export const columns = [
             statusName={row.statusName}
             describe={row.describe}
             statusNumber={row.statusNumber}
+          />
+          <DetailStatus
+            show={showDetail}
+            setShow={setShowDetail}
+            statusName={row.statusName}
+            describe={row.describe}
           />
         </div>
       );
