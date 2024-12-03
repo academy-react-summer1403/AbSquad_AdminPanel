@@ -17,7 +17,7 @@ import { Row, Col, Card, Input, Button } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import GetStatusApi from "../../../@core/services/API/Status/get.status.api";
-import { AddTech } from "../AddStatus";
+import { AddStatus } from "../AddStatus";
 
 // ** Get Semester Api *************************************************************************************
 
@@ -75,11 +75,11 @@ const CustomHeader = ({ searchTerm, setSearchTerm, setRowsPerPage }) => {
                 setShow(true);
               }}
             >
-              ساخت تکنولوژی
+              ساخت وضعیت
             </Button>
           </div>
         </Col>
-        <AddTech show={show} setShow={setShow} />
+        <AddStatus show={show} setShow={setShow} />
       </Row>
     </div>
   );
@@ -159,13 +159,11 @@ const StatusList = () => {
               />
             )}
             data={
-              techs
-                ? techs.map((it) => {
-                    return {
-                      ...it,
-                    };
+              status
+                ? status.map((it) => {
+                    return { ...it };
                   })
-                : ""
+                : []
             }
             subHeaderComponent={
               <CustomHeader

@@ -17,21 +17,27 @@ import {
 
 import classnames from "classnames";
 import { useForm, Controller } from "react-hook-form";
-import EditTechApi from "../../@core/services/API/Technology/edit.tech.api";
+import EditStatusApi from "../../@core/services/API/Status/edit.status.api";
 
-const EditTech = ({ setShow, show, id, techName, describe }) => {
+const EditStatus = ({
+  setShow,
+  show,
+  id,
+  statusName,
+  describe,
+  statusNumber,
+}) => {
   //   States
   const [parameters, setParameters] = useState({
     id: id,
-    parentId: null,
-    iconAddress: "testi",
   });
 
-  const handleEditTech = async (data) => {
-    await EditTechApi(data);
+  const handleEditStatus = async (data) => {
+    await EditStatusApi(data);
   };
   useEffect(() => {
-    if (parameters.describe) handleEditTech(parameters);
+    if (parameters.describe)
+      handleEditStatus({ ...parameters, statusNumber: statusNumber });
   }, [parameters]);
   console.log(parameters);
   // ** Hooks
@@ -43,11 +49,11 @@ const EditTech = ({ setShow, show, id, techName, describe }) => {
     formState: { errors },
   } = useForm({});
   useEffect(() => {
-    if (describe && techName) {
-      setValue("techName", techName);
+    if (describe && statusName) {
+      setValue("statusName", statusName);
       setValue("describe", describe);
     }
-  }, [techName, describe]);
+  }, [statusName, describe]);
 
   const onSubmit = (data) => {
     setParameters({ ...data, ...parameters });
@@ -66,7 +72,7 @@ const EditTech = ({ setShow, show, id, techName, describe }) => {
           toggle={() => setShow(!show)}
         ></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
-          <h1 className="text-center mb-1">ویرایش تکنولوژی</h1>
+          <h1 className="text-center mb-1">ویرایش وضعیت</h1>
 
           <Row
             tag="form"
@@ -74,22 +80,22 @@ const EditTech = ({ setShow, show, id, techName, describe }) => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Col xs={12}>
-              <Label className="form-label" for="techName">
-                نام تکنولوژی
+              <Label className="form-label" for="statusName">
+                نام وضعیت
               </Label>
 
               <InputGroup>
                 <Controller
-                  name="techName"
+                  name="statusName"
                   control={control}
                   render={({ field }) => {
                     return (
                       <Input
                         {...field}
-                        id="techName"
+                        id="statusName"
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="نام تکنولوژی را وارد کنید..."
+                        placeholder="نام وضعیت را وارد کنید..."
                         className={classnames("form-control")}
                       />
                     );
@@ -99,7 +105,7 @@ const EditTech = ({ setShow, show, id, techName, describe }) => {
             </Col>
             <Col xs={12}>
               <Label className="form-label" for="describe">
-                درباره تکنولوژی
+                درباره وضعیت
               </Label>
 
               <InputGroup>
@@ -113,7 +119,7 @@ const EditTech = ({ setShow, show, id, techName, describe }) => {
                         id="describe"
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="توضیحات تکنولوژی را وارد کنید..."
+                        placeholder="توضیحات وضعیت را وارد کنید..."
                         className={classnames("form-control")}
                       />
                     );
@@ -143,4 +149,4 @@ const EditTech = ({ setShow, show, id, techName, describe }) => {
   );
 };
 
-export { EditTech };
+export { EditStatus };

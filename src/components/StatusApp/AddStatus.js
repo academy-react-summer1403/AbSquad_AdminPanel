@@ -17,20 +17,18 @@ import {
 
 import classnames from "classnames";
 import { useForm, Controller } from "react-hook-form";
-import AddTechApi from "../../@core/services/API/Technology/add.tech.api";
+import AddStatusApi from "../../@core/services/API/Status/add.status.api";
 
-const AddTech = ({ setShow, show }) => {
+const AddStatus = ({ setShow, show }) => {
   //   States
   const [parameters, setParameters] = useState({
-    parentId: null,
-    iconAddress: "testi",
+    statusNumber: Math.floor(Math.random() * 100 * (Math.random() * 100)),
   });
-
-  const handleAddTech = async (data) => {
-    await AddTechApi(data);
+  const handleAddStatus = async (data) => {
+    await AddStatusApi(data);
   };
   useEffect(() => {
-    if (parameters.describe) handleAddTech(parameters);
+    if (parameters.describe) handleAddStatus(parameters);
   }, [parameters]);
 
   // ** Hooks
@@ -58,7 +56,7 @@ const AddTech = ({ setShow, show }) => {
           toggle={() => setShow(!show)}
         ></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
-          <h1 className="text-center mb-1">ساخت تکنولوژی</h1>
+          <h1 className="text-center mb-1">ساخت وضعیت</h1>
 
           <Row
             tag="form"
@@ -66,22 +64,22 @@ const AddTech = ({ setShow, show }) => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Col xs={12}>
-              <Label className="form-label" for="techName">
-                نام تکنولوژی
+              <Label className="form-label" for="statusName">
+                نام وضعیت
               </Label>
 
               <InputGroup>
                 <Controller
-                  name="techName"
+                  name="statusName"
                   control={control}
                   render={({ field }) => {
                     return (
                       <Input
                         {...field}
-                        id="techName"
+                        id="statusName"
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="نام تکنولوژی را وارد کنید..."
+                        placeholder="نام وضعیت را وارد کنید..."
                         className={classnames("form-control")}
                       />
                     );
@@ -91,7 +89,7 @@ const AddTech = ({ setShow, show }) => {
             </Col>
             <Col xs={12}>
               <Label className="form-label" for="describe">
-                درباره تکنولوژی
+                درباره وضعیت
               </Label>
 
               <InputGroup>
@@ -105,7 +103,7 @@ const AddTech = ({ setShow, show }) => {
                         id="describe"
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="توضیحات تکنولوژی را وارد کنید..."
+                        placeholder="توضیحات وضعیت را وارد کنید..."
                         className={classnames("form-control")}
                       />
                     );
@@ -135,4 +133,4 @@ const AddTech = ({ setShow, show }) => {
   );
 };
 
-export { AddTech };
+export { AddStatus };

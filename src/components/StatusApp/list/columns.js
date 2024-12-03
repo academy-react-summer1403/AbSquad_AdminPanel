@@ -29,7 +29,7 @@ import {
   Button,
 } from "reactstrap";
 import { useState } from "react";
-import { EditTech } from "../EditStatus";
+import { EditStatus } from "../EditStatus";
 // Scroll Modal
 
 // ** Renders Client Columns
@@ -91,24 +91,24 @@ const statusObj = {
 
 export const columns = [
   {
-    name: "نام تکنولوژی",
+    name: "نام وضعیت",
     sortable: true,
     minWidth: "178px",
     sortField: "fullName",
-    selector: (row) => row.techName,
+    selector: (row) => row.statusName,
     cell: (row) => (
       <div className="d-flex justify-content-left align-items-center">
         {renderClient(row)}
         <div className="d-flex flex-column">
           <Link className="user_name text-truncate text-body">
-            <span className="fw-bolder">{row.techName}</span>
+            <span className="fw-bolder">{row.statusName}</span>
           </Link>
         </div>
       </div>
     ),
   },
   {
-    name: "درباره تکنولوژی",
+    name: "درباره وضعیت",
     sortable: true,
     minWidth: "172px",
     sortField: "role",
@@ -154,12 +154,13 @@ export const columns = [
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
-          <EditTech
+          <EditStatus
             show={showEdit}
             setShow={setShowEdit}
             id={row.id}
-            techName={row.techName}
+            statusName={row.statusName}
             describe={row.describe}
+            statusNumber={row.statusNumber}
           />
         </div>
       );
