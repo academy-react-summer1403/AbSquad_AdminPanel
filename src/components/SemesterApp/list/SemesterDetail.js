@@ -28,6 +28,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { GetSemesterDetailApi } from "../../../@core/services/API/Semester/get.semester.detail.api";
 import EditSemesterModal from "../EditSemesterModal";
 import CloseTermModal from "../CloseTermModal";
+import UpdateCloseTermModal from "../UpdateCloseTermModal";
 // import EditCommentModal from "./EditCommentModal";
 
 const statusColor = {
@@ -42,6 +43,7 @@ const SemesterDetail = () => {
   const [semesterDetail, setSemesterDetail] = useState({});
   const [show, setShow] = useState(false);
   const [showCloseDate, setShowCloseDate] = useState(false);
+  const [showUpdateCloseDate, setShowUpdateCloseDate] = useState(false);
   // ** Hook
   const handleGetSemesterDetail = async (id) => {
     const res = await GetSemesterDetailApi(id);
@@ -153,6 +155,13 @@ const SemesterDetail = () => {
                 >
                   تاریخ بست
                 </Button>
+                <Button
+                  className="ms-1"
+                  color={"primary"}
+                  onClick={() => setShowUpdateCloseDate(true)}
+                >
+                  ویرایش تاریخ بست
+                </Button>
               </div>
             </CardBody>
             <EditSemesterModal
@@ -164,7 +173,15 @@ const SemesterDetail = () => {
             />
             <CloseTermModal
               show={showCloseDate}
-              setShow={setShowCloseDate}
+              setShow={setShowUpdateCloseDate}
+              setRefresh={setRefresh}
+              refresh={refresh}
+              termId={id}
+              semesterDetail={semesterDetail}
+            />
+            <UpdateCloseTermModal
+              show={showUpdateCloseDate}
+              setShow={setShowUpdateCloseDate}
               setRefresh={setRefresh}
               refresh={refresh}
               termId={id}
