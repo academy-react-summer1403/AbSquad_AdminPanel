@@ -173,7 +173,7 @@ const SemesterDetail = () => {
             />
             <CloseTermModal
               show={showCloseDate}
-              setShow={setShowUpdateCloseDate}
+              setShow={setShowCloseDate}
               setRefresh={setRefresh}
               refresh={refresh}
               termId={id}

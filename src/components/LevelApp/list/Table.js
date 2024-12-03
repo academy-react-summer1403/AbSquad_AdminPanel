@@ -75,7 +75,7 @@ const CustomHeader = ({ searchTerm, setSearchTerm, setRowsPerPage }) => {
                 setShow(true);
               }}
             >
-              ساخت وضعیت
+              ساخت لول
             </Button>
           </div>
         </Col>
