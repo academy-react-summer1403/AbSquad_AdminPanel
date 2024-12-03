@@ -94,6 +94,12 @@ export default [
         icon: <List size={20} />,
         navLink: "/MetaData/Status",
       },
+      {
+        id: "Level",
+        title: "لیست لول ها",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Level",
+      },
     ],
     navLink: "/MetaData",
   },

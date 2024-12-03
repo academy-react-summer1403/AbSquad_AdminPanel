@@ -12,6 +12,7 @@ import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
+import Level from "../../pages/MetaData/Level.js";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -117,6 +118,10 @@ const Routes = [
   {
     path: "/MetaData/Status",
     element: <Status />,
+  },
+  {
+    path: "/MetaData/Level",
+    element: <Level />,
   },
   {
     path: "/MetaData/Semester/SemesterDetail/:id?",
