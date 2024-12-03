@@ -27,6 +27,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import { useNavigate, useParams } from "react-router-dom";
 import { GetSemesterDetailApi } from "../../../@core/services/API/Semester/get.semester.detail.api";
 import EditSemesterModal from "../EditSemesterModal";
+import CloseTermModal from "../CloseTermModal";
 // import EditCommentModal from "./EditCommentModal";
 
 const statusColor = {
@@ -40,6 +41,7 @@ const SemesterDetail = () => {
   const [refresh, setRefresh] = useState(false);
   const [semesterDetail, setSemesterDetail] = useState({});
   const [show, setShow] = useState(false);
+  const [showCloseDate, setShowCloseDate] = useState(false);
   // ** Hook
   const handleGetSemesterDetail = async (id) => {
     const res = await GetSemesterDetailApi(id);
@@ -144,6 +146,13 @@ const SemesterDetail = () => {
                 >
                   ویرایش
                 </Button>
+                <Button
+                  className="ms-1"
+                  color={"primary"}
+                  onClick={() => setShowCloseDate(true)}
+                >
+                  تاریخ بست
+                </Button>
               </div>
             </CardBody>
             <EditSemesterModal
@@ -151,6 +160,14 @@ const SemesterDetail = () => {
               setShow={setShow}
               setRefresh={setRefresh}
               refresh={refresh}
+              semesterDetail={semesterDetail}
+            />
+            <CloseTermModal
+              show={showCloseDate}
+              setShow={setShowCloseDate}
+              setRefresh={setRefresh}
+              refresh={refresh}
+              termId={id}
               semesterDetail={semesterDetail}
             />
           </Card>
