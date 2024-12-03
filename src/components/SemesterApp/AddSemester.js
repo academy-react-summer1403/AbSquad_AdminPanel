@@ -146,7 +146,7 @@ const AddSemesterModal = ({
               </InputGroup>
             </Col>
             <Col xs={12}>
-              <Label className="form-label">نام ساختمان</Label>
+              <Label className="form-label">نام دپارتمان</Label>
               <Controller
                 id="departmentId"
                 name="departmentId"

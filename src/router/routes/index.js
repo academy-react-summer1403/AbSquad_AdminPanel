@@ -12,6 +12,7 @@ import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
+import Level from "../../pages/MetaData/Level.js";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -65,6 +66,7 @@ const SemesterDetail = lazy(() =>
   import("../../components/SemesterApp/list/SemesterDetail.js")
 );
 const Technology = lazy(() => import("../../pages/MetaData/Technology.js"));
+const Status = lazy(() => import("../../pages/MetaData/Status.js"));
 
 // ** Merge Routes
 const Routes = [
@@ -112,6 +114,14 @@ const Routes = [
   {
     path: "/MetaData/Technology",
     element: <Technology />,
+  },
+  {
+    path: "/MetaData/Status",
+    element: <Status />,
+  },
+  {
+    path: "/MetaData/Level",
+    element: <Level />,
   },
   {
     path: "/MetaData/Semester/SemesterDetail/:id?",

@@ -83,10 +83,22 @@ export default [
         navLink: "/MetaData/Semester",
       },
       {
-        id: "ََSemester",
+        id: "Technology",
         title: "لیست تکنولوژی",
         icon: <List size={20} />,
         navLink: "/MetaData/Technology",
+      },
+      {
+        id: "Status",
+        title: "لیست وضعیت ها",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Status",
+      },
+      {
+        id: "Level",
+        title: "لیست لول ها",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Level",
       },
     ],
     navLink: "/MetaData",
