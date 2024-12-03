@@ -26,6 +26,9 @@ import "@styles/react/libs/react-select/_react-select.scss";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { GetSemesterDetailApi } from "../../../@core/services/API/Semester/get.semester.detail.api";
+import EditSemesterModal from "../EditSemesterModal";
+import CloseTermModal from "../CloseTermModal";
+import UpdateCloseTermModal from "../UpdateCloseTermModal";
 // import EditCommentModal from "./EditCommentModal";
 
 const statusColor = {
@@ -38,10 +41,12 @@ const SemesterDetail = () => {
   // ** State
   const [refresh, setRefresh] = useState(false);
   const [semesterDetail, setSemesterDetail] = useState({});
+  const [show, setShow] = useState(false);
+  const [showCloseDate, setShowCloseDate] = useState(false);
+  const [showUpdateCloseDate, setShowUpdateCloseDate] = useState(false);
   // ** Hook
   const handleGetSemesterDetail = async (id) => {
     const res = await GetSemesterDetailApi(id);
-    console.log(res);
     setSemesterDetail(res);
   };
   useEffect(() => {
@@ -139,18 +144,49 @@ const SemesterDetail = () => {
                 <Button
                   className="ms-1"
                   color={"warning"}
-                  onClick={() => setShowEdit(true)}
+                  onClick={() => setShow(true)}
                 >
                   ویرایش
                 </Button>
+                <Button
+                  className="ms-1"
+                  color={"primary"}
+                  onClick={() => setShowCloseDate(true)}
+                >
+                  تاریخ بست
+                </Button>
+                <Button
+                  className="ms-1"
+                  color={"primary"}
+                  onClick={() => setShowUpdateCloseDate(true)}
+                >
+                  ویرایش تاریخ بست
+                </Button>
               </div>
             </CardBody>
-            {/* <EditSemesterModal
+            <EditSemesterModal
               show={show}
               setShow={setShow}
               setRefresh={setRefresh}
               refresh={refresh}
-            /> */}
+              semesterDetail={semesterDetail}
+            />
+            <CloseTermModal
+              show={showCloseDate}
+              setShow={setShowUpdateCloseDate}
+              setRefresh={setRefresh}
+              refresh={refresh}
+              termId={id}
+              semesterDetail={semesterDetail}
+            />
+            <UpdateCloseTermModal
+              show={showUpdateCloseDate}
+              setShow={setShowUpdateCloseDate}
+              setRefresh={setRefresh}
+              refresh={refresh}
+              termId={id}
+              semesterDetail={semesterDetail}
+            />
           </Card>
         </>
       ) : (

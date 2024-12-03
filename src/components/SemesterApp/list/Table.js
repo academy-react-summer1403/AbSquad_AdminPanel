@@ -18,6 +18,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { GetSemester } from "../../../@core/services/API/Semester/get.semester.api";
+import AddSemesterModal from "../AddSemester";
 
 // ** Get Semester Api *************************************************************************************
 
@@ -29,11 +30,11 @@ const CustomHeader = ({
   parameters,
   rowsPerPage,
   setRowsPerPage,
+  showAdd,
+  setShowAdd,
 }) => {
   // Search
   const handleSearch = (val) => {};
-  // Use Navigate
-  const navigate = useNavigate();
 
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
@@ -81,14 +82,15 @@ const CustomHeader = ({
               className="add-new-user"
               color="primary"
               onClick={() => {
-                navigate("/Course/AddNewCourse");
+                setShowAdd(true);
               }}
             >
-              ساخت دوره
+              ساخت ترم
             </Button>
           </div>
         </Col>
       </Row>
+      <AddSemesterModal show={showAdd} setShow={setShowAdd} />
     </div>
   );
 };
@@ -99,6 +101,7 @@ const CourseList = () => {
   const [parameters, setParameters] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [showAdd, setShowAdd] = useState(false);
   useEffect(() => {
     setParameters({ ...parameters, PageNumber: currentPage + 1 });
   }, [currentPage]);
@@ -141,9 +144,6 @@ const CourseList = () => {
   useEffect(() => {
     handleGetSemesters();
   }, []);
-  useEffect(() => {
-    if (semesters) console.log(semesters);
-  }, [semesters]);
 
   // searchTerm ** copy this above after making a button for search
   return (
@@ -183,6 +183,8 @@ const CourseList = () => {
                 setParameters={setParameters}
                 parameters={parameters}
                 setRowsPerPage={setRowsPerPage}
+                setShowAdd={setShowAdd}
+                showAdd={showAdd}
                 rowsPerPage={rowsPerPage}
                 handleFilter={() => {}}
                 handlePerRow={() => {}}

@@ -166,7 +166,7 @@ export const columns = [
             <DropdownItem className="w-100">
               <FileText size={14} className="me-50" />
               <NavLink
-                to={`/MetaData/Semester/SemesterDetail/${row.departmentId}`}
+                to={`/MetaData/Semester/SemesterDetail/${row.id}`}
                 className="align-middle"
                 onClick={() => {
                   row.setRefresh(!row.refresh);
