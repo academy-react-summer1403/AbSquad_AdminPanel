@@ -71,4 +71,36 @@ export default [
       },
     ],
   },
+  {
+    id: "MetaData",
+    title: "ریز تنظیمات",
+    icon: <User size={20} />,
+    children: [
+      {
+        id: "ََSemester",
+        title: "لیست ترم",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Semester",
+      },
+      {
+        id: "Technology",
+        title: "لیست تکنولوژی",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Technology",
+      },
+      {
+        id: "Status",
+        title: "لیست وضعیت ها",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Status",
+      },
+      {
+        id: "Level",
+        title: "لیست لول ها",
+        icon: <List size={20} />,
+        navLink: "/MetaData/Level",
+      },
+    ],
+    navLink: "/MetaData",
+  },
 ];

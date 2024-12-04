@@ -12,6 +12,7 @@ import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
+import Level from "../../pages/MetaData/Level.js";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -34,9 +35,13 @@ const Error = lazy(() => import("../../pages/Error"));
 const CourseList = lazy(() =>
   import("../../components/CourseApp/CourseList/list")
 );
+
 const TeacherCourseList = lazy(() =>
   import("../../components/TeacherCourseApp/CourseList/list")
 );
+
+const EditUser = lazy(() => import("../../pages/Users/EditUser.js"));
+const UserDetail = lazy(() => import("../../pages/Users/UserDetail.js"));
 
 const CommentManagement = lazy(() =>
   import("../../pages/Course/CommentManagement")
@@ -52,6 +57,17 @@ const AddNewCourse = lazy(() => import("../../pages/Course/AddNewCourse"));
 const AddNewNews = lazy(() =>
   import("../../components/AddNewNews/AddNewNews.js")
 );
+
+const UserCommentDetail = lazy(() =>
+  import("../../components/UserApp/UserDetail/CommentDetail.js")
+);
+const Semester = lazy(() => import("../../pages/MetaData/Semester.js"));
+const SemesterDetail = lazy(() =>
+  import("../../components/SemesterApp/list/SemesterDetail.js")
+);
+const Technology = lazy(() => import("../../pages/MetaData/Technology.js"));
+const Status = lazy(() => import("../../pages/MetaData/Status.js"));
+
 // ** Merge Routes
 const Routes = [
   {
@@ -76,8 +92,40 @@ const Routes = [
     element: <CommentManagement />,
   },
   {
+    path: "/UserList/UserCommentDetail/:id?/:uid?",
+    element: <UserCommentDetail />,
+  },
+  {
     path: "/UserList",
     element: <UserList />,
+  },
+  {
+    path: "/UserList/EditUser/:id?",
+    element: <EditUser />,
+  },
+  {
+    path: "/UserList/UserDetail/:id?",
+    element: <UserDetail />,
+  },
+  {
+    path: "/MetaData/Semester",
+    element: <Semester />,
+  },
+  {
+    path: "/MetaData/Technology",
+    element: <Technology />,
+  },
+  {
+    path: "/MetaData/Status",
+    element: <Status />,
+  },
+  {
+    path: "/MetaData/Level",
+    element: <Level />,
+  },
+  {
+    path: "/MetaData/Semester/SemesterDetail/:id?",
+    element: <SemesterDetail />,
   },
   {
     path: "/Artcle/articleList",
