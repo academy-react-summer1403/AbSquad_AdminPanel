@@ -56,6 +56,12 @@ const NewsDetails = lazy(() =>
   import("../../components/NewsDetails/blog/details/index.js")
 );
 const EditNews = lazy(() => import("../../components/EditNews/EditNews.js"));
+const AddNewsCategory = lazy(() =>
+  import(
+    "../../components/NewsCategory/AddNewNewsCategory/AddNewNewsCategory.js"
+  )
+);
+const NewsCategory = lazy(() => import("../../components/NewsCategory/list"));
 // ** Merge Routes
 const Routes = [
   {
@@ -96,12 +102,18 @@ const Routes = [
     element: <NewsDetails />,
   },
   {
-    path: "/Artcle/EditNews",
+    path: "/Artcle/EditNews/:id?",
     element: <EditNews />,
   },
   {
-    path: "/Artcle/categoriesList",
-    element: <CourseList />,
+    path: "/Artcle/NewsCategory",
+    element: <NewsCategory />,
+  },
+  {
+    path: "/Artcle/AddNewNewsCategory",
+    element: <AddNewsCategory />,
+  },
+  {
     path: "/Course/CourseList/CourseDetail/:id?",
     element: <CourseDetail />,
   },

@@ -1,7 +1,6 @@
 ﻿import React, { useState } from "react";
 import { Col, Row } from "reactstrap";
-import WizardHorizontal from "./wizard/WizardHorizontal";
-
+import { WizardHorizontal } from "../CourseEdit/wizard/WizardHorizontal";
 const EditNews = () => {
   return (
     <>

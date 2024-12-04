@@ -32,16 +32,34 @@ import {
   DropdownItem,
   DropdownToggle,
   UncontrolledDropdown,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
 
 // ** Styles
 import "@styles/base/pages/page-blog.scss";
 import { useParams } from "react-router-dom";
 import { GetNewsWithID } from "../../../../@core/services/API/AllNewsAdmin/GetNewsWithId/GetNewsWithId.js";
+import { SendReplyAPI } from "../../../../@core/services/API/AllNewsAdmin/SendReply/ReplySendingAPI.js";
 
 // ** Images
 
 const BlogDetails = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(null);
+
+  // Toggle modal visibility
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  // Handle Reply click
+  const handleReplyClick = (comment) => {
+    setSelectedComment(comment);
+    toggleModal();
+  };
   // ** States
   const [data, setData] = useState(null);
   const { id } = useParams();
@@ -86,6 +104,24 @@ const BlogDetails = () => {
   //   })
   // }
 
+  const HandleSendReplyApi = async (replyData) => {
+    try {
+      const response = await SendReplyAPI(replyData);
+      console.log("Reply sent successfully:", response);
+      alert("Reply sent successfully!");
+    } catch (error) {
+      console.error("Failed to send reply:", error);
+      alert("Failed to send reply.");
+    }
+  };
+  const replyData = {
+    newsId: "123e4567-e89b-12d3-a456-426614174000",
+    userIpAddress: "192.168.1.1",
+    title: "This is a reply",
+    describe: "Here is the reply description",
+    userId: 101,
+    parentId: "123e4567-e89b-12d3-a456-426614174001",
+  };
   const renderComments = () => {
     return NewsComments.map((comment) => {
       return (
@@ -95,7 +131,7 @@ const BlogDetails = () => {
               <div>
                 <Avatar
                   className="me-75"
-                  img={comment.pictureAddress ? pictureAddress : defimg}
+                  img={comment.pictureAddress || defimg}
                   imgHeight="38"
                   imgWidth="38"
                 />
@@ -112,10 +148,15 @@ const BlogDetails = () => {
                 </Row>
 
                 <CardText>{comment.title}</CardText>
-                <a href="/" onClick={(e) => e.preventDefault()}>
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleReplyClick(comment); // Open modal with selected comment
+                  }}
+                >
                   <div className="d-inline-flex align-items-center">
                     <CornerUpLeft size={18} className="me-50" />
-
                     <span>Reply</span>
                   </div>
                 </a>
@@ -240,7 +281,37 @@ const BlogDetails = () => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col>{renderComments()}</Col>
+              <Col>
+                {" "}
+                {renderComments()}
+                {/* Modal for Reply */}
+                <Modal isOpen={isModalOpen} toggle={toggleModal}>
+                  <ModalHeader toggle={toggleModal}>
+                    Reply to: {selectedComment?.title}
+                  </ModalHeader>
+                  <ModalBody>
+                    <p>
+                      <strong>Author:</strong> {selectedComment?.autor}
+                    </p>
+                    <textarea
+                      className="form-control"
+                      rows="5"
+                      placeholder="ریپلای خود را ارسال کنید"
+                    ></textarea>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      color="primary"
+                      onClick={() => HandleSendReplyApi()}
+                    >
+                      ارسال
+                    </Button>
+                    <Button color="secondary" onClick={toggleModal}>
+                      برگشت
+                    </Button>
+                  </ModalFooter>
+                </Modal>
+              </Col>
             </Row>
           </div>
         </div>

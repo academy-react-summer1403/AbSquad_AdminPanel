@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // ** Third Party Components
 import { useForm, Controller } from "react-hook-form";
@@ -18,22 +18,72 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 
 // Date Related
-import { compareAsc, format, newDate } from "date-fns-jalali";
+import { format, newDate } from "date-fns-jalali";
 
 // Generating Random Things for the rest of the api
 import { v4 as uuidv4 } from "uuid";
+import { getCourseGroup } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/get.coursegroup.api";
+import { GetCourseGroupDetail } from "../../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/courseGroup.detail.api";
 
-const CourseInfo = ({ stepper, finalData, setFinalData }) => {
+const CourseInfo = ({
+  stepper,
+  finalData,
+  setFinalData,
+  initialInfo,
+  secondInitialInfo,
+}) => {
   // random string
   const randomString = Math.random();
-
+  const [courseCapacity, setCourseCapacity] = useState(0);
   // ** Hooks
   const {
     control,
     setError,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
+
+  useEffect(() => {
+    if (initialInfo) {
+      reset({
+        Id: secondInitialInfo.courseId,
+        Title: initialInfo.title,
+        Cost: initialInfo.cost,
+        Capacity: secondInitialInfo.capacity,
+        Describe: initialInfo.describe,
+        MiniDescribe: secondInitialInfo.miniDescribe,
+        StartTime: secondInitialInfo.startTime,
+        EndTime: secondInitialInfo.endTime,
+
+        // EndTime: endTime,
+      });
+    }
+  }, [initialInfo, courseCapacity]);
+
+  // Getting Group Id Of Course
+  const [groupId, setGroupId] = useState(0);
+
+  // Handle Capacity
+  const handleGroupId = async (teacherId, courseId) => {
+    const res = await getCourseGroup(teacherId, courseId);
+    setGroupId(res[0].groupId);
+  };
+  useEffect(() => {
+    if (initialInfo.teacherId && initialInfo.courseId) {
+      handleGroupId(initialInfo.teacherId, initialInfo.courseId);
+    }
+  }, [initialInfo.teacherId, initialInfo.courseId]);
+
+  const handleGroupDetail = async (id) => {
+    const res = await GetCourseGroupDetail(id);
+    setCourseCapacity(res.courseGroupDto.courseCapacity);
+  };
+  useEffect(() => {
+    if (groupId) {
+      handleGroupDetail(groupId);
+    }
+  }, [groupId]);
 
   const onSubmit = (data) => {
     setFinalData({
@@ -47,6 +97,7 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
     });
     stepper.next();
   };
+
   // Price Convert
   const [shownPrice, setShownPrice] = useState();
   const handlePriceConvert = (price) => {
@@ -55,18 +106,8 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   };
 
   // Date Options
-  const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
 
-  // Date Conversion To ISO
-  const date = "1392-05-12";
-  const splittedDate = date.split("-");
-  const UTCDate = new Date();
-  const time = UTCDate.toUTCString().split(" ");
-  const convertedDate = newDate(
-    parseInt(splittedDate[0]),
-    parseInt(splittedDate[1]),
-    parseInt(splittedDate[2])
-  );
+  const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
 
   const handleDateConvert = (date) => {
     const splittedDate = date.split("-");
@@ -84,50 +125,91 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
 
     return finalDate.toISOString();
   };
+  // handling the Conversion and replacing the init date
+  const handleInitDate = (date) => {
+    const initDate = new Date(date); // Convert ISO date string to a Date object
+    const finalDate = format(initDate, "yyyy/MM/dd").replaceAll("/", "-"); // Format the date in the Persian calendar
+    return finalDate.toString();
+  };
+
+  // Getting For Initing The Start
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [startDateReal, setStartDateReal] = useState("");
+  const [endDateReal, setEndDateReal] = useState("");
+  useEffect(() => {
+    if (secondInitialInfo.startTime)
+      setStartDate(handleInitDate(secondInitialInfo.startTime));
+    if (secondInitialInfo.endTime)
+      setEndDate(handleInitDate(secondInitialInfo.endTime));
+  }, [secondInitialInfo]);
+
+  // Setting Dates
+  // const [startTime, setStartTime] = useState("");
+  // const [endTime, setEndTime] = useState("");
+  // useEffect(() => {
+  //   if (initialInfo.startTime) {
+  //     var isodate = new Date(initialInfo.startTime);
+  //     var localedateformat = isodate.toLocaleDateString("fa-IR");
+  //     setStartTime(localedateformat);
+  //   }
+  //   if (initialInfo.endTime) {
+  //     var isodate = new Date(initialInfo.endTime);
+  //     var localedateformat = isodate.toLocaleDateString("fa-IR");
+  //     const finalDate = localedateformat.replaceAll("/", "-");
+  //     setEndTime(finalDate);
+  //   }
+  // }, [initialInfo.startTime, initialInfo.endTime]);
+
   return (
     <Fragment>
       <div className="content-header">
-        <h5 className="mb-0">ویرایش خبر</h5>
+        <h5 className="mb-0">اطلاعات دوره</h5>
+        <small>اطلاعات دوره را اضافه کنید.</small>
       </div>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col md="3" className="mb-1">
             <Label className="form-label" for="courseName">
-              عنوان خبر
+              نام دوره
             </Label>
             <Controller
               id="courseName"
               name="Title"
               control={control}
-              render={({ field: { onChange } }) => (
-                <Input onChange={onChange} placeholder="دوره 1" />
+              render={({ field: { onChange, value } }) => (
+                <Input value={value} onChange={onChange} placeholder="دوره 1" />
               )}
             />
-            `
           </Col>
           <Col md="3" className="mb-1">
             <Label className="form-label" for="miniDescribe">
-              توضیح کوتاه درباره خبر
+              توضیح کوتاه درباره دوره
             </Label>
             <Controller
               id="miniDescribe"
               name="MiniDescribe"
               control={control}
-              render={({ field: { onChange } }) => (
-                <Input onChange={onChange} placeholder="توضیح کوتاه" />
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value}
+                  onChange={onChange}
+                  placeholder="توضیح کوتاه"
+                />
               )}
             />
           </Col>
           <Col md="3" className="mb-1">
             <Label className="form-label" for="capacity">
-              کلمات کلیدی
+              ظرفیت دوره
             </Label>
             <Controller
               id="capacity"
               name="Capacity"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
+                  value={value}
                   onChange={onChange}
                   placeholder="ظرفیت دوره"
                   type="number"
@@ -135,11 +217,86 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
               )}
             />
           </Col>
+          <Col md="3" className="mb-1">
+            <Label
+              className="form-label d-flex justify-content-between"
+              for="coursePrice"
+            >
+              قیمت دوره
+              <span>
+                {shownPrice != "NaN" && shownPrice != undefined
+                  ? shownPrice + " تومان "
+                  : ""}
+              </span>
+            </Label>
+            <Controller
+              id="coursePrice"
+              name="Cost"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  value={value}
+                  onChange={(e) =>
+                    // handlePriceConvert(e.target.value)
+                    onChange(e.target.value)
+                  }
+                  placeholder="5000000"
+                />
+              )}
+            />
+          </Col>
         </Row>
         <Row>
           <Col md="3" className="mb-1">
+            <Label className="form-label" for="StartTime">
+              تاریخ شروع برگزاری
+            </Label>
+            <Controller
+              id="StartTime"
+              name="StartTime"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Cleave
+                  className="form-control"
+                  placeholder="1403-01-01"
+                  options={options}
+                  value={startDate ? startDate : value}
+                  id="date"
+                  onChange={(e) => {
+                    setStartDateReal(e.target.value);
+                    onChange(handleDateConvert(e.target.value));
+                  }}
+                />
+              )}
+            />
+          </Col>
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="EndTime">
+              تاریخ اتمام برگزاری
+            </Label>
+
+            <Controller
+              id="EndTime"
+              name="EndTime"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Cleave
+                  className="form-control"
+                  placeholder="1403-02-01"
+                  options={options}
+                  id="date"
+                  value={endDate ? endDate : value}
+                  onChange={(e) => {
+                    setEndDateReal(e.target.value);
+                    onChange(handleDateConvert(e.target.value));
+                  }}
+                />
+              )}
+            />
+          </Col>
+          <Col md="3" className="mb-1">
             <Label className="form-label" for="miniLink">
-              شماره گروه خبر
+              لینک کوتاه دوره
             </Label>
             <Controller
               id="miniLink"
@@ -150,17 +307,39 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
               )}
             />
           </Col>
+          <Col md="3" className="mb-1">
+            <Label className="form-label" for="SessionNumber">
+              تعداد جلسات دوره
+            </Label>
+            <Controller
+              id="SessionNumber"
+              name="SessionNumber"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <Input
+                  onChange={(e) =>
+                    // handlePriceConvert(e.target.value)
+                    onChange(e.target.value)
+                  }
+                  placeholder="12"
+                />
+              )}
+            />
+          </Col>
+        </Row>
+        <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="description">
-              توضیحات کامل خبر
+              توضیحات کامل دوره
             </Label>
             <Controller
               id="description"
               name="Describe"
               control={control}
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <Input
                   onChange={onChange}
+                  value={value}
                   style={{ resize: "none", height: "200px" }}
                   placeholder="توضیحات کامل دوره"
                   type="textarea"
@@ -195,4 +374,4 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   );
 };
 
-export default CourseInfo;
+export { CourseInfo };

@@ -28,6 +28,7 @@ import {
   DropdownItem,
   Button,
 } from "reactstrap";
+import { toggleNewsStatusAPI } from "../../../@core/services/API/AllNewsAdmin/AcitveAndDeactiveNews/toggleNewsStatusAPI";
 
 // ** Renders Client Columns
 
@@ -100,6 +101,16 @@ const statusObj = {
   active: "light-success",
   inactive: "light-secondary",
 };
+const handleToggleStatus = async (row) => {
+  try {
+    await toggleNewsStatusAPI(row.id, row.isActive);
+    alert("انجام شد");
+    row.isActive = !row.isActive;
+  } catch (error) {
+    console.error("Error toggling status:", error);
+    alert("Failed to toggle status.");
+  }
+};
 
 export const columns = [
   {
@@ -157,16 +168,23 @@ export const columns = [
     sortField: "isActive",
     selector: (row) => row.isActive,
     cell: (row) => (
-      <Badge className="text-capitalize" color={statusObj[row.isActive]} pill>
+      <div
+        style={{
+          backgroundColor: row.isActive ? "green" : "red",
+          color: "white",
+          padding: "6px 12px 6px 12px",
+          borderRadius: "16px",
+        }}
+      >
         {`${row.isActive}`}
-      </Badge>
+      </div>
     ),
   },
   {
     name: "انجام عملیات",
     minWidth: "100px",
     cell: (row) => (
-      <div className="column-action">
+      <div className="column-action d-flex">
         <UncontrolledDropdown>
           <DropdownToggle tag="div" className="btn btn-sm">
             <MoreVertical size={14} className="cursor-pointer" />
@@ -182,17 +200,31 @@ export const columns = [
             </DropdownItem>
 
             <DropdownItem
-              tag="a"
-              href="/"
+              tag={Link}
+              to={`/Artcle/EditNews/${row.id}`}
               className="w-100"
-              onClick={(e) => e.preventDefault()}
             >
               <Archive size={14} className="me-50" />
               <span className="align-middle">ویرایش</span>
             </DropdownItem>
           </DropdownMenu>
-          <Button>غیرفعال کردن</Button>
         </UncontrolledDropdown>
+        <div>
+          <button
+            onClick={() => handleToggleStatus(row)} // Pass row as argument
+            style={{
+              backgroundColor: row.isActive ? "red" : "green",
+              color: "white",
+              padding: "10px",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: "16px",
+            }}
+          >
+            {row.isActive ? "غیرفعال کن" : "فعال کن"}{" "}
+            {/* Dynamic button text */}
+          </button>
+        </div>
       </div>
     ),
   },

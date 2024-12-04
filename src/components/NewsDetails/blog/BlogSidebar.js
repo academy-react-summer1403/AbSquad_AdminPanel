@@ -1,16 +1,16 @@
 // ** React Imports
-import { Link } from "react-router-dom";
-import { Fragment } from "react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Fragment, useState, useEffect } from "react";
 // ** Third Party Components
 import classnames from "classnames";
 import * as Icon from "react-feather";
-
 // ** Custom Components
 import Avatar from "@components/avatar";
 
 // ** Reactstrap Imports
 import { InputGroup, Input, InputGroupText } from "reactstrap";
-
+import axios from "axios";
+import AllNewsAdmin from "../../../@core/services/API/AllNewsAdmin/AllNewsAdmin.js";
 const BlogSidebar = () => {
   // ** Static Data
   const data1 = [
@@ -20,7 +20,21 @@ const BlogSidebar = () => {
     { category: "Video", color: "light-warning" },
     { category: "Food", color: "light-success" },
   ];
+  const [newsList, setNewsList] = useState([]);
 
+  // Function to fetch and set news data
+  const fetchNews = async () => {
+    try {
+      const res = await AllNewsAdmin(); // API call to fetch news
+      console.log(res, "Fetched news");
+      setNewsList(res.news.slice(0, 5)); // Take the first 5 items
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    }
+  };
+  useEffect(() => {
+    fetchNews();
+  }, []);
   const categories = [
     { category: "یک نام متناسب", color: "light-info" },
     { category: "گددرتت", color: "light-primary" },
@@ -30,27 +44,30 @@ const BlogSidebar = () => {
   ];
 
   const renderRecentPosts = () => {
-    return data1.map((post, index) => {
-      return (
-        <div key={index} className={classnames("d-flex mb-2")}>
-          <Link className="me-2" to={`/Artcle/NewsDetails/`}>
-            <Avatar
-              className="rounded"
-              color={post.color}
-              icon={<Icon.Image size={18} />}
-            />
-          </Link>
-          <div>
-            <h6 className="blog-recent-post-title">
-              <Link className="text-body-heading" to={""}>
-                {post.category}
-              </Link>
-            </h6>
-            <div className="text-muted mb-0">Sample description</div>
+    return newsList.map((post, index) => (
+      <div key={index} className="d-flex mb-2">
+        <Link className="me-2" to={`/Artcle/NewsDetails/${post.id}`}>
+          <Avatar
+            className="rounded"
+            color={post.color || "primary"} // Fallback color
+            icon={<Icon.Image size={18} />} // Replace with appropriate icon
+          />
+        </Link>
+        <div>
+          <h6 className="blog-recent-post-title">
+            <Link
+              className="text-body-heading"
+              to={`/Artcle/NewsDetails/${post.id}`}
+            >
+              {post.title || "No Title"} {/* Display news title */}
+            </Link>
+          </h6>
+          <div className="text-muted mb-0">
+            {post.description || "No description available"}
           </div>
         </div>
-      );
-    });
+      </div>
+    ));
   };
 
   const renderCategories = () => {

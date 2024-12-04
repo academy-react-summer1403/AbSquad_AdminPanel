@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
@@ -27,13 +27,22 @@ import {
 } from "reactstrap";
 import Import from "./Import";
 
-const AccountDetails = ({ stepper, setFinalData }) => {
+const ImageUpload = ({ stepper, setFinalData, initialInfo }) => {
   // ** Hooks
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+    reset,
+  } = useForm();
+
+  useEffect(() => {
+    if (initialInfo) {
+      reset({
+        TumbImageAddress: initialInfo.imageAddress,
+      });
+    }
+  }, [initialInfo]);
 
   const onSubmit = (data) => {
     if (isObjEmpty(errors)) {
@@ -52,11 +61,15 @@ const AccountDetails = ({ stepper, setFinalData }) => {
         <Row>
           <Col className="mb-1">
             <Controller
-              id="username"
+              id="TumbImageAddress"
               name="TumbImageAddress"
               control={control}
-              render={({ field: { onChange } }) => (
-                <Import onChange={onChange} />
+              render={({ field }) => (
+                <Import
+                  {...field}
+                  onChange={field.onChange}
+                  initialInfo={initialInfo}
+                />
               )}
             />
           </Col>
@@ -82,4 +95,4 @@ const AccountDetails = ({ stepper, setFinalData }) => {
   );
 };
 
-export default AccountDetails;
+export { ImageUpload };
