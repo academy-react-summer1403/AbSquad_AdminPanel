@@ -25,14 +25,7 @@ import Select from "react-select";
 import GetDepartment from "../../@core/services/API/Department/get.department.api";
 import AddSemester from "../../@core/services/API/Semester/add.semester.api";
 
-const AddSemesterModal = ({
-  setShow,
-  show,
-  refresh,
-
-  semesterDetail,
-  showAdd,
-}) => {
+const AddSemesterModal = ({ setShow, show }) => {
   //   States
   const [parameters, setParameters] = useState({ id: 1 });
   const [depNameSelect, setDepNameSelect] = useState({});
