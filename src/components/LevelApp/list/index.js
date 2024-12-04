@@ -1,5 +1,5 @@
 // ** User List Component
-import Table from "./Table";
+import LevelList from "./Table";
 
 // ** Reactstrap Imports
 import { Row, Col } from "reactstrap";
@@ -13,7 +13,7 @@ import { User, UserPlus, UserCheck, UserX } from "react-feather";
 // ** Styles
 import "@styles/react/apps/app-users.scss";
 
-const UsersList = () => {
+const LevelApp = () => {
   return (
     <div className="app-user-list">
       <Row>
@@ -50,9 +50,9 @@ const UsersList = () => {
           />
         </Col>
       </Row>
-      <Table />
+      <LevelList />
     </div>
   );
 };
 
-export default UsersList;
+export default LevelApp;

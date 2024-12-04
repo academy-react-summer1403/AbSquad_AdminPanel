@@ -1,17 +1,14 @@
 // ** React Imports
 import { Fragment, useState, useEffect } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
 import { GetUserManageList } from "../../../../@core/services/API/AllUsersAdmin/allUserAdmin";
 
 // ** Invoice List Sidebar
 import Sidebar from "./Sidebar";
+// Add User
+import AddUser from "./AddCard";
 
 // ** Table Columns
 import { columns } from "./columns";
-
-// ** Store & Actions
-import { getAllData, getData } from "../store";
-import { useDispatch, useSelector } from "react-redux";
 
 // ** Third Party Components
 import Select from "react-select";
@@ -50,78 +47,55 @@ import {
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { AddRoleApi } from "../../../../@core/services/API/AllUsersAdmin/add.role.api";
+import { param } from "jquery";
+import { useNavigate } from "react-router-dom";
+import { DeleteUserApi } from "../../../../@core/services/API/AllUsersAdmin/delete.user.api";
 
 // ** Table Header
 const CustomHeader = ({
-  store,
-  toggleSidebar,
-  handlePerPage,
-  rowsPerPage,
-  handleFilter,
   searchTerm,
+  setSearchTerm,
+  setParameters,
+  parameters,
+  rowsPerPage,
+  setRowsPerPage,
+  show,
+  setShow,
 }) => {
-  // ** Converts table to CSV
-  function convertArrayOfObjectsToCSV(array) {
-    let result;
+  // const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const columnDelimiter = ",";
-    const lineDelimiter = "\n";
-    const keys = Object.keys(store.data[0]);
+  // Search
+  const handleSearch = (val) => {};
+  // Use Navigate
 
-    result = "";
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
+  const navigate = useNavigate();
+  useEffect(() => {
+    setParameters({ ...parameters, RowsOfPage: rowsPerPage });
+  }, [rowsPerPage]);
+  useEffect(() => {
+    setParameters({ ...parameters, Query: searchTerm });
+  }, [searchTerm]);
 
-    array.forEach((item) => {
-      let ctr = 0;
-      keys.forEach((key) => {
-        if (ctr > 0) result += columnDelimiter;
-
-        result += item[key];
-
-        ctr++;
-      });
-      result += lineDelimiter;
-    });
-
-    return result;
-  }
-
-  // ** Downloads CSV
-  function downloadCSV(array) {
-    const link = document.createElement("a");
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv === null) return;
-
-    const filename = "export.csv";
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = `data:text/csv;charset=utf-8,${csv}`;
-    }
-
-    link.setAttribute("href", encodeURI(csv));
-    link.setAttribute("download", filename);
-    link.click();
-  }
   return (
     <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
       <Row>
         <Col xl="6" className="d-flex align-items-center p-0">
           <div className="d-flex align-items-center w-100">
-            <label htmlFor="rows-per-page">Show</label>
+            <label htmlFor="rows-per-page">تعداد:</label>
             <Input
               className="mx-50"
+              onChange={(e) => {
+                setRowsPerPage(parseInt(e.target.value));
+              }}
               type="select"
               id="rows-per-page"
-              value={rowsPerPage}
-              onChange={handlePerPage}
               style={{ width: "5rem" }}
             >
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
             </Input>
-            <label htmlFor="rows-per-page">Entries</label>
           </div>
         </Col>
         <Col
@@ -130,56 +104,29 @@ const CustomHeader = ({
         >
           <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
             <label className="mb-0" htmlFor="search-invoice">
-              Search:
+              جستجو:
             </label>
             <Input
               id="search-invoice"
               className="ms-50 w-100"
               type="text"
               value={searchTerm}
-              onChange={(e) => handleFilter(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                handleSearch(searchTerm);
+              }}
             />
           </div>
 
           <div className="d-flex align-items-center table-header-actions">
-            <UncontrolledDropdown className="me-1">
-              <DropdownToggle color="secondary" caret outline>
-                <Share className="font-small-4 me-50" />
-                <span className="align-middle">Export</span>
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className="w-100">
-                  <Printer className="font-small-4 me-50" />
-                  <span className="align-middle">Print</span>
-                </DropdownItem>
-                <DropdownItem
-                  className="w-100"
-                  onClick={() => downloadCSV(store.data)}
-                >
-                  <FileText className="font-small-4 me-50" />
-                  <span className="align-middle">CSV</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <Grid className="font-small-4 me-50" />
-                  <span className="align-middle">Excel</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <File className="font-small-4 me-50" />
-                  <span className="align-middle">PDF</span>
-                </DropdownItem>
-                <DropdownItem className="w-100">
-                  <Copy className="font-small-4 me-50" />
-                  <span className="align-middle">Copy</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-
             <Button
               className="add-new-user"
               color="primary"
-              onClick={toggleSidebar}
+              onClick={() => {
+                setShow(true);
+              }}
             >
-              Add New User
+              ساخت کاربر
             </Button>
           </div>
         </Col>
@@ -189,108 +136,141 @@ const CustomHeader = ({
 };
 // MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 const UsersList = () => {
-  const [userList, setUserList] = useState({});
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const UserListManage = async (loc) => {
-    const res = await GetUserManageList(loc); //*************************************************************
-    console.log(res);
-    setUserList(res.listUser);
+  const [show, setShow] = useState(false);
+  const [userList, setUserList] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [parameters, setParameters] = useState({
+    PageNumber: 1,
+    RowsOfPage: 10,
+  });
+  const UserListManage = async (params) => {
+    const res = await GetUserManageList(params);
+    setUserList(res);
   };
   useEffect(() => {
-    if (location) UserListManage(location.search);
-  }, [searchParams]);
-  useEffect(() => {
-    if (userList) {
-      console.log(userList, "userListeeeeeeeeeeeeeeeeeeeeeeeee");
-      console.log(userList.length, "lenthgrue");
-    }
-  }, [userList]);
-
-  // ** Store Vars
-  const dispatch = useDispatch();
-  const store = useSelector((state) => state.users);
+    UserListManage(parameters);
+  }, [parameters]);
 
   // ** States
-  const [sort, setSort] = useState("desc");
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortColumn, setSortColumn] = useState("id");
+  const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState({
     value: "",
-    label: "Select Role",
-  });
-  const [currentPlan, setCurrentPlan] = useState({
-    value: "",
-    label: "Select Plan",
+    label: "رول را انتخاب کنید",
   });
   const [currentStatus, setCurrentStatus] = useState({
     value: "",
-    label: "Select Status",
-    number: 0,
+    label: "وضعیت کاربر راانتخاب کنید",
   });
 
-  // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  // ***********************************************************
+  // ** User Roles options
+  const StandardFormSelect = (data) => {
+    const array = data.map((it) => {
+      return { value: it.id, label: `${it.roleName}` };
+    });
+    return array;
+  };
+  const changeRoleName = (data) => {
+    switch (data) {
+      case "Administrator":
+        return "مدیر";
+      case "Teacher":
+        return "استاد";
+      case "Employee.Admin":
+        return "زیرمدیر";
+      case "Employee.Writer":
+        return "نویسنده";
+      case "Student":
+        return "دانشجو";
+      case "CourseAssistance":
+        return "دستیار";
+      case "TournamentAdmin":
+        return "مدیر تورنمنت";
+      case "Referee":
+        return "داور";
+      case "TournamentMentor":
+        return "منتور تورنمنت";
+      case "Support":
+        return "پشتیبان";
+    }
+  };
+  const handleGetRoles = async () => {
+    const res = await GetUserManageList(parameters);
+    setRoles(res.roles);
+  };
+  useEffect(() => {
+    handleGetRoles(parameters);
+  }, []);
 
-  // ** Get data on mount
-
-  // ** User filter options
-  const roleOptions = [
-    { value: "", label: "Select Role" },
-    { value: "admin", label: "Admin" },
-    { value: "author", label: "Author" },
-    { value: "editor", label: "Editor" },
-    { value: "maintainer", label: "Maintainer" },
-    { value: "subscriber", label: "Subscriber" },
-  ];
-
-  const planOptions = [
-    { value: "", label: "Select Plan" },
-    { value: "basic", label: "Basic" },
-    { value: "company", label: "Company" },
-    { value: "enterprise", label: "Enterprise" },
-    { value: "team", label: "Team" },
-  ];
-
-  const statusOptions = [
-    { value: "", label: "Select Status", number: 0 },
-    { value: "pending", label: "Pending", number: 1 },
-    { value: "active", label: "Active", number: 2 },
-    { value: "inactive", label: "Inactive", number: 3 },
-  ];
-
-  // ** Function in get data on page change
-  const handlePagination = (page) => {
-    setCurrentPage(page.selected + 1);
+  const [userRoles, setUserRoles] = useState("");
+  // Handling UserRolesApi
+  const handleUserRoleApi = (data) => {
+    setParameters({ ...parameters, roleId: data.value });
   };
 
-  // ** Function in get data on rows per page
-  const handlePerPage = (e) => {
-    const value = parseInt(e.currentTarget.value);
+  //*********************************************************** */
+  // User Status States
 
-    setRowsPerPage(value);
+  const StatusOptions = [
+    { value: "Active", label: "کاربران فعال" },
+    { value: "DeActive", label: "کاربران غیرفعال" },
+    { value: "Deleted", label: "کاربران حذف شده" },
+  ];
+  const handleStatusApi = (obj) => {
+    if (obj === StatusOptions[0]) {
+      delete parameters.IsDeletedUser;
+      setParameters({ ...parameters, IsActiveUser: "True" });
+    }
+    if (obj === StatusOptions[1]) {
+      {
+        delete parameters.IsDeletedUser;
+        setParameters({ ...parameters, IsActiveUser: "False" });
+      }
+    }
+    if (obj === StatusOptions[2]) {
+      delete parameters.IsActiveUser;
+      setParameters({ ...parameters, IsDeletedUser: "True" });
+    }
+  };
+  // *********************************************************
+
+  // Deleting User Handle
+  // *********************************************************
+  const handleDeleteUser = async (obj) => {
+    console.log(obj);
+    await DeleteUserApi(obj);
+  };
+  // Handling Adding Role To User
+  const handleAddRole = async (bool, data) => {
+    await AddRoleApi(bool, data);
   };
 
   // ** Function in get data on search query change
   const handleFilter = (val) => {
     setSearchTerm(val);
   };
-
+  useEffect(() => {
+    setParameters({ ...parameters, PageNumber: currentPage + 1 });
+  }, [currentPage]);
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(store.total / rowsPerPage));
-
+    const count = Number(Math.ceil(userList.totalCount / rowsPerPage));
+    const handlePagination = (pageNum) => {
+      setCurrentPage(pageNum);
+    };
     return (
       <ReactPaginate
         previousLabel={""}
         nextLabel={""}
         pageCount={count || 1}
         activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => handlePagination(page)}
+        forcePage={currentPage !== 0 ? currentPage : 0}
+        onPageChange={(page) => {
+          handlePagination(page.selected);
+        }}
         pageClassName={"page-item"}
         nextLinkClassName={"page-link"}
         nextClassName={"page-item next"}
@@ -304,75 +284,44 @@ const UsersList = () => {
     );
   };
 
-  // ** Table data to render
-  const dataToRender = () => {
-    const filters = {
-      role: currentRole.value,
-      currentPlan: currentPlan.value,
-      status: currentStatus.value,
-      q: searchTerm,
-    };
-
-    const isFiltered = Object.keys(filters).some(function (k) {
-      return filters[k].length > 0;
-    });
-
-    // if (store.data.length > 0) {
-    //   return store.data;
-    // } else if (store.data.length === 0 && isFiltered) {
-    //   return [];
-    // } else {
-    //   return store.allData.slice(0, rowsPerPage);
-    // }
-  };
-
-  const handleSort = (column, sortDirection) => {
-    setSort(sortDirection);
-    setSortColumn(column.sortField);
-  };
-
   return (
     <Fragment>
       <Card>
         <CardHeader>
-          <CardTitle tag="h4">Filters</CardTitle>
+          <CardTitle tag="h4">دسته بندی</CardTitle>
         </CardHeader>
         <CardBody>
           <Row>
             <Col md="4">
-              <Label for="role-select">Role</Label>
+              <Label for="role-select">رول</Label>
               <Select
                 isClearable={false}
                 value={currentRole}
-                options={roleOptions}
+                options={StandardFormSelect(roles).map((it) => {
+                  return { value: it.value, label: changeRoleName(it.label) };
+                })}
                 className="react-select"
                 classNamePrefix="select"
                 theme={selectThemeColors}
-                onChange={() => {}}
+                onChange={(e) => {
+                  handleUserRoleApi(e);
+                  setCurrentRole(e);
+                }}
               />
             </Col>
             <Col className="my-md-0 my-1" md="4">
-              <Label for="plan-select">Plan</Label>
+              <Label for="plan-select">وضعیت کاربر</Label>
               <Select
                 theme={selectThemeColors}
                 isClearable={false}
                 className="react-select"
                 classNamePrefix="select"
-                options={planOptions}
-                value={currentPlan}
-                onChange={() => {}}
-              />
-            </Col>
-            <Col md="4">
-              <Label for="status-select">Status</Label>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={statusOptions}
+                options={StatusOptions}
                 value={currentStatus}
-                onChange={() => {}}
+                onChange={(e) => {
+                  setCurrentStatus(e);
+                  handleStatusApi(e);
+                }}
               />
             </Col>
           </Row>
@@ -392,22 +341,40 @@ const UsersList = () => {
             onSort={() => {}}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
-            paginationComponent={() => {}}
-            data={userList}
-            // subHeaderComponent={
-            //   <CustomHeader
-            //     // store={store}
-            //     searchTerm={searchTerm}
-            //     rowsPerPage={rowsPerPage}
-            //     handleFilter={() => {}}
-            //     handlePerPage={() => {}}
-            //     toggleSidebar={() => {}}
-            //   />
-            // }
+            paginationComponent={() => (
+              <CustomPagination
+                currentPage={currentPage}
+                setParameters={setParameters}
+                parameters={parameters}
+              />
+            )}
+            data={
+              userList.listUser != undefined
+                ? userList.listUser.map((it) => {
+                    return {
+                      ...it,
+                      handleAddRole: handleAddRole,
+                      handleDeleteUser: handleDeleteUser,
+                    };
+                  })
+                : []
+            }
+            subHeaderComponent={
+              <CustomHeader
+                show={show}
+                setShow={setShow}
+                setSearchTerm={setSearchTerm}
+                searchTerm={searchTerm}
+                setParameters={setParameters}
+                parameters={parameters}
+                setRowsPerPage={setRowsPerPage}
+                rowsPerPage={rowsPerPage}
+              />
+            }
           />
         </div>
       </Card>
-
+      <AddUser show={show} setShow={setShow} />
       <Sidebar open={sidebarOpen} toggleSidebar={() => {}} />
     </Fragment>
   );
