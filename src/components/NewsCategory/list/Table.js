@@ -14,6 +14,7 @@ import { getAllData, getData } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 
 // ** Third Party Components
+import { AllNewsGroup } from "../../../@core/services/API/AllNewsGroup/AllNewsGroup";
 import Select from "react-select";
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
@@ -192,31 +193,27 @@ const NewsList = () => {
   const [NewsList, setNewsList] = useState({});
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const NewsListManage = async (loc, isActiveFilter = true) => {
+  const [NewsGroupList, setNewsGroupList] = useState([]);
+
+  const fetchGroup = async (loc) => {
     try {
-      const res = await AllNewsAdmin(loc); // Fetch data from API
-      console.log(res);
-
-      // Filter news based on `isActiveFilter`
-      const filteredNews = res.news.filter(
-        (news) => news.isActive === isActiveFilter
-      );
-
-      // Update the existing `NewsList` state with the filtered results
-      setNewsList(filteredNews);
+      const response = await AllNewsGroup(loc);
+      setNewsGroupList(response);
+      console.log("first");
     } catch (error) {
-      console.error("Error fetching news:", error);
+      console.error("Error fetching data:", error);
     }
   };
+
   useEffect(() => {
-    if (location) NewsListManage(location.search);
+    if (location) fetchGroup(location.search);
   }, [searchParams]);
   useEffect(() => {
-    if (NewsList) {
-      console.log(NewsList, "NewsListNewsListNewsListNewsList");
-      console.log(NewsList.length, "lenthgrue");
+    if (NewsGroupList) {
+      console.log(NewsGroupList, "NewsGroupList");
+      console.log(NewsGroupList.length, "lenthgrue");
     }
-  }, [NewsList]);
+  }, [NewsGroupList]);
 
   // ** Store Vars
   const dispatch = useDispatch();
@@ -292,7 +289,7 @@ const NewsList = () => {
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Number(Math.ceil(store.total / rowsPerPage));
+    const count = Number(NewsGroupList.length / rowsPerPage);
 
     return (
       <ReactPaginate
@@ -341,39 +338,19 @@ const NewsList = () => {
     setSort(sortDirection);
     setSortColumn(column.sortField);
   };
-
+  const [ItemNum, setItemNum] = useState(10);
   return (
     <Fragment>
       <Card>
         <CardHeader>
-          <CardTitle tag="h4">AbSquad News Segment</CardTitle>
+          <CardTitle tag="h4">AbSquad NewsCategory Segment</CardTitle>
         </CardHeader>
         <CardBody>
           <Row>
-            <Col md="4 d-flex">
-              <Label for="Active">اخبار فعال</Label>
-              <Button
-                color="primary"
-                className="mt-2"
-                onClick={() => NewsListManage("", true)} // Show active news
-              >
-                خبرهای فعال
-              </Button>
-            </Col>
-            <Col className="my-md-0 my-1 d-flex" md="4">
-              <Label for="deActive">اخبار غیرفعال</Label>
-              <Button
-                color="secondary"
-                className="mt-2"
-                onClick={() => NewsListManage("", false)} // Show deactivated news
-              >
-                خبرهای غیرفعال
-              </Button>
-            </Col>
             <Col>
-              <NavLink to="/Artcle/AddNewArticle">
+              <NavLink to="/Artcle/AddNewNewsCategory">
                 <button className="btn btn-primary mt-2">
-                  اضافه کردن خبر جدید
+                  اضافه کردن دسته جدید
                 </button>
               </NavLink>
             </Col>
@@ -394,8 +371,14 @@ const NewsList = () => {
             onSort={() => {}}
             sortIcon={<ChevronDown />}
             className="react-dataTable"
-            paginationComponent={() => {}}
-            data={NewsList}
+            paginationComponent={() => (
+              <CustomPagination currentPage={currentPage} />
+            )}
+            data={NewsGroupList.map((it, index) =>
+              index < 10 * currentPage && index > 10 * currentPage - 10
+                ? { ...it }
+                : undefined
+            ).filter((item) => item !== undefined)}
             // subHeaderComponent={
             //   <CustomHeader
             //     // store={store}
