@@ -77,7 +77,10 @@ const SemesterDetail = lazy(() =>
 );
 const Technology = lazy(() => import("../../pages/MetaData/Technology.js"));
 const Status = lazy(() => import("../../pages/MetaData/Status.js"));
-
+const ProfileAdmin = lazy(() =>
+  import("../../components/SharedPanel/index.js")
+);
+const adminId = localStorage.getItem("id");
 // ** Merge Routes
 const Routes = [
   {
@@ -168,6 +171,10 @@ const Routes = [
   {
     path: "/Course/AddNewCourse",
     element: <AddNewCourse />,
+  },
+  {
+    path: `/AdminDetails/Profile/:id?`,
+    element: <ProfileAdmin />,
   },
   {
     path: "/Course/EditCourse/:id?",

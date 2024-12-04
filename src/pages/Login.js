@@ -33,7 +33,8 @@ const Login = () => {
   const PostLoginAPI = async (user = "") => {
     try {
       const res = await http.post("/Sign/Login", user);
-      console.log(res);
+      localStorage.setItem("id", res.id);
+      console.log(res, "loginfeedback");
       return res;
     } catch (error) {
       console.log(error);
