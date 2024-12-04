@@ -59,7 +59,7 @@ export default [
       },
       {
         id: "NewArticle",
-        title: "ایجاد لیست جدید",
+        title: "ایجاد خبر جدید",
         icon: <List size={20} />,
         navLink: "/Artcle/AddNewArticle",
       },
@@ -67,7 +67,7 @@ export default [
         id: "CategoriesArticle",
         title: "لیست دیسته بندی",
         icon: <List size={20} />,
-        navLink: "/Artcle/categoriesList",
+        navLink: "/Artcle/NewsCategory",
       },
     ],
   },

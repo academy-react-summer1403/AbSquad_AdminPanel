@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Row, Col, Button } from "reactstrap";
 import InputGroupMerged from "./InputGroupMerged";
 import ImageUpload from "./ImageUpload";
-import { CreateNewNews } from "../../@core/services/API/AllNewsAdmin/AddNewNews/CreateNewNews";
-
-const AddNewNews = () => {
+import { AddNewNewsCategoryAPI } from "../../../@core/services/API/AllNewsGroup/AddNewNewsCategory/AddNewNewsCategoryAPI";
+const AddNewNewsCategory = () => {
   const [formData, setFormData] = useState({
     Title: "",
     category: null,
@@ -28,20 +27,15 @@ const AddNewNews = () => {
   const handleSubmit = async () => {
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("Title", formData.Title);
+      formDataToSend.append("CategoryName", formData.Title);
       formDataToSend.append("GoogleTitle", formData.googleTitle);
       formDataToSend.append("GoogleDescribe", formData.googleDescription);
-      formDataToSend.append("MiniDescribe", formData.shortDescription);
-      formDataToSend.append("Describe", formData.blogDescription);
-      formDataToSend.append("Keyword", formData.keywords);
-      formDataToSend.append("IsSlider", formData.isSlider || false); // Boolean
-      formDataToSend.append("NewsCatregoryId", formData.category?.value); // Integer
       if (formData.TumbImageAddress instanceof File) {
         formDataToSend.append("Image", formData.TumbImageAddress); // File
       } else if (typeof formData.TumbImageAddress === "string") {
         formDataToSend.append("Image", formData.TumbImageAddress); // Base64 string
       }
-
+      const res = await AddNewNewsCategoryAPI(formDataToSend);
       // Log FormData entries
       console.log("FormData content:");
       for (let [key, value] of formDataToSend.entries()) {
@@ -55,7 +49,7 @@ const AddNewNews = () => {
       }
       const token = localStorage.getItem("token");
 
-      const res = await CreateNewNews(formDataToSend);
+      // const res = await CreateNewNews(formDataToSend);
       console.log(res);
 
       if (res.ok) {
@@ -77,7 +71,7 @@ const AddNewNews = () => {
     <>
       <Row>
         <Col className="d-flex align-items-center p-0 mb-2">
-          <h3>اضافه کردن خبر</h3>
+          <h3>ایجاد دسته بندی جدید </h3>
         </Col>
       </Row>
       <Row>
@@ -115,4 +109,4 @@ const AddNewNews = () => {
   );
 };
 
-export default AddNewNews;
+export default AddNewNewsCategory;
