@@ -14,20 +14,24 @@ import {
   Input,
   ModalHeader,
 } from "reactstrap";
+import { newDate } from "date-fns-jalali";
+import Cleave from "cleave.js/react";
 
-import Select from "react-select";
 import classnames from "classnames";
 import { useForm, Controller } from "react-hook-form";
-import AddBuildingApi from "../../@core/services/API/ClassRoom/add.class.api";
+import AddBuildingApi from "../../@core/services/API/Building/add.building.api";
 import GetBuildingApi from "../../@core/services/API/Building/get.building.api";
 const AddBuilding = ({ setShow, show }) => {
   //   States
-  const [parameters, setParameters] = useState({});
+  const [parameters, setParameters] = useState({
+    latitude: Math.random().toString(),
+    longitude: Math.random().toString(),
+  });
   const handleAddBuilding = async (data) => {
     await AddBuildingApi(data);
   };
   useEffect(() => {
-    if (parameters.classRoomName) handleAddBuilding(parameters);
+    if (parameters.buildingName) handleAddBuilding(parameters);
   }, [parameters]);
 
   // ** Hooks
@@ -43,29 +47,24 @@ const AddBuilding = ({ setShow, show }) => {
     setShow(!show);
   };
 
-  // Building For Select Options
-  const [buildings, setBuildings] = useState([]);
-  const [builNameSelect, setBuilNameSelect] = useState({});
-  const handleGetBuildings = async () => {
-    const res = await GetBuildingApi();
-    setBuildings(res);
-  };
-  const StandardOptionsForm = (data) => {
-    const array = [];
-    data.map((it) => {
-      array.push({
-        id: it.id,
-        value: it.buildingName,
-        label: it.buildingName,
-      });
-    });
+  // Handle Date
+  const options = { date: true, delimiter: "-", datePattern: ["Y", "m", "d"] };
+  const handleDateConvert = (date) => {
+    const splittedDate = date.split("-");
+    const UTCDate = new Date();
+    const time = UTCDate.toUTCString().split(" ");
+    const convertedDate = newDate(
+      parseInt(splittedDate[0]),
+      parseInt(splittedDate[1]),
+      parseInt(splittedDate[2])
+    );
+    const splitConvDate = convertedDate.toString().split(" ");
+    const finalDate = new Date(
+      splitConvDate[1] + " " + splitConvDate[2] + ", " + splitConvDate[3]
+    );
 
-    return array;
+    return finalDate.toISOString();
   };
-  useEffect(() => {
-    handleGetBuildings();
-  }, []);
-
   return (
     <Fragment>
       <Modal
@@ -78,7 +77,7 @@ const AddBuilding = ({ setShow, show }) => {
           toggle={() => setShow(!show)}
         ></ModalHeader>
         <ModalBody className="px-sm-5 mx-50 pb-5">
-          <h1 className="text-center mb-1">ساخت کلاس</h1>
+          <h1 className="text-center mb-1">اضافه کردن ساختمان</h1>
 
           <Row
             tag="form"
@@ -86,22 +85,22 @@ const AddBuilding = ({ setShow, show }) => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Col xs={12}>
-              <Label className="form-label" for="classRoomName">
-                نام کلاس
+              <Label className="form-label" for="buildingName">
+                نام ساختمان
               </Label>
 
               <InputGroup>
                 <Controller
-                  name="classRoomName"
+                  name="buildingName"
                   control={control}
                   render={({ field }) => {
                     return (
                       <Input
                         {...field}
-                        id="classRoomName"
+                        id="buildingName"
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="نام کلاس را وارد کنید..."
+                        placeholder="نام ساختمان را وارد کنید..."
                         className={classnames("form-control")}
                       />
                     );
@@ -110,22 +109,22 @@ const AddBuilding = ({ setShow, show }) => {
               </InputGroup>
             </Col>
             <Col xs={12}>
-              <Label className="form-label" for="capacity">
-                ظرفیت کلاس
+              <Label className="form-label" for="floor">
+                تعداد طبقات ساختمان
               </Label>
 
               <InputGroup>
                 <Controller
-                  name="capacity"
+                  name="floor"
                   control={control}
                   render={({ field }) => {
                     return (
                       <Input
                         {...field}
-                        id="capacity"
+                        id="floor"
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="ظرفیت کلاس را وارد کنید..."
+                        placeholder="تعداد طبقات ساختمان را وارد کنید..."
                         className={classnames("form-control")}
                       />
                     );
@@ -133,28 +132,22 @@ const AddBuilding = ({ setShow, show }) => {
                 />
               </InputGroup>
             </Col>
-            <Col xs={12}>
-              <Label className="form-label">نام ساختمان</Label>
+            <Col xs={12} className="mb-1">
+              <Label className="form-label" for="workDate">
+                تاریخ ساخت
+              </Label>
               <Controller
-                id="buildingId"
-                name="buildingId"
+                id="workDate"
+                name="workDate"
                 control={control}
                 render={({ field: { onChange } }) => (
-                  <Select
-                    theme={selectThemeColors}
-                    className="react-select"
-                    classNamePrefix="select"
-                    options={buildings ? StandardOptionsForm(buildings) : {}}
-                    isClearable={false}
-                    value={
-                      JSON.stringify(builNameSelect) != "{}"
-                        ? builNameSelect
-                        : {}
-                    }
+                  <Cleave
+                    className="form-control"
+                    placeholder="1403-01-01"
+                    options={options}
+                    id="date"
                     onChange={(e) => {
-                      setBuilNameSelect(e);
-                      console.log(e.id);
-                      onChange(e.id);
+                      onChange(handleDateConvert(e.target.value));
                     }}
                   />
                 )}

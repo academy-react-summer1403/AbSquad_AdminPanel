@@ -75,7 +75,7 @@ const CustomHeader = ({ searchTerm, setSearchTerm, setRowsPerPage }) => {
                 setShow(true);
               }}
             >
-              ساخت کلاس
+              اضافه کردن ساختمان
             </Button>
           </div>
         </Col>
