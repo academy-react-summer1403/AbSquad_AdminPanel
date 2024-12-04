@@ -81,6 +81,10 @@ const ProfileAdmin = lazy(() =>
   import("../../components/SharedPanel/index.js")
 );
 const adminId = localStorage.getItem("id");
+const ClassRoom = lazy(() => import("../../pages/MetaData/Classroom.js"));
+const Building = lazy(() => import("../../pages/MetaData/Building.js"));
+const Department = lazy(() => import("../../pages/MetaData/Department.js"));
+
 // ** Merge Routes
 const Routes = [
   {
@@ -135,6 +139,18 @@ const Routes = [
   {
     path: "/MetaData/Level",
     element: <Level />,
+  },
+  {
+    path: "/MetaData/Classroom",
+    element: <ClassRoom />,
+  },
+  {
+    path: "/MetaData/Building",
+    element: <Building />,
+  },
+  {
+    path: "/MetaData/Department",
+    element: <Department />,
   },
   {
     path: "/MetaData/Semester/SemesterDetail/:id?",
