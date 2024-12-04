@@ -68,6 +68,7 @@ const SemesterDetail = lazy(() =>
 const Technology = lazy(() => import("../../pages/MetaData/Technology.js"));
 const Status = lazy(() => import("../../pages/MetaData/Status.js"));
 const ClassRoom = lazy(() => import("../../pages/MetaData/Classroom.js"));
+const Building = lazy(() => import("../../pages/MetaData/Building.js"));
 
 // ** Merge Routes
 const Routes = [
@@ -127,6 +128,10 @@ const Routes = [
   {
     path: "/MetaData/Classroom",
     element: <ClassRoom />,
+  },
+  {
+    path: "/MetaData/Building",
+    element: <Building />,
   },
   {
     path: "/MetaData/Semester/SemesterDetail/:id?",
