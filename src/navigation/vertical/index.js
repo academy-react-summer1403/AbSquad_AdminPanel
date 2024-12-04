@@ -116,7 +116,7 @@ export default [
         id: "Departments",
         title: "لیست دپارتمان ها",
         icon: <List size={20} />,
-        navLink: "/MetaData/Departments",
+        navLink: "/MetaData/Department",
       },
     ],
     navLink: "/MetaData",
