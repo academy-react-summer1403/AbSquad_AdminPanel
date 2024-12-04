@@ -1,8 +1,8 @@
 ﻿import http from "../../../services/Interceptor";
-export const GetDepartment = async () => {
+export const GetDepartmentApi = async () => {
   try {
     const res = await http.get(`/Department`);
     return res;
   } catch (error) {}
 };
-export default GetDepartment;
+export default GetDepartmentApi;
