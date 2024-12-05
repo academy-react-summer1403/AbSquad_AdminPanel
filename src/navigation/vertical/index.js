@@ -1,4 +1,5 @@
 import { Mail, Home, Archive, List, UserPlus, User } from "react-feather";
+const adminId = localStorage.getItem("id");
 
 export default [
   {
@@ -117,6 +118,20 @@ export default [
         title: "لیست دپارتمان ها",
         icon: <List size={20} />,
         navLink: "/MetaData/Department",
+      },
+    ],
+    navLink: "/MetaData",
+  },
+  {
+    id: "AdminDetails",
+    title: "اطلاعات کاربری ادمین",
+    icon: <User size={20} />,
+    children: [
+      {
+        id: "profile",
+        title: "پروفایل",
+        icon: <List size={20} />,
+        navLink: `/AdminDetails/Profile/${adminId ? adminId : ""}`,
       },
     ],
     navLink: "/MetaData",
