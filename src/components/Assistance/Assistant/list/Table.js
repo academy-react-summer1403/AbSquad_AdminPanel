@@ -24,7 +24,13 @@ import { GetUserManageList } from "../../../../@core/services/API/AllUsersAdmin/
 // ** Get Semester Api *************************************************************************************
 
 // ** Table Header
-const CustomHeader = ({ searchTerm, setSearchTerm, setRowsPerPage }) => {
+const CustomHeader = ({
+  searchTerm,
+  setSearchTerm,
+  setRowsPerPage,
+  courses,
+  user,
+}) => {
   // Search
   const handleSearch = (val) => {};
   const [show, setShow] = useState(false);
@@ -77,11 +83,16 @@ const CustomHeader = ({ searchTerm, setSearchTerm, setRowsPerPage }) => {
                 setShow(true);
               }}
             >
-              ساخت لول
+              ساخت دستیار
             </Button>
           </div>
         </Col>
-        <AddAssistant show={show} setShow={setShow} />
+        <AddAssistant
+          show={show}
+          setShow={setShow}
+          user={user}
+          courses={courses}
+        />
       </Row>
     </div>
   );
@@ -200,6 +211,8 @@ const AssistantList = () => {
             }
             subHeaderComponent={
               <CustomHeader
+                courses={courses}
+                user={user}
                 setSearchTerm={setSearchTerm}
                 searchTerm={searchTerm}
                 setParameters={setParameters}
