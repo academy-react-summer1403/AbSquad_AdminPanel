@@ -84,6 +84,9 @@ const adminId = localStorage.getItem("id");
 const ClassRoom = lazy(() => import("../../pages/MetaData/Classroom.js"));
 const Building = lazy(() => import("../../pages/MetaData/Building.js"));
 const Department = lazy(() => import("../../pages/MetaData/Department.js"));
+const CourseSocialGroup = lazy(() =>
+  import("../../pages/Course/CourseSocialGroup.js")
+);
 
 // ** Merge Routes
 const Routes = [
@@ -107,6 +110,10 @@ const Routes = [
   {
     path: "/Course/CommentManangement",
     element: <CommentManagement />,
+  },
+  {
+    path: "/Course/CourseSocialGroup",
+    element: <CourseSocialGroup />,
   },
   {
     path: "/UserList/UserCommentDetail/:id?/:uid?",

@@ -45,6 +45,12 @@ export default [
         icon: <List size={20} />,
         navLink: "/Course/CommentManangement",
       },
+      {
+        id: "CourseSocialGroup",
+        title: "گروه های اجتماعی",
+        icon: <List size={20} />,
+        navLink: "/Course/CourseSocialGroup",
+      },
     ],
   },
   {
