@@ -45,7 +45,7 @@ const AddCourseSocialGroup = ({ setShow, show, id }) => {
     setParameters({ ...data, ...parameters });
     setShow(!show);
   };
-  console.log(parameters);
+
   // Managing Courses And Selected Courses
   const [courseSelect, setCourseSelect] = useState({});
   const [courses, setCourses] = useState([]);
@@ -62,9 +62,6 @@ const AddCourseSocialGroup = ({ setShow, show, id }) => {
       setCourseParams({ RowsOfPage: courses.totalCount, PageNumber: 1 });
     }
   }, [courses.totalCount]);
-  useEffect(() => {
-    // if (courses) console.log(courses);
-  }, [courses]);
 
   // Standard Form
   const StandardOptionsForm = (data) => {

@@ -87,6 +87,9 @@ const Department = lazy(() => import("../../pages/MetaData/Department.js"));
 const CourseSocialGroup = lazy(() =>
   import("../../pages/Course/CourseSocialGroup.js")
 );
+const Assistant = lazy(() =>
+  import("../../pages/Course/Assiastance/Assistant.js")
+);
 
 // ** Merge Routes
 const Routes = [
@@ -114,6 +117,10 @@ const Routes = [
   {
     path: "/Course/CourseSocialGroup",
     element: <CourseSocialGroup />,
+  },
+  {
+    path: "/Course/Assistants",
+    element: <Assistant />,
   },
   {
     path: "/UserList/UserCommentDetail/:id?/:uid?",

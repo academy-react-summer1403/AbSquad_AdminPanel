@@ -51,6 +51,20 @@ export default [
         icon: <List size={20} />,
         navLink: "/Course/CourseSocialGroup",
       },
+      {
+        id: "Assistance",
+        title: "بخش دستیار",
+        icon: <List size={20} />,
+        navLink: "/Course/Assistance",
+        children: [
+          {
+            id: "Assistants",
+            title: "دستیاران آموزشی",
+            icon: <List size={20} />,
+            navLink: "/Course/Assistants",
+          },
+        ],
+      },
     ],
   },
   {
