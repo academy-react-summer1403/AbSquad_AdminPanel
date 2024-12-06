@@ -22,7 +22,10 @@ import { compareAsc, format, newDate } from "date-fns-jalali";
 
 // Generating Random Things for the rest of the api
 import { v4 as uuidv4 } from "uuid";
+import translateTextEnToFa from "../../../../@core/services/API/Translation/translation.enTofa.api";
 
+import translateText from "../../../../@core/services/API/Translation/translation.api";
+import generateText from "../../../../@core/services/API/DescAi/make.ai.desc.api";
 const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   // random string
   const randomString = Math.random();
@@ -84,6 +87,25 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
 
     return finalDate.toISOString();
   };
+
+  // Generating Text AI FOR DESC
+  const [descText, setDescText] = useState("");
+  const [aiText, setAiText] = useState("");
+  const handleEnToFa = async (text) => {
+    const res = await translateTextEnToFa(text);
+    console.log("in texte be farse:", res);
+    setAiText(res);
+  };
+  const handleGenerateDesc = async (text) => {
+    const res = await generateText(text);
+    handleEnToFa(res);
+  };
+  const handleGenerateText = async (text) => {
+    const res = await translateText(text);
+    console.log("in text be english", res);
+    handleGenerateDesc(res);
+  };
+
   return (
     <Fragment>
       <div className="content-header">
@@ -212,6 +234,7 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
             <Label className="form-label" for="miniLink">
               لینک کوتاه دوره
             </Label>
+
             <Controller
               id="miniLink"
               name="ShortLink"
@@ -231,10 +254,9 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
               control={control}
               render={({ field: { onChange } }) => (
                 <Input
-                  onChange={(e) =>
-                    // handlePriceConvert(e.target.value)
-                    onChange(e.target.value)
-                  }
+                  onChange={(e) => {
+                    onChange(e.target.value);
+                  }}
                   placeholder="12"
                 />
               )}
@@ -246,12 +268,28 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
             <Label className="form-label" for="description">
               توضیحات کامل دوره
             </Label>
+            <Button
+              onClick={() => {
+                handleGenerateText(descText);
+              }}
+            >
+              ساخت توضیحات
+            </Button>
+            <Input
+              style={{ resize: "none", height: "40px" }}
+              placeholder="توضیحات Ai"
+              type="textarea"
+              onChange={(e) => {
+                setDescText(e.target.value);
+              }}
+            />
             <Controller
               id="description"
               name="Describe"
               control={control}
               render={({ field: { onChange } }) => (
                 <Input
+                  value={aiText ? aiText : ""}
                   onChange={onChange}
                   style={{ resize: "none", height: "200px" }}
                   placeholder="توضیحات کامل دوره"
