@@ -93,7 +93,6 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   const [aiText, setAiText] = useState("");
   const handleEnToFa = async (text) => {
     const res = await translateTextEnToFa(text);
-    console.log("in texte be farse:", res);
     setAiText(res);
   };
   const handleGenerateDesc = async (text) => {
@@ -102,7 +101,6 @@ const CourseInfo = ({ stepper, finalData, setFinalData }) => {
   };
   const handleGenerateText = async (text) => {
     const res = await translateText(text);
-    console.log("in text be english", res);
     handleGenerateDesc(res);
   };
 

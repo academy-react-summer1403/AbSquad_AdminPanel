@@ -2,7 +2,7 @@
 
 const API_URL =
   "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2";
-const API_KEY = "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"; // Replace with your actual Hugging Face API key
+const API_KEY = "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"; // Replace with your actual Hugging Face API key
 
 export const GenerateImage = async (prompt) => {
   try {
