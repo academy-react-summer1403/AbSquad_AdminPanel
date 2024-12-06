@@ -1,30 +1,42 @@
-﻿// ** React Imports
-import { Fragment, useState } from "react";
-
-// ** Third Party Components
+﻿import { Fragment, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { ArrowLeft, ArrowRight } from "react-feather";
-
-// ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input } from "reactstrap";
-
-// ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
-
-// Generate UUIDs
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid"; // Import uuidv4 for sessionId
 import { AddChapterApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.chapter.api";
+import { AddNotif } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.notif.api";
 
 const AddChapter = ({ stepper, courseId }) => {
   // States
+  useEffect(() => {
+    if (courseId) console.log(courseId);
+  }, [courseId]);
+
   const [chapters, setChapters] = useState([]);
+  const [notif, setNotif] = useState([]); // State for notifications
   const [currentChapter, setCurrentChapter] = useState({
-    cId: uuidv4(),
+    cId: courseId, // Use courseId as the cId for chapters
     chapterName: "",
     sessions: [],
   });
   const [sessionName, setSessionName] = useState("");
   const [sessionDescription, setSessionDescription] = useState("");
+
+  // ** Fetch notifications when the component loads
+  useEffect(() => {
+    const fetchNotif = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/notif");
+        const data = await response.json();
+        setNotif(data.notif || []); // Ensure notif is an array if response is empty
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotif();
+  }, []); // Only run on component mount
 
   // ** Hooks
   const {
@@ -36,7 +48,7 @@ const AddChapter = ({ stepper, courseId }) => {
   // ** Handlers
   const handleAddSession = () => {
     const newSession = {
-      sessionId: uuidv4(),
+      sessionId: uuidv4(), // Use uuid for session ID
       sessionName,
       sessionDescription,
     };
@@ -48,18 +60,35 @@ const AddChapter = ({ stepper, courseId }) => {
     setSessionDescription("");
   };
 
-  const handleAddChapter = () => {
+  const handleAddChapter = async () => {
+    // Check if there's already a notification for this cId
+    const existingNotif = notif.find(
+      (notification) => notification.cId === currentChapter.cId
+    );
+
+    if (!existingNotif) {
+      // If no existing notification, add one
+      await AddNotif({
+        cId: currentChapter.cId,
+        isRead: false,
+      });
+    }
+
+    // Add the chapter to the list
     setChapters([...chapters, currentChapter]);
+
+    // Reset the current chapter state for the next one
     setCurrentChapter({
-      cId: uuidv4(),
+      cId: courseId, // Use courseId for each new chapter
       chapterName: "",
       sessions: [],
     });
   };
 
   const handleSubmitApi = async () => {
+    // Submit all chapters and their sessions
     for (const chapter of chapters) {
-      await AddChapterApi({ ...chapter }); // Add courseId if needed
+      await AddChapterApi({ ...chapter });
     }
     alert("Chapters submitted successfully!");
   };

@@ -20,6 +20,10 @@ const WizardHorizontal = () => {
 
   const [finalData, setFinalData] = useState({});
   const [finalCourseId, setFinalCourseId] = useState("");
+  useEffect(() => {
+    if (finalCourseId) console.log("in aslie", finalCourseId);
+  }, [finalCourseId]);
+
   const steps = [
     {
       id: "Image",
