@@ -156,4 +156,10 @@ export default [
     ],
     navLink: "/MetaData",
   },
+  {
+    id: "SiteSetting",
+    title: "تنظیمات اپلیکشین",
+    icon: <User size={20} />,
+    navLink: "/SiteSetting",
+  },
 ];

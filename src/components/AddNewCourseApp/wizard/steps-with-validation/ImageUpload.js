@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
@@ -26,6 +26,8 @@ import {
   CardText,
 } from "reactstrap";
 import Import from "./Import";
+import { GenerateImage } from "../../../../@core/services/API/ImageGenerator/image.generate.api";
+import translateText from "../../../../@core/services/API/Translation/translation.api";
 
 const AccountDetails = ({ stepper, setFinalData }) => {
   // ** Hooks
@@ -46,9 +48,59 @@ const AccountDetails = ({ stepper, setFinalData }) => {
     }
   };
 
+  // Text To Image
+  const [imageText, setImageText] = useState("");
+  const [aiImgURL, setAiImgURL] = useState("");
+  const [aiOpen, setAiOpen] = useState("close");
+  const [translatedText, setTranslatedText] = useState("");
+
+  const handleTextToImage = async (text) => {
+    const res = await GenerateImage(text);
+    setAiImgURL(res);
+  };
+  const handleTranslateText = async (text) => {
+    const res = await translateText(text);
+    console.log("in translate e:", res);
+    setTranslatedText(res);
+  };
+  useEffect(() => {
+    if (translatedText) handleTextToImage(translatedText);
+  }, [translatedText]);
+
   return (
     <Fragment>
       <Form onSubmit={handleSubmit(onSubmit)}>
+        {aiOpen == "close" && (
+          <Button
+            onClick={() => {
+              setAiOpen("open");
+            }}
+          >
+            استفاده از AI برای ساخت عکس
+          </Button>
+        )}
+        {aiOpen == "open" && (
+          <Row>
+            <Label>
+              <h5>عکس مورد نظر را بسازید:</h5>
+            </Label>
+            <Col xs={4} className="d-flex flex-row">
+              <Input
+                onChange={(e) => {
+                  setImageText(e.target.value);
+                }}
+                placeholder="دوره 1"
+              />
+              <Button
+                onClick={() => {
+                  handleTranslateText(imageText);
+                }}
+              >
+                ساخت عکس
+              </Button>
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col className="mb-1">
             <Controller
@@ -56,7 +108,7 @@ const AccountDetails = ({ stepper, setFinalData }) => {
               name="TumbImageAddress"
               control={control}
               render={({ field: { onChange } }) => (
-                <Import onChange={onChange} />
+                <Import onChange={onChange} aiImgURL={aiImgURL} />
               )}
             />
           </Col>
