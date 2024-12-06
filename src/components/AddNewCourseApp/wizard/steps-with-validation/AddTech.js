@@ -68,6 +68,7 @@ const AddTech = ({ stepper, finalData, setFinalData }) => {
   // On Submit
   const onSubmit = () => {
     handleTechApi(finalData.CoursePrerequisiteId, tech);
+    stepper.next();
   };
 
   return (
@@ -110,7 +111,7 @@ const AddTech = ({ stepper, finalData, setFinalData }) => {
             <span className="align-middle d-sm-inline-block d-none">قبلی</span>
           </Button>
           <Button type="submit" color="success" className="btn-submit">
-            <span className="align-middle d-sm-inline-block d-none">ثبت</span>
+            <span className="align-middle d-sm-inline-block d-none">بعدی</span>
           </Button>
         </div>
       </Form>
