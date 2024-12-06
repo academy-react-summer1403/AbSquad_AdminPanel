@@ -123,6 +123,15 @@ export const ReserveCol = [
       const [studentId, setStudentId] = useState("");
       const [groupId, setGroupId] = useState("");
       const [courseGroupId, setCourseGroupId] = useState("");
+      useEffect(() => {
+        if (teacherId && row.courseId)
+          console.log(
+            "in teachere : ",
+            teacherId,
+            "in student e ",
+            row.courseId
+          );
+      }, [teacherId, row.courseId]);
 
       const handleGroupId = async (teacherId) => {
         const res = await getCourseGroup(teacherId, row.courseId);
