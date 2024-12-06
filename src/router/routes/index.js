@@ -90,6 +90,7 @@ const CourseSocialGroup = lazy(() =>
 const Assistant = lazy(() =>
   import("../../pages/Course/Assiastance/Assistant.js")
 );
+const SiteSetting = lazy(() => import("../../pages/SiteSetting/index.js"));
 
 // ** Merge Routes
 const Routes = [
@@ -209,6 +210,10 @@ const Routes = [
   {
     path: "/Course/EditCourse/:id?",
     element: <EditCourse />,
+  },
+  {
+    path: "/SiteSetting",
+    element: <SiteSetting />,
   },
   {
     path: "/second-page",
