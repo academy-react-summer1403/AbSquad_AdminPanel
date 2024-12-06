@@ -22,12 +22,6 @@ const WizardHorizontal = () => {
   const [finalCourseId, setFinalCourseId] = useState("");
   const steps = [
     {
-      id: "AddChapter",
-      title: "اضافه کردن فصل های دوره",
-      subtitle: "فصل های  دوره را انتخاب کنید.",
-      content: <AddChapter stepper={stepper} courseId={finalCourseId} />,
-    },
-    {
       id: "Image",
       title: "اضافه کردن عکس دوره",
       subtitle: "عکس دوره وارد شود.",
@@ -76,6 +70,7 @@ const WizardHorizontal = () => {
         />
       ),
     },
+
     {
       id: "AddTech",
       title: "اضافه کردن تکنولوژی دوره",
@@ -87,6 +82,12 @@ const WizardHorizontal = () => {
           setFinalData={setFinalData}
         />
       ),
+    },
+    {
+      id: "AddChapter",
+      title: "اضافه کردن فصل های دوره",
+      subtitle: "فصل های  دوره را انتخاب کنید.",
+      content: <AddChapter stepper={stepper} courseId={finalCourseId} />,
     },
   ];
 
