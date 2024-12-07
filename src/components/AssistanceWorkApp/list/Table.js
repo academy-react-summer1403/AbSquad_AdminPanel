@@ -75,7 +75,7 @@ const CustomHeader = ({ searchTerm, setSearchTerm, setRowsPerPage }) => {
                 setShow(true);
               }}
             >
-              اضافه کردن ساختمان
+              اضافه کردن کار
             </Button>
           </div>
         </Col>
