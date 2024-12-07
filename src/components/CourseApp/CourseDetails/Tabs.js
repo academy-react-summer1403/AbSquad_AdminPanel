@@ -42,18 +42,6 @@ const UserTabs = ({ active, toggleTab, courseDetail }) => {
             <span className="fw-bold">رزرو های دوره</span>
           </NavLink>
         </NavItem>
-        <NavItem>
-          <NavLink active={active === "4"} onClick={() => toggleTab("4")}>
-            <Bell className="font-medium-3 me-50" />
-            <span className="fw-bold">Notifications</span>
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink active={active === "5"} onClick={() => toggleTab("5")}>
-            <Link className="font-medium-3 me-50" />
-            <span className="fw-bold">Connections</span>
-          </NavLink>
-        </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId="1">
