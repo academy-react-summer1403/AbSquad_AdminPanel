@@ -1,7 +1,7 @@
 ﻿import axios from "axios";
 
 // Replace 'your_huggingface_api_key' with your actual Hugging Face API key
-const API_KEY = "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";
+const API_KEY = "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";
 
 // Function to generate text using Hugging Face GPT-2 model
 const generateText = async (inputText) => {
