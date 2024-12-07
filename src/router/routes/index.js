@@ -13,6 +13,7 @@ import PublicRoute from "@components/routes/PublicRoute";
 // ** Utils
 import { isObjEmpty } from "@utils";
 import Level from "../../pages/MetaData/Level.js";
+import CourseCalendar from "../../pages/Course/CourseCalendar.js";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -87,6 +88,13 @@ const Department = lazy(() => import("../../pages/MetaData/Department.js"));
 const AssistanceWork = lazy(() =>
   import("../../pages/MetaData/AssistanceWork.js")
 );
+const CourseSocialGroup = lazy(() =>
+  import("../../pages/Course/CourseSocialGroup.js")
+);
+const Assistant = lazy(() =>
+  import("../../pages/Course/Assiastance/Assistant.js")
+);
+const SiteSetting = lazy(() => import("../../pages/SiteSetting/index.js"));
 
 // ** Merge Routes
 const Routes = [
@@ -108,8 +116,20 @@ const Routes = [
     element: <TeacherCourseList />,
   },
   {
+    path: "/Course/CourseCalendar",
+    element: <CourseCalendar />,
+  },
+  {
     path: "/Course/CommentManangement",
     element: <CommentManagement />,
+  },
+  {
+    path: "/Course/CourseSocialGroup",
+    element: <CourseSocialGroup />,
+  },
+  {
+    path: "/Course/Assistants",
+    element: <Assistant />,
   },
   {
     path: "/UserList/UserCommentDetail/:id?/:uid?",
@@ -202,6 +222,10 @@ const Routes = [
   {
     path: "/Course/EditCourse/:id?",
     element: <EditCourse />,
+  },
+  {
+    path: "/SiteSetting",
+    element: <SiteSetting />,
   },
   {
     path: "/second-page",

@@ -117,18 +117,7 @@ export const columns = [
       <span className="fw-bolder text-capitalize">{row.departmentName}</span>
     ),
   },
-  {
-    name: "قیمت",
-    minWidth: "138px",
-    sortable: true,
-    sortField: "currentPlan",
-    selector: (row) => row.cost,
-    cell: (row) => (
-      <span className="text-capitalize">
-        {parseInt(row.cost).toLocaleString()} تومان
-      </span>
-    ),
-  },
+
   {
     name: " انقضا وضعیت",
     minWidth: "178px",
@@ -141,18 +130,7 @@ export const columns = [
       </Badge>
     ),
   },
-  {
-    name: "وضعیت حذف",
-    minWidth: "138px",
-    sortable: true,
-    sortField: "status",
-    selector: (row) => row.isdelete,
-    cell: (row) => (
-      <Badge className="text-capitalize" color={statusObj[row.isdelete]} pill>
-        {row.isdelete ? "حذف شده" : "حذف نشده"}
-      </Badge>
-    ),
-  },
+
   {
     name: "Actions",
     minWidth: "100px",
