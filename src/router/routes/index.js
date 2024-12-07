@@ -13,6 +13,7 @@ import PublicRoute from "@components/routes/PublicRoute";
 // ** Utils
 import { isObjEmpty } from "@utils";
 import Level from "../../pages/MetaData/Level.js";
+import CourseCalendar from "../../pages/Course/CourseCalendar.js";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -110,6 +111,10 @@ const Routes = [
   {
     path: "/Course/YourCourseList",
     element: <TeacherCourseList />,
+  },
+  {
+    path: "/Course/CourseCalendar",
+    element: <CourseCalendar />,
   },
   {
     path: "/Course/CommentManangement",

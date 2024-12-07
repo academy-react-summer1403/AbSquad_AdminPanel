@@ -46,7 +46,7 @@ export default [
         navLink: "/Course/CommentManangement",
       },
       {
-        id: "CourseSocialGroup",
+        id: "CourseCalendar",
         title: "تقویم دوره ها",
         icon: <List size={20} />,
         navLink: "/Course/CourseCalendar",

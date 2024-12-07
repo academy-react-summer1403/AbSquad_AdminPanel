@@ -12,14 +12,9 @@ import { AlignJustify, Rss, Info, Image, Users, Edit } from "react-feather";
 import { Row, Col, Button, Nav, NavItem, NavLink, Collapse } from "reactstrap";
 
 // ** Demo Components
-// import ProfilePoll from "./ProfilePolls";
+
 import ProfileAbout from "./ProfileAbout";
-// import ProfilePosts from "./ProfilePosts";
 import ProfileHeader from "./ProfileHeader";
-// import ProfileTwitterFeeds from "./ProfileTwitterFeeds";
-// import ProfileLatestPhotos from "./ProfileLatestPhotos";
-// import ProfileSuggestedPages from "./ProfileSuggestedPages";
-// import ProfileFriendsSuggestions from "./ProfileFriendsSuggestions";
 
 // ** Styles
 import "@styles/react/pages/page-profile.scss";
@@ -144,10 +139,6 @@ const UserDetailApp = () => {
                       </NavLink>
                     </NavItem>
                   </Nav>
-                  <Button color="primary">
-                    <Edit className="d-block d-md-none" size={14} />
-                    <span className="fw-bold d-none d-md-block">Edit</span>
-                  </Button>
                 </div>
               </Collapse>
             </Row>
