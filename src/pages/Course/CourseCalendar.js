@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import CourseCalendarApp from "../../components/CourseCalendarApp/CourseCalendar";
+import CourseCalendarApp from "../../components/CourseCalendarApp";
 
 const CourseCalendar = () => {
   return (
