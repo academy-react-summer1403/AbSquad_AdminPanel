@@ -84,6 +84,12 @@ export default [
         navLink: "/MetaData/Semester",
       },
       {
+        id: "AssistanceWork",
+        title: "لیست دستیار آموزشی",
+        icon: <List size={20} />,
+        navLink: "/MetaData/AssistanceWork",
+      },
+      {
         id: "Technology",
         title: "لیست تکنولوژی",
         icon: <List size={20} />,
