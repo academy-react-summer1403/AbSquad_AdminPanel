@@ -3,73 +3,77 @@ import { useForm, Controller } from "react-hook-form";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { Label, Row, Col, Button, Form, Input } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
-import { v4 as uuidv4 } from "uuid"; // Import uuidv4 for sessionId
+import { v4 as uuidv4 } from "uuid";
 import { AddChapterApi } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.chapter.api";
 import { AddNotif } from "../../../../@core/services/API/AllCoursesAdmin/AddNewCourse/add.notif.api";
 
 const AddChapter = ({ stepper, courseId }) => {
   // States
-  useEffect(() => {
-    if (courseId) console.log(courseId);
-  }, [courseId]);
-
   const [chapters, setChapters] = useState([]);
   const [notif, setNotif] = useState([]); // State for notifications
   const [currentChapter, setCurrentChapter] = useState({
-    cId: courseId, // Use courseId as the cId for chapters
+    cId: courseId,
     chapterName: "",
     sessions: [],
   });
   const [sessionName, setSessionName] = useState("");
   const [sessionDescription, setSessionDescription] = useState("");
 
-  // ** Fetch notifications when the component loads
+  // Fetch notifications on component mount
   useEffect(() => {
     const fetchNotif = async () => {
       try {
         const response = await fetch("http://localhost:8080/notif");
         const data = await response.json();
-        setNotif(data.notif || []); // Ensure notif is an array if response is empty
+        setNotif(data.notif || []); // Ensure notif is an array
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }
     };
 
     fetchNotif();
-  }, []); // Only run on component mount
+  }, []);
 
-  // ** Hooks
+  // Update cId if courseId changes
+  useEffect(() => {
+    setCurrentChapter((prev) => ({
+      ...prev,
+      cId: courseId,
+    }));
+  }, [courseId]);
+
+  // React Hook Form setup
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  // ** Handlers
+  // Handlers
   const handleAddSession = () => {
     const newSession = {
-      sessionId: uuidv4(), // Use uuid for session ID
+      sessionId: uuidv4(),
       sessionName,
       sessionDescription,
     };
-    setCurrentChapter({
-      ...currentChapter,
-      sessions: [...currentChapter.sessions, newSession],
-    });
+    setCurrentChapter((prev) => ({
+      ...prev,
+      sessions: [...prev.sessions, newSession],
+    }));
     setSessionName("");
     setSessionDescription("");
   };
 
   const handleAddChapter = async () => {
-    // Check if there's already a notification for this cId
+    // Check for duplicate notifications
     const existingNotif = notif.find(
-      (notification) => notification.cId === currentChapter.cId
+      (notification) => notification.cId === courseId
     );
 
     if (!existingNotif) {
-      // If no existing notification, add one
+      // Add notification if it doesn't exist
       await AddNotif({
-        cId: currentChapter.cId,
+        cId: courseId,
         isRead: false,
       });
     }
@@ -77,16 +81,16 @@ const AddChapter = ({ stepper, courseId }) => {
     // Add the chapter to the list
     setChapters([...chapters, currentChapter]);
 
-    // Reset the current chapter state for the next one
+    // Reset current chapter
     setCurrentChapter({
-      cId: courseId, // Use courseId for each new chapter
+      cId: courseId,
       chapterName: "",
       sessions: [],
     });
   };
 
   const handleSubmitApi = async () => {
-    // Submit all chapters and their sessions
+    // Submit chapters to API
     for (const chapter of chapters) {
       await AddChapterApi({ ...chapter });
     }
@@ -113,10 +117,10 @@ const AddChapter = ({ stepper, courseId }) => {
                 <Input
                   value={currentChapter.chapterName}
                   onChange={(e) =>
-                    setCurrentChapter({
-                      ...currentChapter,
+                    setCurrentChapter((prev) => ({
+                      ...prev,
                       chapterName: e.target.value,
-                    })
+                    }))
                   }
                   placeholder="نام فصل را وارد کنید"
                 />
