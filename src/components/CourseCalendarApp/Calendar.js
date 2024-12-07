@@ -1,117 +1,105 @@
-// ** React Import
-import { useEffect, useRef, memo } from "react";
-
-// ** Full Calendar & it's Plugins
-import "@fullcalendar/react/dist/vdom";
+import { useEffect, useState, useRef, memo } from "react";
 import FullCalendar from "@fullcalendar/react";
-import listPlugin from "@fullcalendar/list";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
-
-// ** Third Party Components
 import toast from "react-hot-toast";
-
 import { Card, CardBody } from "reactstrap";
 
+// Import the AllCourseAdmin function
+import { AllCourseAdmin } from "../../@core/services/API/AllCoursesAdmin/allCourse.api";
+
 const Calendar = (props) => {
-  // ** Refs
   const calendarRef = useRef(null);
 
-  // ** Props
+  // State to store events
+  const [events, setEvents] = useState([]);
+
+  // Props
   const { isRtl, calendarsColor, calendarApi, setCalendarApi, blankEvent } =
     props;
 
-  // ** UseEffect checks for CalendarAPI Update
+  // Fetch Events Data from API using AllCourseAdmin
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        // Define searchParams for API call, like pagination
+        const searchParams = {
+          PageNumber: 1,
+          RowsOfPage: 592, // Assuming we want to load all courses
+        };
+
+        // Call the API service to fetch courses
+        const response = await AllCourseAdmin(searchParams);
+
+        if (response && response && response.courseDtos) {
+          // Format the events based on API response
+          const formattedEvents = response.courseDtos.map((course) => {
+            // Parse the lastUpdate date properly to make sure it works for FullCalendar
+            const startDate = new Date(course.lastUpdate);
+            const endDate = new Date(startDate); // Using the same date as end date, can adjust if needed
+
+            // Format the events for FullCalendar
+            return {
+              title: course.title,
+              start: startDate,
+              end: endDate,
+              extendedProps: {
+                description: course.describe,
+                cost: course.cost,
+                status: course.statusName,
+                reserveCount: course.reserveCount,
+                level: course.levelName,
+              },
+              backgroundColor:
+                calendarsColor[course.classRoomName] || "#FF0000", // Default background if not found
+              borderColor: "#ffffff", // Ensure visible border
+            };
+          });
+
+          // Update state with the fetched events
+          setEvents(formattedEvents);
+        }
+      } catch (error) {
+        toast.error("Failed to load events");
+        console.error(error);
+      }
+    };
+
+    fetchEvents();
+  }, []); // This runs once when the component mounts
+
+  // ** UseEffect to set calendarApi if it's not already set
   useEffect(() => {
     if (calendarApi === null) {
       setCalendarApi(calendarRef.current.getApi());
     }
   }, [calendarApi]);
 
-  // ** calendarOptions(Props)
+  // ** Calendar Options
   const calendarOptions = {
-    // events: store.events.length ? store.events : [],
+    events, // Pass the events from state to FullCalendar
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
     initialView: "dayGridMonth",
     headerToolbar: {
-      start: "sidebarToggle, prev,next, title",
-      end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
+      left: "prev,next today",
+      center: "title",
+      right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
     },
-    /*
-      Enable dragging and resizing event
-      ? Docs: https://fullcalendar.io/docs/editable
-    */
-    editable: true,
-
-    /*
-      Enable resizing event from start
-      ? Docs: https://fullcalendar.io/docs/eventResizableFromStart
-    */
-    eventResizableFromStart: true,
-
-    /*
-      Automatically scroll the scroll-containers during event drag-and-drop and date selecting
-      ? Docs: https://fullcalendar.io/docs/dragScroll
-    */
-    dragScroll: true,
-
-    /*
-      Max number of events within a given day
-      ? Docs: https://fullcalendar.io/docs/dayMaxEvents
-    */
-    dayMaxEvents: 2,
-
-    /*
-      Determines if day names and week names are clickable
-      ? Docs: https://fullcalendar.io/docs/navLinks
-    */
+    editable: false,
     navLinks: true,
-
-    eventClassNames({ event: calendarEvent }) {
-      // eslint-disable-next-line no-underscore-dangle
-      const colorName =
-        calendarsColor[calendarEvent._def.extendedProps.calendar];
-
-      return [
-        // Background Color
-        `bg-light-${colorName}`,
-      ];
-    },
-
-    dateClick(info) {
-      const ev = blankEvent;
-      ev.start = info.date;
-      ev.end = info.date;
-    },
-
-    /*
-      Handle event drop (Also include dragged event)
-      ? Docs: https://fullcalendar.io/docs/eventDrop
-      ? We can use `eventDragStop` but it doesn't return updated event so we have to use `eventDrop` which returns updated event
-    */
-    eventDrop({ event: droppedEvent }) {
-      toast.success("Event Updated");
-    },
-
-    /*
-      Handle event resize
-      ? Docs: https://fullcalendar.io/docs/eventResize
-    */
-    eventResize({ event: resizedEvent }) {
-      toast.success("Event Updated");
-    },
-
-    ref: calendarRef,
-
-    // Get direction from app state (store)
+    dayMaxEvents: true,
     direction: isRtl ? "rtl" : "ltr",
+    eventClick({ event }) {
+      toast.info(`Event: ${event.title}`);
+    },
   };
 
   return (
     <Card className="shadow-none border-0 mb-0 rounded-0">
       <CardBody className="pb-0">
-        <FullCalendar {...calendarOptions} />
+        <FullCalendar {...calendarOptions} ref={calendarRef} />
       </CardBody>
     </Card>
   );
