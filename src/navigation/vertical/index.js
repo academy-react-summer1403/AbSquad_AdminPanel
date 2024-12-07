@@ -4,7 +4,7 @@ const adminId = localStorage.getItem("id");
 export default [
   {
     id: "home",
-    title: "Home",
+    title: "داشبورد",
     icon: <Home size={20} />,
     navLink: "/home",
   },
@@ -44,6 +44,32 @@ export default [
         title: "مدیریت کامنت ها",
         icon: <List size={20} />,
         navLink: "/Course/CommentManangement",
+      },
+      {
+        id: "CourseCalendar",
+        title: "تقویم دوره ها",
+        icon: <List size={20} />,
+        navLink: "/Course/CourseCalendar",
+      },
+      {
+        id: "CourseSocialGroup",
+        title: "گروه های اجتماعی",
+        icon: <List size={20} />,
+        navLink: "/Course/CourseSocialGroup",
+      },
+      {
+        id: "Assistance",
+        title: "بخش دستیار",
+        icon: <List size={20} />,
+        navLink: "/Course/Assistance",
+        children: [
+          {
+            id: "Assistants",
+            title: "دستیاران آموزشی",
+            icon: <List size={20} />,
+            navLink: "/Course/Assistants",
+          },
+        ],
       },
     ],
   },
@@ -135,5 +161,11 @@ export default [
       },
     ],
     navLink: "/MetaData",
+  },
+  {
+    id: "SiteSetting",
+    title: "تنظیمات اپلیکشین",
+    icon: <User size={20} />,
+    navLink: "/SiteSetting",
   },
 ];

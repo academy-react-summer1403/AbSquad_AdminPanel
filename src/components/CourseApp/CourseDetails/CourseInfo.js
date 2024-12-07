@@ -27,6 +27,7 @@ import withReactContent from "sweetalert2-react-content";
 import "@styles/react/libs/react-select/_react-select.scss";
 import { ActiveDeactiveCourse } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/active.deactive.api";
 import { DeleteCourse } from "../../../@core/services/API/AllCoursesAdmin/GetCourseDetail/delete.course.api";
+import { useNavigate } from "react-router-dom";
 
 const courseLevelColor = {
   مبتدی: "light-success",
@@ -39,6 +40,7 @@ const statusColor = {
 };
 
 const UserInfoCard = ({ courseDetail, refresh, setRefresh }) => {
+  const nav = useNavigate();
   // ** State
   const [show, setShow] = useState(false);
 
@@ -242,7 +244,13 @@ const UserInfoCard = ({ courseDetail, refresh, setRefresh }) => {
             ) : null}
           </div>
           <div className="d-flex justify-content-center pt-2">
-            <Button color="primary" onClick={() => setShow(true)}>
+            <Button
+              color="primary"
+              onClick={() => {
+                setShow(true);
+                nav(`/Course/EditCourse/${courseDetail.courseId}`);
+              }}
+            >
               ویرایش
             </Button>
             <Button
