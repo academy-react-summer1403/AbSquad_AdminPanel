@@ -4,7 +4,7 @@ const adminId = localStorage.getItem("id");
 export default [
   {
     id: "home",
-    title: "Home",
+    title: "داشبورد",
     icon: <Home size={20} />,
     navLink: "/home",
   },
