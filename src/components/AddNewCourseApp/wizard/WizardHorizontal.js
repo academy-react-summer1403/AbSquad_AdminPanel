@@ -10,7 +10,7 @@ import CourseInfo from "./steps-with-validation/CourseInfo";
 import ImageUpload from "./steps-with-validation/ImageUpload";
 import AddGroup from "./steps-with-validation/AddGroup";
 import AddTech from "./steps-with-validation/AddTech";
-
+import AddChapter from "./steps-with-validation/AddChapter";
 const WizardHorizontal = () => {
   // ** Ref
   const ref = useRef(null);
@@ -20,6 +20,10 @@ const WizardHorizontal = () => {
 
   const [finalData, setFinalData] = useState({});
   const [finalCourseId, setFinalCourseId] = useState("");
+  useEffect(() => {
+    if (finalCourseId) console.log("in aslie", finalCourseId);
+  }, [finalCourseId]);
+
   const steps = [
     {
       id: "Image",
@@ -70,6 +74,7 @@ const WizardHorizontal = () => {
         />
       ),
     },
+
     {
       id: "AddTech",
       title: "اضافه کردن تکنولوژی دوره",
@@ -81,6 +86,12 @@ const WizardHorizontal = () => {
           setFinalData={setFinalData}
         />
       ),
+    },
+    {
+      id: "AddChapter",
+      title: "اضافه کردن فصل های دوره",
+      subtitle: "فصل های  دوره را انتخاب کنید.",
+      content: <AddChapter stepper={stepper} courseId={finalCourseId} />,
     },
   ];
 

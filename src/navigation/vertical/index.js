@@ -47,6 +47,12 @@ export default [
       },
       {
         id: "CourseSocialGroup",
+        title: "تقویم دوره ها",
+        icon: <List size={20} />,
+        navLink: "/Course/CourseCalendar",
+      },
+      {
+        id: "CourseSocialGroup",
         title: "گروه های اجتماعی",
         icon: <List size={20} />,
         navLink: "/Course/CourseSocialGroup",
